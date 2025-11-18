@@ -47,6 +47,7 @@ jobs:
           else
             # Extract tag from push event
             echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+          fi
 
       - name: Create GitHub release
         id: create_release
