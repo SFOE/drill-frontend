@@ -20,7 +20,7 @@ jobs:
 
       # Install dependencies
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --omit=dev --ignore-scripts
 
       # Run lint
       - name: Run lint
