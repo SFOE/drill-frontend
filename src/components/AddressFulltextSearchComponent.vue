@@ -137,7 +137,7 @@ const onBlur = () => {}
 const clearSearch = () => {
   searchQuery.value = ''
   searchResults.value = []
-  searchInput.value?.focus()
+  searchInput.value?.focus(),
 }
 
 const handleClickOutside = (event: MouseEvent) => {
