@@ -1,4 +1,4 @@
-# easymap
+# drill-frontend
 
 Migrating kann-ich-bohren to vuejs & vue3-openlayers
 
