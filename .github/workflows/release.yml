@@ -13,11 +13,21 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Setup Node.js
+      # Setup Node.js (24.x)
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '24'
+
+      # Upgrade npm to latest
+      - name: Upgrade npm
+        run: npm install -g npm@latest
+
+      # Verify versions
+      - name: Show Node.js and npm versions
+        run: |
+          node --version
+          npm --version
 
       # Install only production dependencies (skip devDeps like Cypress)
       - name: Install production dependencies
