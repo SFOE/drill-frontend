@@ -1,10 +1,14 @@
 name: Release Vue App
 
 on:
-  workflow_dispatch:        # manual trigger
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag to release (e.g., v1.0.0)'
+        required: false
   push:
     tags:
-      - 'v*'               # trigger on version tags like v1.0.0
+      - 'v*'
 
 jobs:
   build-and-release:
@@ -31,12 +35,25 @@ jobs:
           mkdir -p release
           zip -r release/vue-app.zip dist/*
 
+      - name: Determine tag
+        id: determine_tag
+        run: |
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            if [ -z "${{ github.event.inputs.tag }}" ]; then
+              echo "No tag provided for manual release. Exiting."
+              exit 1
+            fi
+            echo "tag=${{ github.event.inputs.tag }}" >> $GITHUB_OUTPUT
+          else
+            # Extract tag from push event
+            echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+
       - name: Create GitHub release
         id: create_release
         uses: actions/create-release@v1
         with:
-          tag_name: ${{ github.ref_name }}
-          release_name: Release ${{ github.ref_name }}
+          tag_name: ${{ steps.determine_tag.outputs.tag }}
+          release_name: Release ${{ steps.determine_tag.outputs.tag }}
           draft: false
           prerelease: false
         env:
