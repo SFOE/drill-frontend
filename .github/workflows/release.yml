@@ -19,9 +19,9 @@ jobs:
         with:
           node-version: '24'
 
-      # Install dependencies (skip Cypress binary download)
-      - name: Install dependencies
-        run: npm install
+      # Install only production dependencies (skip devDeps like Cypress)
+      - name: Install production dependencies
+        run: npm ci --omit=dev
 
       # Build the app
       - name: Build drill-frontend
