@@ -19,19 +19,9 @@ jobs:
         with:
           node-version: '24'
 
-      # Upgrade npm to latest
-      - name: Upgrade npm
-        run: npm install -g npm@latest
-
-      # Verify versions
-      - name: Show Node.js and npm versions
-        run: |
-          node --version
-          npm --version
-
-      # Install only production dependencies (skip devDeps like Cypress)
-      - name: Install production dependencies
-        run: npm install --omit=dev --ignore-scripts
+      # Install dependencies
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
 
       # Build the app
       - name: Build drill-frontend
