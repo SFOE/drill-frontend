@@ -5,28 +5,24 @@ Migrating kann-ich-bohren to vuejs & vue3-openlayers
 ![video](https://github.com/user-attachments/assets/662909e8-65af-44e0-879a-5a67188c21ff)
 
 
-## Recommended IDE Setup
-
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
-
-## Recommended Browser Setup
-
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd) 
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
-
-## Type Support for `.vue` Imports in TS
-
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vite.dev/config/).
-
 ## Project Setup
+
+### Backend
+
+ℹ️ This vuejs app needs a backend to work. 
+
+The backend is published here, please follow instructions:  [https://github.com/SFOE/drillapi/pkgs/container/drillapi](https://github.com/SFOE/drillapi)
+
+A docker image can also be pulled from https://github.com/SFOE/drillapi/pkgs/container/drillapi
+
+
+### Install vuejs dev environnement
+
+This project uses node. Checkout official documentation in order to manage node versions correctly with Node Version Manager (NVM) at https://nodejs.org/en/download
+
+```sh
+git clone git@github.com:SFOE/drill-frontend.git
+```
 
 ```sh
 npm install
@@ -45,19 +41,19 @@ npx npm-check-updates -u
 npm install
 ```
 
-:info: In order to get the dev backend, you need to run https://github.com/sfOE/drillapi :info:
-
-### Compile and Hot-Reload for Development with mock API
-
-```sh
-npm run dev:all
-```
-
 ### Type-Check, Compile and Minify for Production
 
 ```sh
 npm run build
 ```
+
+### Type Support for `.vue` Imports in TS
+
+TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
+
+### Customize configuration
+
+See [Vite Configuration Reference](https://vite.dev/config/).
 
 ### Run Unit Tests with [Vitest](https://vitest.dev/)
 
