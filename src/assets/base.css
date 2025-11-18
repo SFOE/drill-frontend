@@ -1,0 +1,45 @@
+body {
+  font-family: 'Frutiger LT Com', Roboto, 'Helvetica Neue', sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* --- Global link styling --- */
+a {
+  text-decoration: none;
+  color: #005ea5;
+  transition: color 0.2s ease;
+}
+
+a:hover,
+a:focus {
+  text-decoration: underline;
+  color: #003a6d;
+}
+
+.external-icon {
+  width: 10px;
+  height: 10px;
+  margin-left: 4px; /* spacing from text */
+  vertical-align: middle; /* aligns nicely with text */
+}
+
+/* --- Footer link styling --- */
+.site-footer a {
+  color: rgba(255, 255, 255, 0.85);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.site-footer a:hover {
+  color: #fff;
+  text-decoration: underline;
+}
+
+.site-footer a:visited {
+  color: #884488;
+}
