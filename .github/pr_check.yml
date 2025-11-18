@@ -1,0 +1,27 @@
+name: Lint
+
+on:
+  pull_request:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout source code
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Setup Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      # Install dependencies
+      - name: Install dependencies
+        run: npm ci
+
+      # Run lint
+      - name: Run lint
+        run: npm run lint
