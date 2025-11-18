@@ -24,18 +24,17 @@ jobs:
         run: CYPRESS_INSTALL_BINARY=0 npm ci
 
       # Build the app
-      - name: Build app
+      - name: Build drill-frontend
         run: npm run build
 
       # Archive build output into a zip file
       - name: Create zip archive
-        run: |
-          zip -r my-nodejs-app.zip dist
+        run: zip -r drill-frontend.zip dist
 
       # Upload zip to the release assets
       - name: Upload release asset
         uses: softprops/action-gh-release@v1
         with:
-          files: my-nodejs-app.zip
+          files: drill-frontend.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
