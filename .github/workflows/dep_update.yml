@@ -1,0 +1,47 @@
+name: Dependency Upgrade
+
+on:
+  schedule:
+    - cron: '0 3 * * 1'   # Weekly
+  workflow_dispatch:
+
+jobs:
+  upgrade:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Install npm-check-updates
+        run: npm install -g npm-check-updates
+
+      - name: Upgrade dependencies
+        run: |
+          ncu -u
+          npm install
+
+      - name: Check for changes
+        id: git-diff
+        run: |
+          git add package.json package-lock.json
+          if git diff --cached --quiet; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create Pull Request
+        if: steps.git-diff.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          branch: deps-upgrade
+          title: "chore: upgrade npm dependencies"
+          body: |
+            Automated dependency upgrade using npm-check-updates.
+          commit-message: "chore: upgrade npm dependencies"

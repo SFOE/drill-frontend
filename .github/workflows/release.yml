@@ -1,0 +1,40 @@
+name: Build and Upload Release Asset
+
+on:
+  release:
+    types: [created]   # Trigger only when a release is created manually
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout source code
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Setup Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      # Install only production dependencies (skip devDeps like Cypress)
+      - name: Install production dependencies
+        run: npm ci --omit=dev --ignore-scripts
+
+      # Build the app
+      - name: Build drill-frontend
+        run: npm run build
+
+      # Archive build output into a zip file
+      - name: Create zip archive
+        run: zip -r drill-frontend.zip dist
+
+      # Upload zip to the release assets
+      - name: Upload release asset
+        uses: softprops/action-gh-release@v1
+        with:
+          files: drill-frontend.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
