@@ -69,7 +69,7 @@
       <div class="legend-container" v-show="showLegend">
         <img
           v-if="legendAvailable && mapStore.wmsConfig"
-          :src="mapStore.wmsConfig.legendUrl"
+          :src="mapStore.wmsConfig.legend_url"
           alt="Legend"
           @error="legendAvailable = false"
         />
@@ -106,6 +106,7 @@ const view = ref<InstanceType<typeof View> | null>(null)
 const center = ref([2700000, 1200000])
 
 // Projection setup
+const matrixSet = '2056'
 const projectionName = 'EPSG:2056'
 const projectionDef =
   '+proj=somerc +lat_0=46.95240555555556 +lon_0=7.439583333333333 +k_0=1 +x_0=2600000 +y_0=1200000 +ellps=bessel +towgs84=674.374,15.056,405.346,0,0,0,0 +units=m +no_defs'
@@ -129,8 +130,8 @@ const tileGrid = new WMTSTileGrid({
 // WMTS source parameters
 const wmtsUrlBackground =
   'https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-grau/default/current/2056/{TileMatrix}/{TileCol}/{TileRow}.jpeg'
-
 const format_jpeg = 'image/jpeg'
+const format_png = 'image/png'
 const projection = 'EPSG:2056'
 const styleName = 'default'
 const requestEncoding = 'REST'
@@ -161,13 +162,14 @@ watch(
     wmsLayers.value = config.layers.map((layer) => ({
       key: layer.name,
       source: new TileWMS({
-        url: config.wmsUrl,
-        params: { LAYERS: layer.name, TILED: true },
+        url: config.wms_url,
+        params: { LAYERS: layer.name, TILED: true, FORMAT: format_png },
         crossOrigin: 'anonymous',
+        projection: projection,
       }),
     }))
 
-    legendAvailable.value = !!config.legendUrl
+    legendAvailable.value = !!config.legend_url
   },
   { immediate: true },
 )

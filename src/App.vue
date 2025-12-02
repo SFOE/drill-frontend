@@ -10,7 +10,6 @@ import HeaderComponent from './components/HeaderComponent.vue'
 <template>
   <HeaderComponent />
   <div class="app-container">
-    <h2 class="warning">Warning: Do NOT use in production</h2>
     <AddressFulltextSearchComponent />
     <InfoboxComponent />
     <MapComponent />
