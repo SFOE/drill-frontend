@@ -40,12 +40,18 @@
 
         <!-- Multiple WMS Layers -->
         <ol-tile-layer
-          v-for="layer in wmsLayers"
-          :key="layer.key"
-          :source="layer.source"
+          v-for="layer in mapStore.wmsConfig?.layers || []"
+          :key="layer.name"
           :zIndex="500"
           :opacity="0.85"
-        />
+        >
+          <ol-source-image-wms
+            :url="mapStore.wmsConfig.wmsUrl"
+            :params="{ LAYERS: layer.name }"
+            :projection="projectionName"
+            crossOrigin="anonymous"
+          />
+        </ol-tile-layer>
 
         <!-- Marker Layer (always on top) -->
         <ol-vector-layer :zIndex="1000">
@@ -85,7 +91,6 @@
 import { ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import WMTSTileGrid from 'ol/tilegrid/WMTS.js'
-import TileWMS from 'ol/source/TileWMS'
 import View from 'ol/View'
 import Point from 'ol/geom/Point'
 import Feature from 'ol/Feature'
@@ -94,6 +99,7 @@ import CircleStyle from 'ol/style/Circle'
 import Fill from 'ol/style/Fill'
 import Stroke from 'ol/style/Stroke'
 import { useMapStore } from '../stores/mapStore'
+
 
 const mapStore = useMapStore()
 const { t } = useI18n()
@@ -106,6 +112,7 @@ const view = ref<InstanceType<typeof View> | null>(null)
 const center = ref([2700000, 1200000])
 
 // Projection setup
+const matrixSet = '2056'
 const projectionName = 'EPSG:2056'
 const projectionDef =
   '+proj=somerc +lat_0=46.95240555555556 +lon_0=7.439583333333333 +k_0=1 +x_0=2600000 +y_0=1200000 +ellps=bessel +towgs84=674.374,15.056,405.346,0,0,0,0 +units=m +no_defs'
@@ -136,9 +143,6 @@ const styleName = 'default'
 const requestEncoding = 'REST'
 const attributions = ['© Data: swisstopo, cantons']
 
-// Reactive array for multiple WMS layers
-const wmsLayers = ref<{ key: string; source: TileWMS }[]>([])
-
 // Legend state
 const showLegend = ref(false)
 const legendAvailable = ref(true)
@@ -147,30 +151,6 @@ const legendAvailable = ref(true)
 const toggleLegend = () => {
   showLegend.value = !showLegend.value
 }
-
-// Watch WMS config to create/update multiple layers
-watch(
-  () => mapStore.wmsConfig,
-  (config) => {
-    if (!config || !config.layers || config.layers.length === 0) {
-      wmsLayers.value = []
-      legendAvailable.value = false
-      return
-    }
-
-    wmsLayers.value = config.layers.map((layer) => ({
-      key: layer.name,
-      source: new TileWMS({
-        url: config.wmsUrl,
-        params: { LAYERS: layer.name, TILED: true },
-        crossOrigin: 'anonymous',
-      }),
-    }))
-
-    legendAvailable.value = !!config.legendUrl
-  },
-  { immediate: true },
-)
 
 // Watch coordinates and update markers
 watch(
