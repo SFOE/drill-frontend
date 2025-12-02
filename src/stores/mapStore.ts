@@ -7,7 +7,6 @@ export interface GroundCategory {
     layer: string
     propertyName: string
     value: string
-    summand: number
     description: string | null
   }>
   mapping_sum: number
