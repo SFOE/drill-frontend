@@ -38,20 +38,6 @@
           />
         </ol-tile-layer>
 
-        <!-- Pipelines consultation area WMTS Layer -->
-        <ol-tile-layer :zIndex="1000">
-          <ol-source-wmts
-            :url="wmtsUrlPipelines"
-            :matrixSet="matrixSet"
-            :format="format_png"
-            :tileGrid="tileGrid"
-            :projection="projection"
-            :styleName="styleName"
-            :requestEncoding="requestEncoding"
-            :attributions="attributions"
-          />
-        </ol-tile-layer>
-
         <!-- Multiple WMS Layers -->
         <ol-tile-layer
           v-for="layer in wmsLayers"
@@ -81,10 +67,6 @@
     <!-- Legend -->
     <transition name="slide-fade">
       <div class="legend-container" v-show="showLegend">
-        <img
-          src="https://api3.geo.admin.ch/static/images/legends/ch.bfe.rohrleitungen-konsultationsbereiche_fr.png"
-          alt="Legend"
-        />
         <img
           v-if="legendAvailable && mapStore.wmsConfig"
           :src="mapStore.wmsConfig.legendUrl"
@@ -147,11 +129,8 @@ const tileGrid = new WMTSTileGrid({
 // WMTS source parameters
 const wmtsUrlBackground =
   'https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-grau/default/current/2056/{TileMatrix}/{TileCol}/{TileRow}.jpeg'
-const wmtsUrlPipelines =
-  'https://wmts.geo.admin.ch/1.0.0/ch.bfe.rohrleitungen-konsultationsbereiche/default/current/2056/{TileMatrix}/{TileCol}/{TileRow}.png'
-const matrixSet = '2056'
+
 const format_jpeg = 'image/jpeg'
-const format_png = 'image/png'
 const projection = 'EPSG:2056'
 const styleName = 'default'
 const requestEncoding = 'REST'
