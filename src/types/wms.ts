@@ -11,17 +11,15 @@ export interface LayerPropertyValue {
 
 export interface Layer {
   name: string
-  propertyName: string
-  propertyValues: LayerPropertyValue[]
+  property_name: string
+  property_values: LayerPropertyValue[]
   opacity: number
 }
 
 export interface CantonWmsConfig {
   name: string
-  exampleLocation: (number | string)[][]
-  wmsUrl: string
-  infoFormat: string
+  wms_url: string
+  info_format: string
   layers: Layer[]
-  harmonyMap: { sum: number; value: number }[]
-  legendUrl?: string
+  legend_url?: string
 }
