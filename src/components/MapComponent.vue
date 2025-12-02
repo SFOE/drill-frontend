@@ -57,7 +57,21 @@
         <ol-scale-line-control :bar="false" />
       </ol-map>
     </div>
-
+    <div v-if="mapStore.wmsConfig?.thematic_geoportal_url" class="geoportal-link-container">
+      <a
+        :href="mapStore.wmsConfig.thematic_geoportal_url"
+        target="_blank"
+        rel="noopener noreferrer"
+        title="Open thematic geoportal in a new tab"
+      >
+        {{ t('thematic_geoportal_cta') }}
+        <img
+          src="@/assets/images/oblique/link_external.svg"
+          alt="external link"
+          class="link-icon"
+        />
+      </a>
+    </div>
     <!-- Legend Toggle CTA -->
     <button class="legend-toggle-btn" @click="toggleLegend">
       <img src="@/assets/images/oblique/info_circle.svg" alt="Menu" />
@@ -73,7 +87,7 @@
           alt="Legend"
           @error="legendAvailable = false"
         />
-        <div v-else-if="legendAvailable" class="legend-fallback">
+        <div v-else class="legend-fallback">
           {{ t('legend_not_available') }}
         </div>
       </div>
@@ -214,14 +228,13 @@ watch(
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  background-color: #f2f2f2;
+  background-color: #ffffff;
   border: 1px solid #ccc;
   border-radius: 8px;
   padding: 0.5rem 1rem;
   cursor: pointer;
   font-weight: bold;
   margin-top: 8px;
-  transition: background 0.2s;
 }
 .legend-toggle-btn:hover {
   background-color: #e6e6e6;
@@ -240,7 +253,6 @@ watch(
   background-color: white;
   padding: 0.75rem;
   border-radius: 8px;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
 }
 .legend-title {
   font-weight: bold;
@@ -251,6 +263,10 @@ watch(
 .legend-fallback {
   font-style: italic;
   color: #555;
+}
+
+.geoportal-link-container {
+  margin-top: 10px;
 }
 
 /* Transition */

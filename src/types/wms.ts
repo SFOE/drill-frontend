@@ -22,4 +22,5 @@ export interface CantonWmsConfig {
   info_format: string
   layers: Layer[]
   legend_url?: string
+  thematic_geoportal_url?: string
 }

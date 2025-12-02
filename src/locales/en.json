@@ -38,5 +38,6 @@
   "hint3": "This application allows homeowners and consulting experts to quickly determine whether drilling for a borehole heat exchanger may be possible at their location. This application makes it possible to evaluate your options at an early stage of planning. No legal claim can be derived from these maps. If drilling for a BHE is possible, you should check the corresponding cantonal map to see if any restrictions apply. If you are going ahead with a building project, we recommend you apply for a permit as soon as possible. Your cantonal water protection office can give you more information. Depending on where you live, your permit application may have to be submitted to either the cantonal or communal authorities.",
   "hint4": "You can find more information on the EnergieSchweiz website on heating with renewable energy (available in German, French and Italian).",
   "hintButton": "Heating with renewable energy",
-  "legend_not_available": "Legend not available"
+  "legend_not_available": "Legend not available",
+  "thematic_geoportal_cta": "Consult the cantonal geoportal"
 }
