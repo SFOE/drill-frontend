@@ -38,5 +38,6 @@
   "hint3": "Cette application permet aux propriétaires de bâtiments et aux professionnels de la branche d’examiner rapidement si des forages pour des sondes géothermiques peuvent être réalisés à un endroit donné en Suisse. Elle aide à évaluer les différentes possibilités à un stade précoce. Les indications figurant sur la carte ne préjugent pas du droit à l’obtention d’une autorisation. Si une sonde géothermique peut être forée, il convient de vérifier sur la carte cantonale si des restrictions ou des conditions s’appliquent. En cas de projet de construction, il est recommandé de déposer une demande d’autorisation suffisamment tôt. Le service cantonal de la protection des eaux fournit de plus amples renseignements sur le sujet. La demande d’autorisation doit être remise au canton ou à la commune, selon la région.",
   "hint4": "Vous trouverez de plus amples informations en consultant le programme «chauffez renouvelable» de SuisseEnergie.",
   "hintButton": "chauffez renouvelable",
-  "legend_not_available": "Légende non disponible"
+  "legend_not_available": "Légende non disponible",
+  "thematic_geoportal_cta": "Consulter sur le géoportail cantonal"
 }

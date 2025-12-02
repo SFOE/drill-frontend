@@ -135,13 +135,6 @@ const { t } = useI18n()
   color: #003a6d;
 }
 
-.link-icon {
-  width: 16px;
-  height: 16px;
-  display: inline-block;
-  fill: currentColor;
-}
-
 .map-icon-bg,
 .info-icon-bg {
   width: 50px;

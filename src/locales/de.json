@@ -38,5 +38,6 @@
   "hint3": "Mit dieser Anwendung können Hauseigentümerschaften und beratende Fachkräfte rasch prüfen, ob Erdwärmesondenbohrungen an einem beliebigen Standort in der Schweiz möglich sein könnten. Die Anwendung hilft in einem frühen Stadium mögliche Varianten zu evaluieren. Aus der Karte kann kein Rechtsanspruch abgeleitet werden. Kann eine Erdwärmesonde gebohrt werden, sollte auf der kantonalen Karte geprüft werden, welche Einschränkungen oder Auflagen gelten könnten. Im Falle eines Bauprojektes ist empfohlen, frühzeitig eine Bewilligung zu beantragen. Auskunft erteilt die kantonale Gewässerschutzfachstelle. Eine Bewilligung ist je nach Region beim Kanton oder der Gemeinde einzureichen.",
   "hint4": "Vertiefte Informationen erhalten sie beim Programm \"Erneuerbar Heizen\" von EnergieSchweiz.",
   "hintButton": "Erneuerbar Heizen",
-  "legend_not_available": "Legende nicht verfügbar"
+  "legend_not_available": "Legende nicht verfügbar",
+  "thematic_geoportal_cta": "Auf dem kantonalen Geoportal nachsehen"
 }
