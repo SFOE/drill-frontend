@@ -36,5 +36,6 @@
   "hint4": "Informazioni più dettagliate sono disponibili nel programma \"calore rinnovabile\" di svizzeraenergia.",
   "hintButton": "calore rinnovabile",
   "legend_not_available": "Leggenda non disponibile",
-  "thematic_geoportal_cta": "Consultare il geoportale cantonale"
+  "thematic_geoportal_cta": "Consultare il geoportale cantonale",
+  "source_values": "Valore(i) originale(i) del geoportale cantonale"
 }

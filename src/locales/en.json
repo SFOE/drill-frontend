@@ -39,5 +39,6 @@
   "hint4": "You can find more information on the EnergieSchweiz website on heating with renewable energy (available in German, French and Italian).",
   "hintButton": "Heating with renewable energy",
   "legend_not_available": "Legend not available",
-  "thematic_geoportal_cta": "Consult the cantonal geoportal"
+  "thematic_geoportal_cta": "Consult the cantonal geoportal",
+  "source_values": "Original value(s) from the cantonal geoportal"
 }

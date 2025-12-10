@@ -7,6 +7,22 @@
       <div class="text">
         <h2 v-html="suitabilityInfo.title"></h2>
         <p v-html="suitabilityInfo.body"></p>
+        <div v-if="mapStore.wmsConfig?.thematic_geoportal_url" class="geoportal-link-container">
+          <p>{{ t('source_values') }}: "{{ data.source_values }}"</p>
+          <a
+            :href="mapStore.wmsConfig.thematic_geoportal_url"
+            target="_blank"
+            rel="noopener noreferrer"
+            title="Open thematic geoportal in a new tab"
+          >
+            {{ t('thematic_geoportal_cta') }}
+            <img
+              src="@/assets/images/oblique/link_external.svg"
+              alt="external link"
+              class="link-icon"
+            />
+          </a>
+        </div>
       </div>
     </div>
   </section>
@@ -28,28 +44,25 @@ const mapStore = useMapStore()
 
 // Use groundCategory from store
 const data = computed(() => mapStore.groundCategory)
-
 const suitabilityInfo = computed(() => {
   if (!data.value) return { color: '', icon: '', title: '', body: '' }
 
   // Map harmonized_value to colors/icons
-  const value = data.value.harmonized_value ?? 999
+  const harmonized_value = data.value.harmonized_value ?? 4
   const mapping: Record<number, { color: string; icon: string }> = {
     1: { color: 'green', icon: IconGreen },
     2: { color: 'orange', icon: IconOrange },
     3: { color: 'red', icon: IconRed },
     4: { color: 'blue', icon: IconBlue },
-    5: { color: 'blue', icon: IconBlue },
-    6: { color: 'red', icon: IconRed },
-    999: { color: 'blue', icon: IconBlue },
   }
 
-  const key = `suitability${value}`
+  const key = `suitability${harmonized_value}`
   return {
-    color: mapping[value]?.color ?? 'blue',
-    icon: mapping[value]?.icon ?? IconBlue,
+    color: mapping[harmonized_value]?.color ?? 'blue',
+    icon: mapping[harmonized_value]?.icon ?? IconBlue,
     title: t(`${key}short`),
     body: t(key),
+    source_values: data.value.source_values,
   }
 })
 </script>
@@ -107,5 +120,9 @@ const suitabilityInfo = computed(() => {
 }
 .blue {
   border-color: #88bbf2;
+}
+
+.geoportal-link-container {
+  margin-top: 10px;
 }
 </style>
