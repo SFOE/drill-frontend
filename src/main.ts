@@ -26,6 +26,9 @@ const i18n = createI18n({
   },
 })
 
+// Translate page title on load
+document.title = i18n.global.t('pagetitle')
+
 const app = createApp(App)
 
 app.use(createPinia())
@@ -33,9 +36,6 @@ app.use(OpenLayersMap /*, options */)
 app.use(i18n)
 
 app.mount('#app')
-
-// Translate page title on load
-document.title = i18n.global.t('pagetitle')
 
 watch(
   () => i18n.global.locale.value,
