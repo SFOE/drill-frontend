@@ -98,7 +98,17 @@ const handleSelection = (selected: SearchResult) => {
   searchInput.value?.blur()
 }
 
-const onInput = () => searchAddresses()
+const onInput = () => {
+  if (!searchQuery.value.trim()) {
+    searchResults.value = []
+    mapStore.clearGroundCategory()
+    mapStore.clearCoordinates()
+    mapStore.clearSelectedCanton()
+    mapStore.clearWmsConfig()
+    return
+  }
+  searchAddresses()
+}
 
 const onEnter = () => {
   const firstResult =
@@ -116,6 +126,11 @@ const clearSearch = () => {
   searchQuery.value = ''
   searchResults.value = []
   searchInput.value?.focus()
+
+  mapStore.clearGroundCategory()
+  mapStore.clearCoordinates()
+  mapStore.clearSelectedCanton()
+  mapStore.clearWmsConfig()
 }
 
 const handleClickOutside = (event: MouseEvent) => {
