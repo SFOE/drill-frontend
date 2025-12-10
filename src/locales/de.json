@@ -39,5 +39,6 @@
   "hint4": "Vertiefte Informationen erhalten sie beim Programm \"Erneuerbar Heizen\" von EnergieSchweiz.",
   "hintButton": "Erneuerbar Heizen",
   "legend_not_available": "Legende nicht verfügbar",
-  "thematic_geoportal_cta": "Auf dem kantonalen Geoportal nachsehen"
+  "thematic_geoportal_cta": "Auf dem kantonalen Geoportal nachsehen",
+  "source_values": "Ursprüngliche Werte des kantonalen Geoportals"
 }

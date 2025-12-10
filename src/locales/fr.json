@@ -39,5 +39,6 @@
   "hint4": "Vous trouverez de plus amples informations en consultant le programme «chauffez renouvelable» de SuisseEnergie.",
   "hintButton": "chauffez renouvelable",
   "legend_not_available": "Légende non disponible",
-  "thematic_geoportal_cta": "Consulter sur le géoportail cantonal"
+  "thematic_geoportal_cta": "Consulter sur le géoportail cantonal",
+  "source_values": "Valeur(s) originale(s) du géoportail cantonal"
 }

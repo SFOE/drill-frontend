@@ -57,21 +57,6 @@
         <ol-scale-line-control :bar="false" />
       </ol-map>
     </div>
-    <div v-if="mapStore.wmsConfig?.thematic_geoportal_url" class="geoportal-link-container">
-      <a
-        :href="mapStore.wmsConfig.thematic_geoportal_url"
-        target="_blank"
-        rel="noopener noreferrer"
-        title="Open thematic geoportal in a new tab"
-      >
-        {{ t('thematic_geoportal_cta') }}
-        <img
-          src="@/assets/images/oblique/link_external.svg"
-          alt="external link"
-          class="link-icon"
-        />
-      </a>
-    </div>
     <!-- Legend Toggle CTA -->
     <button class="legend-toggle-btn" @click="toggleLegend">
       <img src="@/assets/images/oblique/info_circle.svg" alt="Menu" />
@@ -270,10 +255,6 @@ watch(
 .legend-fallback {
   font-style: italic;
   color: #555;
-}
-
-.geoportal-link-container {
-  margin-top: 10px;
 }
 
 /* Transition */

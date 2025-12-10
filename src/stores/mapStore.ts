@@ -11,6 +11,7 @@ export interface GroundCategory {
   }>
   mapping_sum: number
   harmonized_value: number
+  source_values: string
 }
 
 export const useMapStore = defineStore('map', () => {
