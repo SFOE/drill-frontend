@@ -5,6 +5,7 @@
         :loadTilesWhileAnimating="true"
         :loadTilesWhileInteracting="true"
         style="height: 400px"
+        @click="getClickedCoordinates"
       >
         <!-- Projection Registration -->
         <ol-projection-register
@@ -49,7 +50,7 @@
 
         <!-- Marker Layer (always on top) -->
         <ol-vector-layer :zIndex="1000">
-          <ol-source-vector :features="features" />
+          <ol-source-vector :features="features"> </ol-source-vector>
         </ol-vector-layer>
 
         <!-- Controls -->
@@ -92,13 +93,24 @@ import Style from 'ol/style/Style'
 import CircleStyle from 'ol/style/Circle'
 import Fill from 'ol/style/Fill'
 import Stroke from 'ol/style/Stroke'
+import MapBrowserEvent from 'ol/MapBrowserEvent'
 import { useMapStore } from '../stores/mapStore'
 
 const mapStore = useMapStore()
 const { t } = useI18n()
-
-// Marker features
+// Marker
 const features = ref<Feature[]>([])
+
+const markerStyle = new Style({
+  image: new CircleStyle({
+    radius: 12,
+    fill: new Fill({ color: 'red' }),
+    stroke: new Stroke({ color: 'white', width: 2 }),
+  }),
+})
+
+// Create a global marker object (this will persist)
+const marker = ref<Feature | null>(null)
 
 // Map view reference
 const view = ref<InstanceType<typeof View> | null>(null)
@@ -180,31 +192,49 @@ watch(
   { immediate: true },
 )
 
-// Watch coordinates and update markers
 watch(
   () => mapStore.coordinates,
   (coords) => {
-    if (!coords || !view.value) return
+    if (!coords || !view.value) {
+      marker.value = null
+      features.value = []
+      return
+    }
 
     const newCenter = [coords.y, coords.x]
+
+    if (!marker.value) {
+      marker.value = new Feature({ geometry: new Point(newCenter) })
+      marker.value.setStyle(markerStyle)
+    } else {
+      marker.value.setGeometry(new Point(newCenter))
+    }
     view.value.setCenter(newCenter)
     view.value.setZoom(15)
 
-    const marker = new Feature({ geometry: new Point(newCenter) })
-    marker.setStyle(
-      new Style({
-        image: new CircleStyle({
-          radius: 12,
-          fill: new Fill({ color: 'red' }),
-          stroke: new Stroke({ color: 'white', width: 2 }),
-        }),
-      }),
-    )
-
-    features.value = [marker]
+    features.value = [marker.value]
   },
   { immediate: true },
 )
+
+const getClickedCoordinates = (event: MapBrowserEvent) => {
+  const coordinate = event.coordinate
+
+  if (coordinate) {
+    mapStore.clearSearchState()
+
+    const x = coordinate[1]
+    const y = coordinate[0]
+
+    if (typeof x === 'number' && typeof y === 'number') {
+      mapStore.fetchGroundCategory(x, y)
+    } else {
+      console.error('Invalid coordinates:', coordinate)
+    }
+  } else {
+    console.error('Coordinate is undefined.')
+  }
+}
 </script>
 
 <style scoped>

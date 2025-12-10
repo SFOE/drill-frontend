@@ -6,7 +6,7 @@
         ref="searchInput"
         type="text"
         class="form-control"
-        v-model="searchQuery"
+        v-model="mapStore.searchQuery"
         :placeholder="t('search_placeholder')"
         @input="onInput"
         @keydown.enter.prevent="onEnter"
@@ -18,9 +18,9 @@
       </button>
     </div>
 
-    <ul v-if="searchResults.length" class="dropdown-menu show">
+    <ul v-if="mapStore.searchResults.length" class="dropdown-menu show">
       <li
-        v-for="(result, index) in searchResults"
+        v-for="(result, index) in mapStore.searchResults"
         :key="result.id"
         class="dropdown-item"
         @click="handleSelection(result)"
@@ -35,14 +35,12 @@
 
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount } from 'vue'
-import axios from 'axios'
 import { useI18n } from 'vue-i18n'
 import { useMapStore } from '../stores/mapStore'
-import type { CantonWmsConfig } from '@/types/wms'
+import axios from 'axios'
 
 const { t } = useI18n()
 const mapStore = useMapStore()
-const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL
 
 interface SearchResult {
   id: string
@@ -55,11 +53,9 @@ interface SearchResult {
   }
 }
 
-const searchResults = ref<SearchResult[]>([])
-const searchQuery = ref('')
+const hoverIndex = ref<number | null>(null)
 const searchContainer = ref<HTMLElement | null>(null)
 const searchInput = ref<HTMLInputElement | null>(null)
-const hoverIndex = ref<number | null>(null)
 
 const stripHtml = (html: string) => {
   const div = document.createElement('div')
@@ -68,9 +64,9 @@ const stripHtml = (html: string) => {
 }
 
 const searchAddresses = async () => {
-  const text = searchQuery.value.trim()
+  const text = mapStore.searchQuery.trim()
   if (!text) {
-    searchResults.value = []
+    mapStore.searchResults = []
     return
   }
   try {
@@ -79,89 +75,84 @@ const searchAddresses = async () => {
         text,
       )}&type=locations&limit=5&origins=address`,
     )
-    searchResults.value = response.data.results as SearchResult[]
+    mapStore.searchResults = response.data.results as SearchResult[]
   } catch (error) {
     console.error('Error fetching addresses:', error)
   }
 }
 
-const fetchCantonByCoords = async (x: number, y: number) => {
-  try {
-    const response = await axios.get(`${VITE_BACKEND_URL}v1/drill-category/${y}/${x}`)
-    const data = response.data
-
-    if (data?.status !== 'success') {
-      console.warn('Backend did not return success for coordinates')
-      mapStore.setWmsConfig(null)
-      return
-    }
-
-    mapStore.setWmsConfig(data.canton_config as CantonWmsConfig)
-    mapStore.setGroundCategory(data.ground_category)
-    mapStore.setSelectedCanton(data.canton)
-  } catch (error) {
-    console.error('Error fetching WMS config by coordinates:', error)
-    mapStore.setWmsConfig(null)
-  }
-}
-
 const handleSelection = (selected: SearchResult) => {
-  // convert to EPSG: 2056
+  // Convert to EPSG: 2056
   const x = selected.attrs.x + 1000000
   const y = selected.attrs.y + 2000000
 
   if (x && y) {
     mapStore.setCoordinates({ x, y })
-    fetchCantonByCoords(x, y)
+    mapStore.fetchGroundCategory(x, y)
   }
 
-  searchQuery.value = stripHtml(selected.attrs.label)
-  searchResults.value = []
+  mapStore.searchQuery = stripHtml(selected.attrs.label)
+  mapStore.searchResults = []
   searchInput.value?.blur()
 }
 
-const onInput = () => searchAddresses()
+const onInput = () => {
+  if (!mapStore.searchQuery.trim()) {
+    mapStore.searchResults = []
+    mapStore.clearGroundCategory()
+    mapStore.clearCoordinates()
+    mapStore.clearSelectedCanton()
+    mapStore.clearWmsConfig()
+    return
+  }
+  searchAddresses()
+}
 
 const onEnter = () => {
   const firstResult =
-    hoverIndex.value !== null ? searchResults.value[hoverIndex.value] : searchResults.value[0]
+    hoverIndex.value !== null ? mapStore.searchResults[hoverIndex.value] : mapStore.searchResults[0]
   if (firstResult) handleSelection(firstResult)
 }
 
 const onFocus = () => {
-  if (searchQuery.value) searchAddresses()
+  if (mapStore.searchQuery) searchAddresses()
 }
 
 const onBlur = () => {}
 
 const clearSearch = () => {
-  searchQuery.value = ''
-  searchResults.value = []
-  searchInput.value?.focus()
+  mapStore.clearSearchState()
+  if (searchInput.value) {
+    searchInput.value.focus()
+  }
 }
 
 const handleClickOutside = (event: MouseEvent) => {
   if (searchContainer.value && !searchContainer.value.contains(event.target as Node)) {
-    searchResults.value = []
+    mapStore.searchResults = []
     hoverIndex.value = null
   }
 }
 
 const handleKeyDown = (event: KeyboardEvent) => {
-  if (!searchResults.value.length) return
+  if (!mapStore.searchResults.length) return
 
   if (event.key === 'Escape') {
-    searchResults.value = []
+    mapStore.searchResults = []
     hoverIndex.value = null
   }
   if (event.key === 'ArrowDown') {
     hoverIndex.value =
-      hoverIndex.value === null ? 0 : Math.min(hoverIndex.value + 1, searchResults.value.length - 1)
+      hoverIndex.value === null
+        ? 0
+        : Math.min(hoverIndex.value + 1, mapStore.searchResults.length - 1)
     event.preventDefault()
   }
   if (event.key === 'ArrowUp') {
     hoverIndex.value =
-      hoverIndex.value === null ? searchResults.value.length - 1 : Math.max(hoverIndex.value - 1, 0)
+      hoverIndex.value === null
+        ? mapStore.searchResults.length - 1
+        : Math.max(hoverIndex.value - 1, 0)
     event.preventDefault()
   }
 }
