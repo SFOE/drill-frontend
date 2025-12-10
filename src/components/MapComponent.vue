@@ -173,6 +173,13 @@ watch(
       return
     }
 
+    // Do not display WMS layers when disabled in configuration
+    if (config && !config.active) {
+      wmsLayers.value = []
+      legendAvailable.value = false
+      return
+    }
+
     wmsLayers.value = config.layers.map((layer) => ({
       key: layer.name,
       source: new TileWMS({
