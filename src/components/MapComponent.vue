@@ -258,9 +258,11 @@ const getClickedCoordinates = (event: MapBrowserEvent) => {
   font-weight: bold;
   margin-top: 8px;
 }
+
 .legend-toggle-btn:hover {
   background-color: #e6e6e6;
 }
+
 .legend-toggle-btn img {
   width: 18px;
   height: 18px;
@@ -276,12 +278,15 @@ const getClickedCoordinates = (event: MapBrowserEvent) => {
   padding: 0.75rem;
   border-radius: 8px;
 }
+
 .legend-title {
   font-weight: bold;
 }
+
 .legend-container img {
   max-width: 400px;
 }
+
 .legend-fallback {
   font-style: italic;
   color: #555;

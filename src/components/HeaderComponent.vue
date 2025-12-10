@@ -102,9 +102,6 @@ import LanguageSwitcherComponent from './LanguageSwitcherComponent.vue'
   background-color: #dcdcdc;
 }
 
-/* =============================
-   Responsive adjustments
-============================= */
 @media (max-width: 768px) {
   .bottom-header-inner {
     flex-direction: column;
