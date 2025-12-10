@@ -22,6 +22,7 @@ export interface CantonWmsConfig {
   wms_url: string
   query_url: string
   thematic_geoportal_url?: string
+  cantonal_energy_service_url?: string
   legend_url?: string
   info_format: string
   bbox_delta: number
