@@ -1,6 +1,11 @@
 <template>
   <section>
-    <div v-if="data" :class="['info-box', suitabilityInfo.color]">
+    <div v-if="mapStore.loadingGroundCategory" class="info-box loading">
+      <div class="text">
+        <div class="spinner"></div>
+      </div>
+    </div>
+    <div v-else-if="data" :class="['info-box', suitabilityInfo.color]">
       <div class="icon">
         <img :src="suitabilityInfo.icon" alt="icon" />
       </div>
@@ -122,7 +127,38 @@ const suitabilityInfo = computed(() => {
   border-color: #88bbf2;
 }
 
+/* Loading state */
+.info-box.loading {
+  justify-content: center;
+  text-align: center;
+}
+
 .geoportal-link-container {
   margin-top: 10px;
+}
+
+/* Spinner */
+
+.spinner {
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #2f4356;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin-bottom: 10px;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-text {
+  font-weight: bold;
 }
 </style>

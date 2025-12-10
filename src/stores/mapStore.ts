@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
+import axios from 'axios'
 import type { CantonWmsConfig, Coordinates } from '@/types/wms'
 
 export interface GroundCategory {
@@ -14,14 +15,16 @@ export interface GroundCategory {
   source_values: string
 }
 
+const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL
+
 export const useMapStore = defineStore('map', () => {
-  // --- Reactive state ---
   const coordinates = ref<Coordinates | null>(null)
   const wmsConfig = ref<CantonWmsConfig | null>(null)
   const groundCategory = ref<GroundCategory | null>(null)
   const selectedCanton = ref<string | null>(null)
 
-  // --- Computed convenience flags ---
+  const loadingGroundCategory = ref(false)
+
   const hasCoordinates = computed(() => coordinates.value !== null)
   const hasWmsConfig = computed(() => wmsConfig.value !== null)
   const hasGroundCategory = computed(() => groundCategory.value !== null)
@@ -56,6 +59,33 @@ export const useMapStore = defineStore('map', () => {
     selectedCanton.value = null
   }
 
+  const fetchGroundCategory = async (x: number, y: number) => {
+    loadingGroundCategory.value = true
+    try {
+      const response = await axios.get(`${VITE_BACKEND_URL}v1/drill-category/${y}/${x}`)
+      const data = response.data
+
+      if (data?.status !== 'success') {
+        console.warn('Backend did not return success for coordinates')
+        setWmsConfig(null)
+        setGroundCategory(null)
+        setSelectedCanton(null)
+        return
+      }
+
+      setWmsConfig(data.canton_config as CantonWmsConfig)
+      setGroundCategory(data.ground_category)
+      setSelectedCanton(data.canton)
+    } catch (error) {
+      console.error('Error fetching ground category:', error)
+      setWmsConfig(null)
+      setGroundCategory(null)
+      setSelectedCanton(null)
+    } finally {
+      loadingGroundCategory.value = false
+    }
+  }
+
   return {
     coordinates,
     setCoordinates,
@@ -76,5 +106,9 @@ export const useMapStore = defineStore('map', () => {
     setSelectedCanton,
     clearSelectedCanton,
     hasSelectedCanton,
+
+    loadingGroundCategory,
+
+    fetchGroundCategory,
   }
 })

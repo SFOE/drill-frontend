@@ -38,11 +38,9 @@ import { ref, onMounted, onBeforeUnmount } from 'vue'
 import axios from 'axios'
 import { useI18n } from 'vue-i18n'
 import { useMapStore } from '../stores/mapStore'
-import type { CantonWmsConfig } from '@/types/wms'
 
 const { t } = useI18n()
 const mapStore = useMapStore()
-const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL
 
 interface SearchResult {
   id: string
@@ -85,26 +83,6 @@ const searchAddresses = async () => {
   }
 }
 
-const fetchCantonByCoords = async (x: number, y: number) => {
-  try {
-    const response = await axios.get(`${VITE_BACKEND_URL}v1/drill-category/${y}/${x}`)
-    const data = response.data
-
-    if (data?.status !== 'success') {
-      console.warn('Backend did not return success for coordinates')
-      mapStore.setWmsConfig(null)
-      return
-    }
-
-    mapStore.setWmsConfig(data.canton_config as CantonWmsConfig)
-    mapStore.setGroundCategory(data.ground_category)
-    mapStore.setSelectedCanton(data.canton)
-  } catch (error) {
-    console.error('Error fetching WMS config by coordinates:', error)
-    mapStore.setWmsConfig(null)
-  }
-}
-
 const handleSelection = (selected: SearchResult) => {
   // convert to EPSG: 2056
   const x = selected.attrs.x + 1000000
@@ -112,7 +90,7 @@ const handleSelection = (selected: SearchResult) => {
 
   if (x && y) {
     mapStore.setCoordinates({ x, y })
-    fetchCantonByCoords(x, y)
+    mapStore.fetchGroundCategory(x, y)
   }
 
   searchQuery.value = stripHtml(selected.attrs.label)
