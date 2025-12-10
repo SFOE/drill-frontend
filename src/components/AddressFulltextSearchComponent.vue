@@ -38,20 +38,9 @@ import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useMapStore } from '../stores/mapStore'
 import axios from 'axios'
-
+import type { SearchResult } from '../stores/mapStore'
 const { t } = useI18n()
 const mapStore = useMapStore()
-
-interface SearchResult {
-  id: string
-  attrs: {
-    label: string
-    x: number
-    y: number
-    detail: string
-    [key: string]: unknown
-  }
-}
 
 const hoverIndex = ref<number | null>(null)
 const searchContainer = ref<HTMLElement | null>(null)
@@ -82,7 +71,7 @@ const searchAddresses = async () => {
 }
 
 const handleSelection = (selected: SearchResult) => {
-  // Convert to EPSG: 2056
+  // Basic conversion to EPSG: 2056
   const x = selected.attrs.x + 1000000
   const y = selected.attrs.y + 2000000
 
