@@ -1,9 +1,6 @@
 # drill-frontend
 
-Migrating kann-ich-bohren to vuejs & vue3-openlayers
-
-![video](https://github.com/user-attachments/assets/662909e8-65af-44e0-879a-5a67188c21ff)
-
+Vue.js application with a mapping component to provide information on the possibilities of installing geothermal probes in Switzerland, using the cantons' geoservices.
 
 ## Project Setup
 
