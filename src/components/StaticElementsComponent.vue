@@ -57,7 +57,7 @@
         rel="noopener"
         class="hint-button"
       >
-        {{ t('hintButton') }}
+        {{ t('suitability_heating_cta') }}
         <img
           src="@/assets/images/oblique/link_external.svg"
           alt="external link"
