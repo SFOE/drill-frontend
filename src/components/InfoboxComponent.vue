@@ -8,7 +8,7 @@
         <h2 v-html="suitabilityInfo.title"></h2>
         <p v-html="suitabilityInfo.body"></p>
         <div v-if="mapStore.wmsConfig?.thematic_geoportal_url" class="geoportal-link-container">
-          <p>{{ t('source_values') }}: "{{ data.source_values }}"</p>
+          <p v-if="data.source_values">{{ t('source_values') }}: "{{ data.source_values }}"</p>
           <a
             :href="mapStore.wmsConfig.thematic_geoportal_url"
             target="_blank"
