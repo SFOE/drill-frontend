@@ -15,6 +15,17 @@ export interface GroundCategory {
   source_values: string
 }
 
+export interface SearchResult {
+  id: string
+  attrs: {
+    label: string
+    x: number
+    y: number
+    detail: string
+    [key: string]: unknown
+  }
+}
+
 const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL
 
 export const useMapStore = defineStore('map', () => {
@@ -22,6 +33,10 @@ export const useMapStore = defineStore('map', () => {
   const wmsConfig = ref<CantonWmsConfig | null>(null)
   const groundCategory = ref<GroundCategory | null>(null)
   const selectedCanton = ref<string | null>(null)
+
+  // Change the type of searchResults from string[] to SearchResult[]
+  const searchQuery = ref('')
+  const searchResults = ref<SearchResult[]>([])
 
   const loadingGroundCategory = ref(false)
 
@@ -76,6 +91,7 @@ export const useMapStore = defineStore('map', () => {
       setWmsConfig(data.canton_config as CantonWmsConfig)
       setGroundCategory(data.ground_category)
       setSelectedCanton(data.canton)
+      setCoordinates({ x, y })
     } catch (error) {
       console.error('Error fetching ground category:', error)
       setWmsConfig(null)
@@ -84,6 +100,16 @@ export const useMapStore = defineStore('map', () => {
     } finally {
       loadingGroundCategory.value = false
     }
+  }
+
+  // --- New Method to Clear Search State ---
+  const clearSearchState = () => {
+    searchQuery.value = ''
+    searchResults.value = []
+    clearCoordinates()
+    clearGroundCategory()
+    clearSelectedCanton()
+    clearWmsConfig()
   }
 
   return {
@@ -107,8 +133,13 @@ export const useMapStore = defineStore('map', () => {
     clearSelectedCanton,
     hasSelectedCanton,
 
+    searchQuery,
+    searchResults,
+
     loadingGroundCategory,
 
     fetchGroundCategory,
+
+    clearSearchState,
   }
 })
