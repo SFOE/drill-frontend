@@ -4,6 +4,9 @@ on:
   release:
     types: [created]   # Trigger only when a release is created manually
 
+permissions:
+  contents: write 
+
 jobs:
   build:
     runs-on: ubuntu-latest
