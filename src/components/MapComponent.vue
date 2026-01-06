@@ -54,7 +54,6 @@
         </ol-vector-layer>
 
         <!-- Controls -->
-        <ol-print-dialog-control />
         <ol-scale-line-control :bar="false" />
       </ol-map>
     </div>
