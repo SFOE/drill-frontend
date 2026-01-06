@@ -29,6 +29,7 @@
     "vue3-openlayers": "^12.2.0"
   },
   "devDependencies": {
+    "@pinia/testing": "^1.0.3",
     "@tsconfig/node22": "^22.0.5",
     "@types/jsdom": "^27.0.0",
     "@types/node": "^25.0.3",

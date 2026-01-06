@@ -1,3 +1,7 @@
+![Lint](https://github.com/sfoe/drill-frontend/actions/workflows/lint.yml/badge.svg)
+![Tests](https://github.com/sfoe/drill-frontend/actions/workflows/test.yml/badge.svg)
+
+
 # drill-frontend
 
 Vue.js application with a mapping component to provide information on the possibilities of installing geothermal probes in Switzerland, using the cantons' geoservices.
