@@ -21,7 +21,6 @@
   "dependencies": {
     "ol": "^10.7.0",
     "ol-contextmenu": "^5.5.0",
-    "ol-ext": "^4.0.37",
     "pinia": "^3.0.4",
     "proj4": "^2.20.2",
     "vue": "^3.5.25",
