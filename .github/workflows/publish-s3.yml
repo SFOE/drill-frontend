@@ -52,6 +52,6 @@ jobs:
       # Upload zip to S3
       - name: Upload zip to S3
         env:
-          S3_BUCKET: ${{ vars.SFOE_DRILL_FRONTEND_s3_BUCKET }}
+          S3_BUCKET: ${{ vars.SFOE_DRILL_FRONTEND_S3_BUCKET }}
         run: |
           aws s3 cp drill-frontend.zip s3://$S3_BUCKET/drill-frontend-${{ github.event.release.tag_name || github.event.inputs.tag_name }}.zip
