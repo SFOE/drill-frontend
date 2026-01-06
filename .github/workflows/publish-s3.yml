@@ -3,7 +3,7 @@ name: Build and Upload Release Asset to AWS S3
 on:
   release:
     types: [created]   # Trigger only when a release is created manually
-  workflow_dispatch:
+  workflow_dispatch:   # Allow manual triggering for testing 
     inputs:
       tag_name:
         description: 'Tag name to use for manual workflow test'
