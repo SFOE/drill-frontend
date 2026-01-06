@@ -24,7 +24,7 @@ describe('LanguageSwitcherComponent.vue', () => {
     const options = wrapper.findAll('option')
 
     expect(options.length).toBe(4)
-    expect(options.map(o => o.text())).toEqual(['FR', 'DE', 'IT', 'EN'])
+    expect(options.map((o) => o.text())).toEqual(['FR', 'DE', 'IT', 'EN'])
   })
 
   it('updates languageStore.currentLocale when selection changes', async () => {
