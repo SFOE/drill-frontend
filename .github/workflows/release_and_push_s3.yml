@@ -1,9 +1,9 @@
-name: Build and Upload Release Asset to AWS S3
+name: Build and Upload Release Asset to Github and AWS S3
 
 on:
   release:
-    types: [created]   # Trigger only when a release is created manually
-  workflow_dispatch:   # Allow manual triggering for testing 
+    types: [created]
+  workflow_dispatch: 
     inputs:
       tag_name:
         description: 'Tag name to use for manual workflow test'
@@ -41,6 +41,14 @@ jobs:
       # Archive build output into a zip file
       - name: Create zip archive
         run: zip -r drill-frontend.zip dist
+
+      # Upload zip to the release assets
+      - name: Upload release asset
+        uses: softprops/action-gh-release@v1
+        with:
+          files: drill-frontend.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # Configure AWS credentials
       - name: Configure AWS credentials
