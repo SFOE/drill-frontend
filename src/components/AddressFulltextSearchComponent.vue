@@ -6,6 +6,7 @@
         ref="searchInput"
         type="text"
         class="form-control"
+        data-cy="address-search-input"
         v-model="mapStore.searchQuery"
         :placeholder="t('search_placeholder')"
         @input="onInput"
