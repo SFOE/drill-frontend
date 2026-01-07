@@ -1,0 +1,5 @@
+# Protect all workflows
+/.github/workflows/* @SFOE/devops-admins
+
+# Protect CODEOWNERS itself
+/.github/CODEOWNERS @SFOE/devops-admins
