@@ -3,6 +3,7 @@ name: Build and Upload Release Asset to Github and AWS S3
 on:
   release:
     types: [created]
+
   workflow_dispatch: 
     inputs:
       tag_name:
@@ -44,6 +45,7 @@ jobs:
 
       # Upload zip to the release assets
       - name: Upload release asset
+        if: github.event_name == 'release'
         uses: softprops/action-gh-release@v1
         with:
           files: drill-frontend.zip
@@ -57,9 +59,20 @@ jobs:
           role-to-assume: ${{ vars.SFOE_DRILL_FRONTEND_PIPELINE_ROLE }}
           aws-region: eu-central-1  
 
-      # Upload zip to S3
-      - name: Upload zip to S3
+      # Upload zip to S3 (manual workflow dispatch)
+      - name: Upload zip to S3 (manual workflow dispatch)
+        if: github.event_name == 'workflow_dispatch'
         env:
           S3_BUCKET: ${{ vars.SFOE_DRILL_FRONTEND_S3_BUCKET }}
+          TAG_NAME: ${{ github.event.inputs.tag_name }}
         run: |
-          aws s3 cp drill-frontend.zip s3://$S3_BUCKET/drill-frontend-${{ github.event.release.tag_name || github.event.inputs.tag_name }}.zip
+          aws s3 cp drill-frontend.zip s3://$S3_BUCKET/drill-frontend-$TAG_NAME.zip
+
+      # Upload zip to S3 (release event)
+      - name: Upload zip to S3 (release event)
+        if: github.event_name == 'release'
+        env:
+          S3_BUCKET: ${{ vars.SFOE_DRILL_FRONTEND_S3_BUCKET }}
+          TAG_NAME: ${{ github.event.release.tag_name }}
+        run: |
+          aws s3 cp drill-frontend.zip s3://$S3_BUCKET/drill-frontend-$TAG_NAME.zip
