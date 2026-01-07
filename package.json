@@ -9,6 +9,7 @@
   "scripts": {
     "dev": "vite",
     "build": "run-p type-check \"build-only {@}\" --",
+    "test:unit": "vitest",
     "preview": "vite preview --host 0.0.0.0",
     "preview:ci": "npm run build-only && vite preview --host 0.0.0.0",
     "test:e2e": "WAIT_ON_TIMEOUT=120000 start-server-and-test preview:ci http://localhost:4173 'cypress run --e2e'",
