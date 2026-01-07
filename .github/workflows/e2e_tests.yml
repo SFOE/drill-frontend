@@ -26,4 +26,4 @@ jobs:
         run: npm ci --ignore-scripts
 
       - name: Run end-to-end tests
-        run: npm run test:2e2
+        run: npm run test:e2e
