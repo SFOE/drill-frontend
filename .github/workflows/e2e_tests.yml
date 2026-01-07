@@ -1,4 +1,4 @@
-name: CI
+name: CI - e2e tests
 
 on:
   pull_request:
