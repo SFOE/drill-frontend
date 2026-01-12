@@ -37,7 +37,8 @@ jobs:
 
       # Build the app
       - name: Build drill-frontend
-        run: npm run build
+        run: |
+          VITE_BACKEND_URL=${{vars.SFOE_PROMETHEON_CLOUDFRONT_BACKEND_URL_DEV }} npm run build
 
       # Archive build output into a zip file
       - name: Create zip archive
