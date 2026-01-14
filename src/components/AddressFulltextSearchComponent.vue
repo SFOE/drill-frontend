@@ -161,12 +161,14 @@ onBeforeUnmount(() => {
 .action-title {
   text-align: center;
   margin-bottom: 2rem;
+  font-size: 2rem;
+  line-height: 1.2;
 }
 
 .search-container {
   position: relative;
   max-width: 800px;
-  margin: 50px auto;
+  margin: 40px auto;
 }
 
 .input-wrapper {
@@ -212,8 +214,7 @@ input.form-control:focus {
 }
 
 .clear-btn:hover img {
-  filter: brightness(0) saturate(100%) invert(0%) sepia(0%) saturate(0%) hue-rotate(0deg)
-    brightness(0) contrast(100%);
+  filter: brightness(0) invert(0);
 }
 
 .dropdown-menu {
@@ -243,5 +244,27 @@ input.form-control:focus {
 .dropdown-item.highlighted,
 .dropdown-item:hover {
   background-color: #e6f2ff;
+}
+
+@media (max-width: 768px) {
+  .action-title {
+    font-size: 1.5rem;
+  }
+
+  input.form-control {
+    font-size: 1rem;
+    min-height: 44px;
+    padding: 0.5rem 2rem 0.5rem 0.75rem;
+  }
+
+  .dropdown-item {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .action-title {
+    font-size: 1.25rem;
+  }
 }
 </style>

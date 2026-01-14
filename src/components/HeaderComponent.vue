@@ -1,19 +1,21 @@
 <template>
   <header class="app-header">
     <div class="top-header-box">
-      <div class="top-header-inner">
+      <div class="app-container top-header-inner">
         <LanguageSwitcherComponent />
       </div>
     </div>
+
     <div class="bottom-header-box">
-      <div class="bottom-header-inner">
+      <div class="app-container bottom-header-inner">
         <div class="logo-title-group">
-          <img class="logo" alt="Swiss Logo" src="@/assets/logo.png" />
+          <img class="logo responsive-logo" alt="Swiss Logo" src="@/assets/logo.png" />
           <div class="divider"></div>
           <h1 class="title">{{ $t('headerTitle') }}</h1>
         </div>
       </div>
     </div>
+
     <div class="header-line"></div>
   </header>
 </template>
@@ -23,9 +25,6 @@ import LanguageSwitcherComponent from './LanguageSwitcherComponent.vue'
 </script>
 
 <style scoped>
-/* =============================
-   Header base
-============================= */
 .app-header {
   width: 100%;
   display: flex;
@@ -33,67 +32,58 @@ import LanguageSwitcherComponent from './LanguageSwitcherComponent.vue'
   background-color: #fff;
 }
 
-/* =============================
-   Top header
-============================= */
 .top-header-box {
   width: 100%;
-  background-color: #2f4356;
   height: 50px;
+  background-color: #2f4356;
   display: flex;
   align-items: center;
 }
 
 .top-header-inner {
-  width: 100%;
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 0 20px;
   display: flex;
   justify-content: flex-end;
   align-items: center;
+  padding: 0;
 }
 
-/* =============================
-   Bottom header
-============================= */
 .bottom-header-box {
   width: 100%;
-  display: flex;
-  justify-content: center;
-  background-color: #ffffff;
+  background-color: #fff;
 }
 
-/* =============================
-   Bottom header
-============================= */
 .bottom-header-inner {
-  width: 100%;
-  max-width: 1280px;
-  padding: 18px 20px 28px 20px;
   display: flex;
-  justify-content: flex-start;
   align-items: flex-start;
+  padding: 1rem 0 1.75rem 0;
 }
 
 .logo-title-group {
   display: flex;
   align-items: flex-start;
-  flex-wrap: nowrap;
   gap: 16px;
 }
 
 .logo {
+  display: block;
   height: 68px;
   width: auto;
+  flex-shrink: 0;
+}
+
+.responsive-logo {
+  content: url('@/assets/logo.png');
 }
 
 .title {
-  font-size: 16px;
-  font-weight: 600;
-  color: #2f4356;
   margin: 0;
+  font-size: 16px;
   line-height: 1.2;
+}
+
+.divider {
+  width: 1px;
+  background-color: #dcdcdc;
 }
 
 .header-line {
@@ -103,19 +93,19 @@ import LanguageSwitcherComponent from './LanguageSwitcherComponent.vue'
 }
 
 @media (max-width: 768px) {
+  .responsive-logo {
+    content: url('@/assets/swiss_mobile.svg');
+    height: 36px;
+  }
+
   .bottom-header-inner {
-    flex-direction: column;
-    align-items: flex-start;
     padding: 32px 16px 40px 16px;
   }
 
   .logo-title-group {
     flex-direction: row;
-    align-items: flex-start;
-  }
-
-  .logo {
-    height: 36px;
+    align-items: center;
+    gap: 12px;
   }
 
   .divider {

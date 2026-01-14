@@ -37,5 +37,7 @@
   "thematic_geoportal_cta": "Consultare il geoportale cantonale",
   "cantonal_energy_service_cta": "Consultare il sito web del servizio cantonale",
   "source_values": "Valore(i) originale(i) del geoportale cantonale",
-  "infobox_information_title": "Per ulteriori informazioni, sono disponibili i seguenti siti web"
+  "infobox_information_title": "Per ulteriori informazioni, sono disponibili i seguenti siti web",
+  "show_details": "Maggiori informazioni",
+  "hide_details": "Nascondi"
 }

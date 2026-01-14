@@ -37,5 +37,7 @@
   "thematic_geoportal_cta": "Voir sur le géoportail cantonal",
   "cantonal_energy_service_cta": "Consulter le site du service cantonal",
   "source_values": "Valeur(s) originale(s) du géoportail cantonal",
-  "infobox_information_title": "Pour aller plus loin, les sites suivants sont à votre dispostion"
+  "infobox_information_title": "Pour aller plus loin, les sites suivants sont à votre dispostion",
+  "show_details": "Plus d'informations",
+  "hide_details": "Masquer"
 }
