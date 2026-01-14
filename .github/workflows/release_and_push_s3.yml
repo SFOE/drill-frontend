@@ -39,7 +39,7 @@ jobs:
       - name: Build drill-frontend
         run: |
 
-          export VITE_BACKEND_URL="${{ vars.SFOE_PROMETHEON_CLOUDFRONT_BACKEND_URL_DEV }}"
+          export VITE_BACKEND_URL="${{ vars.SFOE_PROMETHEON_CLOUDFRONT_VITE_BACKEND_URL_DEV }}"
           echo "Building frontend with VITE_BACKEND_URL=$VITE_BACKEND_URL"
 
           npm run build
