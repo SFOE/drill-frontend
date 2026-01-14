@@ -58,7 +58,7 @@
       </ol-map>
     </div>
     <!-- Legend Toggle CTA -->
-    <button class="legend-toggle-btn" @click="toggleLegend">
+    <button v-if="legendAvailable && mapStore.wmsConfig?.legend_url" class="legend-toggle-btn" @click="toggleLegend">
       <img src="@/assets/images/oblique/info_circle.svg" alt="Menu" />
       {{ t('legend_cta') }}
     </button>
