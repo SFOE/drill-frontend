@@ -39,5 +39,6 @@
   "source_values": "Original value(s) from the cantonal geoportal",
   "infobox_information_title": "For further information, the following websites are available",
   "show_details": "Show details",
-  "hide_details": "Hide details"
+  "hide_details": "Hide details",
+  "map_info": "Click on the map to get information"
 }

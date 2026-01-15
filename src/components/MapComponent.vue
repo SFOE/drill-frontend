@@ -1,5 +1,6 @@
 <template>
   <div class="map-component-wrapper">
+    <p>{{ t('map_info') }}</p>
     <div class="map-component">
       <ol-map
         :loadTilesWhileAnimating="true"

@@ -260,6 +260,10 @@ input.form-control:focus {
   .dropdown-item {
     font-size: 1rem;
   }
+
+  .search-container {
+    margin: 20px auto;
+  }
 }
 
 @media (max-width: 480px) {

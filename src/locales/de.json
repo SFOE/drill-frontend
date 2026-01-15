@@ -39,5 +39,6 @@
   "source_values": "Ursprüngliche Werte des kantonalen Geoportals",
   "infobox_information_title": "Weitere Informationen finden Sie auf den folgenden Websites",
   "show_details": "Weitere Informationen",
-  "hide_details": "Ausblenden"
+  "hide_details": "Ausblenden",
+  "map_info": "Klicken Sie auf die Karte, um Informationen zu erhalten"
 }

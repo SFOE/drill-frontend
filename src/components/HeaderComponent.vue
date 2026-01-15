@@ -77,7 +77,7 @@ import LanguageSwitcherComponent from './LanguageSwitcherComponent.vue'
 
 .title {
   margin: 0;
-  font-size: 16px;
+  font-size: 14px;
   line-height: 1.2;
 }
 
@@ -95,11 +95,13 @@ import LanguageSwitcherComponent from './LanguageSwitcherComponent.vue'
 @media (max-width: 768px) {
   .responsive-logo {
     content: url('@/assets/swiss_mobile.svg');
-    height: 36px;
+    height: 20px;
+    padding-left: 10px;
   }
 
   .bottom-header-inner {
-    padding: 32px 16px 40px 16px;
+    max-height: 50px;
+    vertical-align: center;
   }
 
   .logo-title-group {
@@ -113,13 +115,13 @@ import LanguageSwitcherComponent from './LanguageSwitcherComponent.vue'
   }
 
   .title {
-    font-size: 15px;
+    font-size: 13px;
   }
 }
 
 @media (max-width: 480px) {
   .title {
-    font-size: 14px;
+    font-size: 12px;
   }
 }
 </style>

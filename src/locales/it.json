@@ -39,5 +39,6 @@
   "source_values": "Valore(i) originale(i) del geoportale cantonale",
   "infobox_information_title": "Per ulteriori informazioni, sono disponibili i seguenti siti web",
   "show_details": "Maggiori informazioni",
-  "hide_details": "Nascondi"
+  "hide_details": "Nascondi",
+  "map_info": "Clicca sulla mappa per ottenere informazioni"
 }
