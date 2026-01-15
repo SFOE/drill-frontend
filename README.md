@@ -2,6 +2,10 @@
 
 Vue.js application with a mapping component to provide information on the possibilities of installing geothermal probes in Switzerland, using the cantons' geoservices.
 
+This applications supports languages DE, FR, IT, EN. You can select default using query string ```?lang=IT```
+
+
+
 ## Project Setup
 
 ### Backend
