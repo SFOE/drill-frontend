@@ -55,7 +55,7 @@ import LanguageSwitcherComponent from './LanguageSwitcherComponent.vue'
 .bottom-header-inner {
   display: flex;
   align-items: flex-start;
-  padding: 1rem 0 1.75rem 0;
+  padding: 1rem 0 1.75rem 1rem;
 }
 
 .logo-title-group {
