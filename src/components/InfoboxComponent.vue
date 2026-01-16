@@ -1,7 +1,9 @@
 <template>
   <section>
-    <div v-if="mapStore.loadingGroundCategory" class="info-box loading-overlay">
-      <div class="spinner"></div>
+    <div v-if="mapStore.loadingGroundCategory" class="loading-overlay">
+      <div class="spinner-box">
+        <div class="spinner"></div>
+      </div>
     </div>
 
     <div v-else-if="data" :class="['info-box', suitabilityInfo.color]">
@@ -243,15 +245,30 @@ const suitabilityInfo = computed(() => {
 }
 
 .loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 9999;
+}
+
+.spinner-box {
+  position: absolute;
+  top: 30%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 16px;
+  padding: 40px;
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100%;
-  padding: 2rem;
 }
 
 .spinner {
-  border: 4px solid #f3f3f3;
+  border: 4px solid rgba(47, 67, 86, 0.3);
   border-top: 4px solid #2f4356;
   border-radius: 50%;
   width: 40px;
