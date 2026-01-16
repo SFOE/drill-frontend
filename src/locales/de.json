@@ -37,5 +37,8 @@
   "thematic_geoportal_cta": "Auf dem kantonalen Geoportal nachsehen",
   "cantonal_energy_service_cta": "Das Website des kantonalen Dienstes konsultieren",
   "source_values": "Ursprüngliche Werte des kantonalen Geoportals",
-  "infobox_information_title": "Weitere Informationen finden Sie auf den folgenden Websites"
+  "infobox_information_title": "Weitere Informationen finden Sie auf den folgenden Websites",
+  "show_details": "Weitere Informationen",
+  "hide_details": "Ausblenden",
+  "map_info": "Klicken Sie auf die Karte, um Informationen zu erhalten"
 }

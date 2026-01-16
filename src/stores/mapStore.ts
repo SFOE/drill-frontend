@@ -28,6 +28,16 @@ export interface SearchResult {
 
 const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL
 
+const wakeUpLambda = async () => {
+  try {
+    axios.get(`${VITE_BACKEND_URL}v1/cantons/BE`)
+  } catch (e) {
+    console.error('Lambda Warmup Error:', e)
+  }
+}
+
+wakeUpLambda()
+
 export const useMapStore = defineStore('map', () => {
   const coordinates = ref<Coordinates | null>(null)
   const wmsConfig = ref<CantonWmsConfig | null>(null)

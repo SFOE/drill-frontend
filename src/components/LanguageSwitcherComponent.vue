@@ -9,7 +9,7 @@
 </template>
 
 <script setup lang="ts">
-import { useLanguageStore } from '../stores/languageStore'
+import { useLanguageStore } from '@/stores/languageStore'
 
 const languageStore = useLanguageStore()
 

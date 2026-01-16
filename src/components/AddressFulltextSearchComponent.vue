@@ -37,9 +37,9 @@
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useMapStore } from '../stores/mapStore'
+import { useMapStore } from '@/stores/mapStore'
 import axios from 'axios'
-import type { SearchResult } from '../stores/mapStore'
+import type { SearchResult } from '@/stores/mapStore'
 const { t } = useI18n()
 const mapStore = useMapStore()
 
@@ -161,13 +161,15 @@ onBeforeUnmount(() => {
 <style scoped>
 .action-title {
   text-align: center;
-  margin-bottom: 2rem;
+  margin-bottom: 3rem;
+  margin-top: 3rem;
+  font-size: 2rem;
+  line-height: 1.2;
 }
 
 .search-container {
   position: relative;
-  max-width: 800px;
-  margin: 50px auto;
+  margin: 40px auto;
 }
 
 .input-wrapper {
@@ -213,8 +215,7 @@ input.form-control:focus {
 }
 
 .clear-btn:hover img {
-  filter: brightness(0) saturate(100%) invert(0%) sepia(0%) saturate(0%) hue-rotate(0deg)
-    brightness(0) contrast(100%);
+  filter: brightness(0) invert(0);
 }
 
 .dropdown-menu {
@@ -244,5 +245,33 @@ input.form-control:focus {
 .dropdown-item.highlighted,
 .dropdown-item:hover {
   background-color: #e6f2ff;
+}
+
+@media (max-width: 768px) {
+  .action-title {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    margin-top: 1rem;
+  }
+
+  input.form-control {
+    font-size: 1rem;
+    min-height: 44px;
+    padding: 0.5rem 2rem 0.5rem 0.75rem;
+  }
+
+  .dropdown-item {
+    font-size: 1rem;
+  }
+
+  .search-container {
+    margin: 20px auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .action-title {
+    font-size: 1.25rem;
+  }
 }
 </style>

@@ -14,7 +14,7 @@
     "preview:ci": "npm run build-only && vite preview --host 0.0.0.0",
     "test:e2e": "WAIT_ON_TIMEOUT=120000 start-server-and-test preview:ci http://localhost:4173 'cypress run --e2e'",
     "test:e2e:dev": "start-server-and-test 'vite dev --port 4173' http://localhost:4173 'cypress open --e2e'",
-    "build-only": "vite build",
+    "build-only": "vite build --mode production",
     "type-check": "vue-tsc --build",
     "lint": "eslint . --fix --cache",
     "format": "prettier --write src/"
