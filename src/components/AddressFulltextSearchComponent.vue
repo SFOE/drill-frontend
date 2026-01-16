@@ -36,9 +36,9 @@
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useMapStore } from '../stores/mapStore'
+import { useMapStore } from '@/stores/mapStore'
 import axios from 'axios'
-import type { SearchResult } from '../stores/mapStore'
+import type { SearchResult } from '@/stores/mapStore'
 const { t } = useI18n()
 const mapStore = useMapStore()
 

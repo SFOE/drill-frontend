@@ -98,7 +98,7 @@ import CircleStyle from 'ol/style/Circle'
 import Fill from 'ol/style/Fill'
 import Stroke from 'ol/style/Stroke'
 import MapBrowserEvent from 'ol/MapBrowserEvent'
-import { useMapStore } from '../stores/mapStore'
+import { useMapStore } from '@/stores/mapStore'
 
 const mapStore = useMapStore()
 const { t } = useI18n()
