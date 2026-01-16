@@ -36,9 +36,9 @@
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useMapStore } from '../stores/mapStore'
+import { useMapStore } from '@/stores/mapStore'
 import axios from 'axios'
-import type { SearchResult } from '../stores/mapStore'
+import type { SearchResult } from '@/stores/mapStore'
 const { t } = useI18n()
 const mapStore = useMapStore()
 
@@ -160,14 +160,14 @@ onBeforeUnmount(() => {
 <style scoped>
 .action-title {
   text-align: center;
-  margin-bottom: 2rem;
+  margin-bottom: 3rem;
+  margin-top: 3rem;
   font-size: 2rem;
   line-height: 1.2;
 }
 
 .search-container {
   position: relative;
-  max-width: 800px;
   margin: 40px auto;
 }
 
@@ -249,6 +249,8 @@ input.form-control:focus {
 @media (max-width: 768px) {
   .action-title {
     font-size: 1.5rem;
+    margin-bottom: 1rem;
+    margin-top: 1rem;
   }
 
   input.form-control {
