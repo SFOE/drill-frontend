@@ -1,5 +1,4 @@
 ![Lint](https://github.com/sfoe/drill-frontend/actions/workflows/lint.yml/badge.svg)
-![Tests](https://github.com/sfoe/drill-frontend/actions/workflows/unit_tests.yml/badge.svg)
 ![Tests](https://github.com/sfoe/drill-frontend/actions/workflows/e2e_tests.yml/badge.svg)
 
 
