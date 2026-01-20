@@ -12,20 +12,20 @@ describe('StaticElementsComponent', () => {
 
     cy.get('section.info-block h2.info-block__title')
       .should('exist')
-      .and('contain.text', 'Informations')
+      .and('contain.text', 'Informationen')
   })
 
   it('renders the canton info section', () => {
     cy.get('section.info-block h3.info-block__heading')
       .first()
-      .should('contain.text', 'Further information from the canton')
+      .should('contain.text', 'Weitere Informationen des Kantons')
   })
 
   it('renders all info links correctly', () => {
     const links = [
-      { title: 'All certified drilling companies', url: 'https://www.fws.ch/waermepumpen-spezialisten/' },
-      { title: "Heat pump system module certification ('Wärmepumpen-System-Modul Zertifizierung') for systems up to 15 kW", url: 'https://www.wp-systemmodul.ch/de/' },
-      { title: 'Geothermal energy', url: 'https://geothermie-schweiz.ch/' },
+      { title: 'Alle Bohrfirmen mit Gütesiegel', url: 'https://www.fws.ch/waermepumpen-spezialisten/' },
+      { title: "Das Wärmepumpen-System-Modul, ein Qualitätslabel für Anlagen bis 15 kW", url: 'https://www.wp-systemmodul.ch/de/' },
+      { title: 'Geothermie', url: 'https://geothermie-schweiz.ch/' },
     ]
 
     links.forEach((link, i) => {
@@ -40,6 +40,6 @@ describe('StaticElementsComponent', () => {
     cy.get('a.hint-button')
       .should('exist')
       .and('have.attr', 'href', 'https://www.chauffezrenouvelable.ch/')
-      .and('contain.text', 'Renewable heating')
+      .and('contain.text', 'Erneuerbar Heizen')
   })
 })
