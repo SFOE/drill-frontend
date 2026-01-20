@@ -1,3 +1,7 @@
+![Lint](https://github.com/sfoe/drill-frontend/actions/workflows/lint.yml/badge.svg)
+![Tests](https://github.com/sfoe/drill-frontend/actions/workflows/e2e_tests.yml/badge.svg)
+
+
 # drill-frontend
 
 Vue.js application with a mapping component to provide information on the possibilities of installing geothermal probes in Switzerland, using the cantons' geoservices.
@@ -56,16 +60,16 @@ TypeScript cannot handle type information for `.vue` imports by default, so we r
 
 See [Vite Configuration Reference](https://vite.dev/config/).
 
-### Run Unit Tests with [Vitest](https://vitest.dev/)
-
-```sh
-npm run test:unit
-```
-
 ### Run End-to-End Tests with [Cypress](https://www.cypress.io/)
 
 ```sh
 npm run test:e2e:dev
+```
+
+In console only
+
+```sh
+npm run test:e2e
 ```
 
 This runs the end-to-end tests against the Vite development server.

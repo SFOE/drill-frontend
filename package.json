@@ -9,9 +9,10 @@
   "scripts": {
     "dev": "vite",
     "build": "run-p type-check \"build-only {@}\" --",
-    "preview": "vite preview",
     "test:unit": "vitest",
-    "test:e2e": "start-server-and-test preview http://localhost:4173 'cypress run --e2e'",
+    "preview": "vite preview --host 0.0.0.0",
+    "preview:ci": "npm run build-only && vite preview --host 0.0.0.0",
+    "test:e2e": "WAIT_ON_TIMEOUT=120000 start-server-and-test preview:ci http://localhost:4173 'cypress run --e2e'",
     "test:e2e:dev": "start-server-and-test 'vite dev --port 4173' http://localhost:4173 'cypress open --e2e'",
     "build-only": "vite build --mode production",
     "type-check": "vue-tsc --build",
@@ -32,6 +33,7 @@
     "jspdf": "^4.0.0"
   },
   "devDependencies": {
+    "@pinia/testing": "^1.0.3",
     "@tsconfig/node22": "^22.0.5",
     "@types/jsdom": "^27.0.0",
     "@types/node": "^25.0.3",
