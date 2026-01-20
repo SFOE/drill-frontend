@@ -1,6 +1,6 @@
 <template>
   <header class="app-header">
-    <div class="top-header-box">
+    <div class="top-header-box app-container">
       <div class="app-container top-header-inner">
         <LanguageSwitcherComponent />
       </div>
