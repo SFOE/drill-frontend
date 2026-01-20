@@ -66,6 +66,12 @@ See [Vite Configuration Reference](https://vite.dev/config/).
 npm run test:e2e:dev
 ```
 
+In console only
+
+```sh
+npm run test:e2e
+```
+
 This runs the end-to-end tests against the Vite development server.
 It is much faster than the production build.
 

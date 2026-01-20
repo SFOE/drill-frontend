@@ -22,15 +22,17 @@ describe('Address Search E2E', () => {
   });
 
   it('searches addresses and displays all results from GeoAdmin API', () => {
-    cy.get('[data-cy=address-search-input]')
-      .type('papiermuhle 13, ittigen');
+    cy.get('[data-cy=address-search-input]').type('papiermuhle 13, ittigen');
 
     cy.wait('@getAddresses');
 
     cy.get('.dropdown-item').should('have.length', 5);
 
     geoAdminResponse.results.forEach((result, index) => {
-      const plainLabel = result.attrs.label.replace(/<[^>]*>/g, '');
+      const tempEl = document.createElement('div');
+      tempEl.innerHTML = result.attrs.label;
+      const plainLabel = tempEl.textContent || tempEl.innerText || '';
+
       cy.get('.dropdown-item').eq(index).should('contain', plainLabel);
     });
   });
