@@ -86,7 +86,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { ref, watch, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
 import WMTSTileGrid from 'ol/tilegrid/WMTS.js'
 import TileWMS from 'ol/source/TileWMS'
@@ -99,6 +99,13 @@ import Fill from 'ol/style/Fill'
 import Stroke from 'ol/style/Stroke'
 import MapBrowserEvent from 'ol/MapBrowserEvent'
 import { useMapStore } from '@/stores/mapStore'
+import { useDevice } from '@/composables/useDevice'
+
+const { isMobile } = useDevice()
+
+watch(isMobile, (val) => {
+  console.log('Is mobile?', val)
+})
 
 const mapStore = useMapStore()
 const { t } = useI18n()
@@ -239,6 +246,16 @@ const getClickedCoordinates = (event: MapBrowserEvent) => {
     console.error('Coordinate is undefined.')
   }
 }
+
+watch(
+  () => mapStore.groundCategory?.harmonized_value,
+  async (newValue, oldValue) => {
+    if (isMobile.value && newValue !== oldValue) {
+      await nextTick()
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+  },
+)
 </script>
 
 <style scoped>
@@ -313,7 +330,7 @@ const getClickedCoordinates = (event: MapBrowserEvent) => {
 
 @media (max-width: 768px) {
   .ol-map {
-    height: 300px;
+    height: 250px;
   }
 }
 </style>

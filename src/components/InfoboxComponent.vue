@@ -96,9 +96,10 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, onMounted, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useMapStore } from '@/stores/mapStore'
+import { useDevice } from '@/composables/useDevice'
 
 import IconGreen from '@/assets/images/oblique/checkmark.svg?url'
 import IconOrange from '@/assets/images/oblique/exclamation.svg?url'
@@ -110,19 +111,15 @@ const { t } = useI18n()
 const mapStore = useMapStore()
 
 const isExpanded = ref(false)
-const isMobile = ref(false)
 
 const toggleExpanded = () => {
   isExpanded.value = !isExpanded.value
 }
 
-const checkMobile = () => {
-  isMobile.value = window.innerWidth <= 768
-}
+const { isMobile } = useDevice()
 
-onMounted(() => {
-  checkMobile()
-  window.addEventListener('resize', checkMobile)
+watch(isMobile, (val) => {
+  console.log('Is mobile?', val)
 })
 
 const data = computed(() => mapStore.groundCategory)
