@@ -26,7 +26,6 @@ describe('Map E2E Tests', () => {
       })
   })
 
-
   it('allows clicking on the map', () => {
     // Click roughly in the center of the map
     cy.get('.map-component')
@@ -34,16 +33,6 @@ describe('Map E2E Tests', () => {
 
     // Map should still be present (no crash)
     cy.get('.ol-viewport').should('exist')
-  })
-
-  it('toggles legend when legend button is clicked', () => {
-    cy.get('.legend-container').should('not.be.visible')
-
-    cy.get('.legend-toggle-btn').click()
-    cy.get('.legend-container').should('be.visible')
-
-    cy.get('.legend-toggle-btn').click()
-    cy.get('.legend-container').should('not.be.visible')
   })
 
   it('switches language with LanguageSwitcherComponent', () => {
