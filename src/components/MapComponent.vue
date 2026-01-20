@@ -5,7 +5,7 @@
       <ol-map
         :loadTilesWhileAnimating="true"
         :loadTilesWhileInteracting="true"
-        style="height: 400px"
+        class="ol-map"
         @click="getClickedCoordinates"
       >
         <!-- Projection Registration -->
@@ -242,6 +242,10 @@ const getClickedCoordinates = (event: MapBrowserEvent) => {
 </script>
 
 <style scoped>
+.ol-map {
+  height: 400px;
+}
+
 .map-component {
   flex: 1;
   background-color: #ddd;
@@ -305,5 +309,11 @@ const getClickedCoordinates = (event: MapBrowserEvent) => {
 .slide-fade-leave-to {
   opacity: 0;
   transform: translateY(-10px);
+}
+
+@media (max-width: 768px) {
+  .ol-map {
+    height: 300px;
+  }
 }
 </style>

@@ -13,6 +13,8 @@
   "suitability3short": "Generally not permitted",
   "suitability4": "Unfortunately, we cannot provide this information. Please contact your cantonal office directly.",
   "suitability4short": "Information currently unavailable",
+  "suitability99": "Application error",
+  "suitability99short": "Application error",
   "suitability_heating_cta": "Renewable heating",
   "suitability_heating_url": "https://erneuerbarheizen.ch/impulsberatung/",
   "info_section_title": "Informations",
