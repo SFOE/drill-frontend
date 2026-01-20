@@ -13,6 +13,8 @@
   "suitability3short": "In linea di principio non permesso",
   "suitability4": "Non sono disponibili informazioni sull'idoneità alla trivellazione. Per ulteriori informazioni, rivolgetevi direttamente all’autorità cantonale di protezione delle acque.",
   "suitability4short": "Dichiarazione di idoneità al momento non disponibile",
+  "suitability99": "Errore dell'applicazione",
+  "suitability99short": "Errore dell'applicazione",
   "suitability_heating_cta": "Calorer Innovabile",
   "suitability_heating_url": "https://www.calorerinnovabile.ch/prima-consulenza/",
   "info_section_title": "Informations",

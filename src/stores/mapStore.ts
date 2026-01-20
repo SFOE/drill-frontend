@@ -44,7 +44,6 @@ export const useMapStore = defineStore('map', () => {
   const groundCategory = ref<GroundCategory | null>(null)
   const selectedCanton = ref<string | null>(null)
 
-  // Change the type of searchResults from string[] to SearchResult[]
   const searchQuery = ref('')
   const searchResults = ref<SearchResult[]>([])
 
@@ -55,7 +54,6 @@ export const useMapStore = defineStore('map', () => {
   const hasGroundCategory = computed(() => groundCategory.value !== null)
   const hasSelectedCanton = computed(() => selectedCanton.value !== null)
 
-  // --- Setters ---
   const setCoordinates = (coords: Coordinates) => {
     coordinates.value = coords
   }
@@ -87,7 +85,10 @@ export const useMapStore = defineStore('map', () => {
   const fetchGroundCategory = async (x: number, y: number) => {
     loadingGroundCategory.value = true
     try {
-      const response = await axios.get(`${VITE_BACKEND_URL}v1/drill-category/${y}/${x}`)
+      // Large timeout to accommodate Lambda cold starts, despite having a wake-up call
+      const response = await axios.get(`${VITE_BACKEND_URL}v1/drill-category/${y}/${x}`, {
+        timeout: 15000,
+      })
       const data = response.data
 
       if (data?.status !== 'success') {
@@ -104,15 +105,23 @@ export const useMapStore = defineStore('map', () => {
       setCoordinates({ x, y })
     } catch (error) {
       console.error('Error fetching ground category:', error)
+
+      const fallbackCategory: GroundCategory = {
+        layer_results: [],
+        mapping_sum: 0,
+        harmonized_value: 99,
+        source_values: 'server error',
+      }
+
       setWmsConfig(null)
-      setGroundCategory(null)
+      setGroundCategory(fallbackCategory)
       setSelectedCanton(null)
+      setCoordinates({ x, y })
     } finally {
       loadingGroundCategory.value = false
     }
   }
 
-  // --- New Method to Clear Search State ---
   const clearSearchState = () => {
     searchQuery.value = ''
     searchResults.value = []

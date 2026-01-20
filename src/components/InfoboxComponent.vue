@@ -96,32 +96,30 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, onMounted } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useMapStore } from '@/stores/mapStore'
+import { useDevice } from '@/composables/useDevice'
 
 import IconGreen from '@/assets/images/oblique/checkmark.svg?url'
 import IconOrange from '@/assets/images/oblique/exclamation.svg?url'
 import IconRed from '@/assets/images/oblique/xmark.svg?url'
 import IconBlue from '@/assets/images/oblique/question.svg?url'
+import IconPurple from '@/assets/images/oblique/sad.svg?url'
 
 const { t } = useI18n()
 const mapStore = useMapStore()
 
 const isExpanded = ref(false)
-const isMobile = ref(false)
 
 const toggleExpanded = () => {
   isExpanded.value = !isExpanded.value
 }
 
-const checkMobile = () => {
-  isMobile.value = window.innerWidth <= 768
-}
+const { isMobile } = useDevice()
 
-onMounted(() => {
-  checkMobile()
-  window.addEventListener('resize', checkMobile)
+watch(isMobile, (val) => {
+  console.log('Is mobile?', val)
 })
 
 const data = computed(() => mapStore.groundCategory)
@@ -133,6 +131,7 @@ const suitabilityInfo = computed(() => {
     2: { color: 'orange', icon: IconOrange },
     3: { color: 'red', icon: IconRed },
     4: { color: 'blue', icon: IconBlue },
+    99: { color: 'purple', icon: IconPurple },
   }
   const key = `suitability${harmonized_value}`
   return {
@@ -141,6 +140,12 @@ const suitabilityInfo = computed(() => {
     title: t(`${key}short`),
     body: t(key),
     source_values: data.value.source_values,
+  }
+})
+
+watch(data, () => {
+  if (isMobile.value) {
+    isExpanded.value = false
   }
 })
 </script>
@@ -242,6 +247,9 @@ const suitabilityInfo = computed(() => {
 }
 .blue {
   border-color: #88bbf2;
+}
+.purple {
+  border-color: #b036e5;
 }
 
 .loading-overlay {
