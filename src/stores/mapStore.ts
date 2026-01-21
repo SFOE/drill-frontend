@@ -45,6 +45,7 @@ export const useMapStore = defineStore('map', () => {
   const selectedCanton = ref<string | null>(null)
 
   const searchQuery = ref('')
+  const selectedAdress = ref('')
   const searchResults = ref<SearchResult[]>([])
 
   const loadingGroundCategory = ref(false)
@@ -127,6 +128,7 @@ export const useMapStore = defineStore('map', () => {
 
   const clearSearchState = () => {
     searchQuery.value = ''
+    selectedAdress.value = ''
     searchResults.value = []
     clearCoordinates()
     clearGroundCategory()
@@ -156,6 +158,7 @@ export const useMapStore = defineStore('map', () => {
     hasSelectedCanton,
 
     searchQuery,
+    selectedAdress,
     searchResults,
 
     loadingGroundCategory,

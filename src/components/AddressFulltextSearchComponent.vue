@@ -90,7 +90,9 @@ const handleSelection = (selected: SearchResult) => {
     mapStore.fetchGroundCategory(east_coord, north_coord)
   }
 
-  mapStore.searchQuery = stripHtml(selected.attrs.label)
+  const addressText = stripHtml(selected.attrs.label)
+  mapStore.searchQuery = addressText
+  mapStore.selectedAdress = addressText
   mapStore.searchResults = []
   searchInput.value?.blur()
 }

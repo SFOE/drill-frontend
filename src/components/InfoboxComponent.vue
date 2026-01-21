@@ -13,8 +13,8 @@
 
       <div class="text">
         <h2 v-html="suitabilityInfo.title"></h2>
-        <p v-if="mapStore.searchQuery" class="selected-address">
-          {{ mapStore.searchQuery }}
+        <p v-if="mapStore.selectedAdress" class="selected-address">
+          {{ mapStore.selectedAdress }}
         </p>
         <div class="mobile-collapse-wrapper" v-if="isMobile">
           <button class="expand-cta" @click="toggleExpanded">

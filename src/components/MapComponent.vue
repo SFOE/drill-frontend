@@ -101,6 +101,9 @@ import MapBrowserEvent from 'ol/MapBrowserEvent'
 import { useMapStore } from '@/stores/mapStore'
 import { useDevice } from '@/composables/useDevice'
 import { EPSG2056 } from '@/composables/useProjections'
+import { useGeoAdmin } from '@/composables/useGeoadminReverseGeocoding'
+
+const { fetchAddress } = useGeoAdmin()
 
 const { isMobile } = useDevice()
 
@@ -228,22 +231,41 @@ watch(
   { immediate: true },
 )
 
-const getClickedCoordinates = (event: MapBrowserEvent) => {
+const getClickedCoordinates = async (event: MapBrowserEvent) => {
   const coordinate = event.coordinate
 
-  if (coordinate) {
-    mapStore.clearSearchState()
-
-    const north_coord = coordinate[1]
-    const east_coord = coordinate[0]
-
-    if (typeof east_coord === 'number' && typeof north_coord === 'number') {
-      mapStore.fetchGroundCategory(east_coord, north_coord)
-    } else {
-      console.error('Invalid coordinates:', coordinate)
-    }
-  } else {
+  if (!coordinate) {
     console.error('Coordinate is undefined.')
+    return
+  }
+
+  mapStore.clearSearchState()
+
+  const east_coord = coordinate[0]
+  const north_coord = coordinate[1]
+
+  if (typeof east_coord === 'number' && typeof north_coord === 'number') {
+    // Fetch ground category
+    mapStore.fetchGroundCategory(east_coord, north_coord)
+
+    // Try to reverse geocode clicked point with geoadmin API
+
+    if (view.value != null) {
+      const extent = view.value.calculateExtent() as [number, number, number, number]
+
+      const mapElement = document.querySelector<HTMLDivElement>('.ol-map')
+      const mapSize: [number, number] = mapElement
+        ? [mapElement.clientWidth, mapElement.clientHeight]
+        : [400, 400]
+
+      const address = await fetchAddress({ east_coord, north_coord }, extent, mapSize)
+
+      if (address) {
+        mapStore.selectedAdress = address
+      } else {
+        mapStore.selectedAdress = ''
+      }
+    }
   }
 }
 
