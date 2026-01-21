@@ -100,6 +100,7 @@ import Stroke from 'ol/style/Stroke'
 import MapBrowserEvent from 'ol/MapBrowserEvent'
 import { useMapStore } from '@/stores/mapStore'
 import { useDevice } from '@/composables/useDevice'
+import { EPSG2056 } from '@/composables/useProjections'
 
 const { isMobile } = useDevice()
 
@@ -128,10 +129,9 @@ const view = ref<InstanceType<typeof View> | null>(null)
 const center = ref([2700000, 1200000])
 
 // Projection setup
+const projectionDef = EPSG2056
 const matrixSet = '2056'
 const projectionName = 'EPSG:2056'
-const projectionDef =
-  '+proj=somerc +lat_0=46.95240555555556 +lon_0=7.439583333333333 +k_0=1 +x_0=2600000 +y_0=1200000 +ellps=bessel +towgs84=674.374,15.056,405.346,0,0,0,0 +units=m +no_defs'
 const projectionExtent = [2485071.58, 1075346.31, 2828515.82, 1299941.79]
 const viewExtent = [2480000, 1050000, 2838000, 1390000]
 const defaultZoom = 3
@@ -212,7 +212,7 @@ watch(
       return
     }
 
-    const newCenter = [coords.y, coords.x]
+    const newCenter = [coords.east_coord, coords.north_coord]
 
     if (!marker.value) {
       marker.value = new Feature({ geometry: new Point(newCenter) })
@@ -234,11 +234,11 @@ const getClickedCoordinates = (event: MapBrowserEvent) => {
   if (coordinate) {
     mapStore.clearSearchState()
 
-    const x = coordinate[1]
-    const y = coordinate[0]
+    const north_coord = coordinate[1]
+    const east_coord = coordinate[0]
 
-    if (typeof x === 'number' && typeof y === 'number') {
-      mapStore.fetchGroundCategory(x, y)
+    if (typeof east_coord === 'number' && typeof north_coord === 'number') {
+      mapStore.fetchGroundCategory(east_coord, north_coord)
     } else {
       console.error('Invalid coordinates:', coordinate)
     }

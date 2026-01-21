@@ -19,8 +19,8 @@ export interface SearchResult {
   id: string
   attrs: {
     label: string
-    x: number
-    y: number
+    north_coord: number
+    east_coord: number
     detail: string
     [key: string]: unknown
   }
@@ -82,13 +82,16 @@ export const useMapStore = defineStore('map', () => {
     selectedCanton.value = null
   }
 
-  const fetchGroundCategory = async (x: number, y: number) => {
+  const fetchGroundCategory = async (east_coord: number, north_coord: number) => {
     loadingGroundCategory.value = true
     try {
       // Large timeout to accommodate Lambda cold starts, despite having a wake-up call
-      const response = await axios.get(`${VITE_BACKEND_URL}v1/drill-category/${y}/${x}`, {
-        timeout: 15000,
-      })
+      const response = await axios.get(
+        `${VITE_BACKEND_URL}v1/drill-category/${east_coord}/${north_coord}`,
+        {
+          timeout: 15000,
+        },
+      )
       const data = response.data
 
       if (data?.status !== 'success') {
@@ -102,7 +105,7 @@ export const useMapStore = defineStore('map', () => {
       setWmsConfig(data.canton_config as CantonWmsConfig)
       setGroundCategory(data.ground_category)
       setSelectedCanton(data.canton)
-      setCoordinates({ x, y })
+      setCoordinates({ east_coord: east_coord, north_coord: north_coord })
     } catch (error) {
       console.error('Error fetching ground category:', error)
 
@@ -116,7 +119,7 @@ export const useMapStore = defineStore('map', () => {
       setWmsConfig(null)
       setGroundCategory(fallbackCategory)
       setSelectedCanton(null)
-      setCoordinates({ x, y })
+      setCoordinates({ east_coord: east_coord, north_coord: north_coord })
     } finally {
       loadingGroundCategory.value = false
     }
