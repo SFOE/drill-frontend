@@ -69,7 +69,7 @@ export const useGeoAdmin = () => {
       if (addresses.length === 0) return null
 
       // Prepend translated "address found" key
-      return `${addresses.join(', ')}`
+      return `${addresses.join(' - ')}`
     } catch {
       return null
     }

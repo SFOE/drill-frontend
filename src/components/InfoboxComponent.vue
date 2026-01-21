@@ -107,7 +107,7 @@ import IconGreen from '@/assets/images/oblique/checkmark.svg?url'
 import IconOrange from '@/assets/images/oblique/exclamation.svg?url'
 import IconRed from '@/assets/images/oblique/xmark.svg?url'
 import IconBlue from '@/assets/images/oblique/question.svg?url'
-import IconPurple from '@/assets/images/oblique/sad.svg?url'
+import IconPurple from '@/assets/images/oblique/wrench.svg?url'
 
 const { t } = useI18n()
 const mapStore = useMapStore()
@@ -119,10 +119,6 @@ const toggleExpanded = () => {
 }
 
 const { isMobile } = useDevice()
-
-watch(isMobile, (val) => {
-  console.log('Is mobile?', val)
-})
 
 const data = computed(() => mapStore.groundCategory)
 const suitabilityInfo = computed(() => {
@@ -314,8 +310,8 @@ watch(data, () => {
     font-size: 1.2rem;
   }
 
-  .info-box .text p {
-    text-align: left;
+  .info-box .text p.selected-address {
+    text-align: center;
     width: 100%;
   }
 
