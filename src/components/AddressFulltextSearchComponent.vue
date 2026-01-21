@@ -40,6 +40,8 @@ import { useI18n } from 'vue-i18n'
 import { useMapStore } from '@/stores/mapStore'
 import axios from 'axios'
 import type { SearchResult } from '@/stores/mapStore'
+import { useProjections } from '@/composables/useProjections'
+
 const { t } = useI18n()
 const mapStore = useMapStore()
 
@@ -50,7 +52,7 @@ const searchInput = ref<HTMLInputElement | null>(null)
 const stripHtml = (html: string) => {
   const div = document.createElement('div')
   div.innerHTML = html
-  return div.textContent || div.innerText || ''
+  return (div.textContent || div.innerText || '').replace(/\s?#\s?/g, ' ').trim()
 }
 
 const searchAddresses = async () => {
@@ -72,13 +74,20 @@ const searchAddresses = async () => {
 }
 
 const handleSelection = (selected: SearchResult) => {
-  // Basic conversion to EPSG: 2056
-  const x = selected.attrs.x + 1000000
-  const y = selected.attrs.y + 2000000
+  const { to2056 } = useProjections()
 
-  if (x && y) {
-    mapStore.setCoordinates({ x, y })
-    mapStore.fetchGroundCategory(x, y)
+  // Original coordinates in EPSG:21781
+  const coords21781 = {
+    east_coord: Number(selected.attrs.y),
+    north_coord: Number(selected.attrs.x),
+  }
+
+  // Convert properly to EPSG:2056
+  const { east_coord, north_coord } = to2056(coords21781)
+
+  if (east_coord && north_coord) {
+    mapStore.setCoordinates({ east_coord: east_coord, north_coord: north_coord })
+    mapStore.fetchGroundCategory(east_coord, north_coord)
   }
 
   mapStore.searchQuery = stripHtml(selected.attrs.label)
