@@ -205,6 +205,7 @@ watch(
   },
   { immediate: true },
 )
+const groundCategoryError = ref(false)
 
 watch(
   () => mapStore.coordinates,
@@ -223,8 +224,13 @@ watch(
     } else {
       marker.value.setGeometry(new Point(newCenter))
     }
-    view.value.setCenter(newCenter)
-    view.value.setZoom(15)
+
+    groundCategoryError.value = !!mapStore.groundCategoryError
+
+    if (!groundCategoryError.value) {
+      view.value.setCenter(newCenter)
+      view.value.setZoom(15)
+    }
 
     features.value = [marker.value]
   },
