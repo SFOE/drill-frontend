@@ -13,7 +13,9 @@
 
       <div class="text">
         <h2 v-html="suitabilityInfo.title"></h2>
-
+        <p v-if="mapStore.searchQuery" class="selected-address">
+          {{ mapStore.searchQuery }}
+        </p>
         <div class="mobile-collapse-wrapper" v-if="isMobile">
           <button class="expand-cta" @click="toggleExpanded">
             {{ isExpanded ? t('hide_details') : t('show_details') }}
@@ -181,6 +183,10 @@ watch(data, () => {
   margin: 0 0 0.5rem 0;
   font-size: 1.6rem;
   font-weight: 600;
+}
+
+.selected-address {
+  font-weight: bold;
 }
 
 .details {

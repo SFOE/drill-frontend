@@ -50,7 +50,7 @@ const searchInput = ref<HTMLInputElement | null>(null)
 const stripHtml = (html: string) => {
   const div = document.createElement('div')
   div.innerHTML = html
-  return div.textContent || div.innerText || ''
+  return (div.textContent || div.innerText || '').replace(/\s?#\s?/g, ' ').trim()
 }
 
 const searchAddresses = async () => {
