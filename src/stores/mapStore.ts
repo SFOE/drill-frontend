@@ -42,6 +42,7 @@ export const useMapStore = defineStore('map', () => {
   const coordinates = ref<Coordinates | null>(null)
   const wmsConfig = ref<CantonWmsConfig | null>(null)
   const groundCategory = ref<GroundCategory | null>(null)
+  const groundCategoryError = ref<boolean>(true)
   const selectedCanton = ref<string | null>(null)
 
   const searchQuery = ref('')
@@ -72,6 +73,10 @@ export const useMapStore = defineStore('map', () => {
   const setGroundCategory = (category: GroundCategory | null) => {
     groundCategory.value = category
   }
+
+  const setGroundCategoryError = (error: boolean) => {
+    groundCategoryError.value = error
+  }
   const clearGroundCategory = () => {
     groundCategory.value = null
   }
@@ -99,17 +104,17 @@ export const useMapStore = defineStore('map', () => {
         console.warn('Backend did not return success for coordinates')
         setWmsConfig(null)
         setGroundCategory(null)
+        setGroundCategoryError(true)
         setSelectedCanton(null)
         return
       }
-
       setWmsConfig(data.canton_config as CantonWmsConfig)
       setGroundCategory(data.ground_category)
+      setGroundCategoryError(false)
       setSelectedCanton(data.canton)
       setCoordinates({ east_coord: east_coord, north_coord: north_coord })
     } catch (error) {
       console.error('Error fetching ground category:', error)
-
       const fallbackCategory: GroundCategory = {
         layer_results: [],
         mapping_sum: 0,
@@ -119,6 +124,7 @@ export const useMapStore = defineStore('map', () => {
 
       setWmsConfig(null)
       setGroundCategory(fallbackCategory)
+      setGroundCategoryError(true)
       setSelectedCanton(null)
       setCoordinates({ east_coord: east_coord, north_coord: north_coord })
     } finally {
@@ -151,6 +157,9 @@ export const useMapStore = defineStore('map', () => {
     setGroundCategory,
     clearGroundCategory,
     hasGroundCategory,
+
+    groundCategoryError,
+    setGroundCategoryError,
 
     selectedCanton,
     setSelectedCanton,
