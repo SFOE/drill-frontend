@@ -16,6 +16,16 @@ export default defineConfig({
     },
   },
   base: '/',
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          ol: ['ol'],
+          'vue3-openlayers': ['vue3-openlayers'],
+        }
+      }
+    }
+  },
   server: {
     proxy: {
       '/api': {
