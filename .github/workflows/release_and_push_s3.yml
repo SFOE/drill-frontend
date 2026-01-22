@@ -20,6 +20,19 @@ jobs:
     runs-on: ubuntu-latest
     environment: prometheon-access
 
+    strategy:
+      matrix:
+        env:
+          - name: dev
+            role: SFOE_DRILL_FRONTEND_PIPELINE_ROLE_DEV
+            bucket: SFOE_DRILL_FRONTEND_S3_BUCKET_DEV
+            backend_url: SFOE_PROMETHEON_CLOUDFRONT_VITE_BACKEND_URL_DEV
+            
+          - name: prod
+            role: SFOE_DRILL_FRONTEND_PIPELINE_ROLE_PROD
+            bucket: SFOE_DRILL_FRONTEND_S3_BUCKET_PROD
+            backend_url: SFOE_PROMETHEON_CLOUDFRONT_VITE_BACKEND_URL_PROD            
+
     steps:
       # Checkout source code
       - name: Checkout repository
@@ -39,7 +52,7 @@ jobs:
       - name: Build drill-frontend
         run: |
 
-          export VITE_BACKEND_URL="${{ vars.SFOE_PROMETHEON_CLOUDFRONT_VITE_BACKEND_URL_DEV }}"
+          export VITE_BACKEND_URL="${{ vars[matrix.env.backend_url] }}"
           echo "Building frontend with VITE_BACKEND_URL=$VITE_BACKEND_URL"
 
           npm run build
@@ -71,14 +84,14 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: ${{ vars.SFOE_DRILL_FRONTEND_PIPELINE_ROLE }}
+          role-to-assume: ${{ vars[matrix.env.role] }}
           aws-region: eu-central-1  
 
       # Upload zip to S3 (manual workflow dispatch)
       - name: Upload zip to S3 (manual workflow dispatch)
         if: github.event_name == 'workflow_dispatch'
         env:
-          S3_BUCKET: ${{ vars.SFOE_DRILL_FRONTEND_S3_BUCKET }}
+          S3_BUCKET: ${{ vars[matrix.env.bucket] }}
           TAG_NAME: ${{ github.event.inputs.tag_name }}
         run: |
           aws s3 cp drill-frontend.zip s3://$S3_BUCKET/drill-frontend-$TAG_NAME.zip
@@ -87,7 +100,7 @@ jobs:
       - name: Upload zip to S3 (release event)
         if: github.event_name == 'release'
         env:
-          S3_BUCKET: ${{ vars.SFOE_DRILL_FRONTEND_S3_BUCKET }}
+          S3_BUCKET: ${{ vars[matrix.env.bucket] }}
           TAG_NAME: ${{ github.event.release.tag_name }}
         run: |
           aws s3 cp drill-frontend.zip s3://$S3_BUCKET/drill-frontend-$TAG_NAME.zip
