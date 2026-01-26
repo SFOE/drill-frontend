@@ -107,7 +107,7 @@ export const useMapStore = defineStore('map', () => {
         setGroundCategoryError(true)
         setSelectedCanton(null)
         setCoordinates({ east_coord: east_coord, north_coord: north_coord })
-      // In all other cases, keep same behaviour
+        // In all other cases, keep same behaviour
       } else {
         setWmsConfig(data.canton_config as CantonWmsConfig)
         setGroundCategory(data.ground_category)
@@ -115,10 +115,7 @@ export const useMapStore = defineStore('map', () => {
         setSelectedCanton(data.canton)
         setCoordinates({ east_coord: east_coord, north_coord: north_coord })
       }
-
-
     } catch (error) {
-
       // Uncaught backend error
       console.warn('Error fetching ground category:', error)
       const fallbackCategory: GroundCategory = {

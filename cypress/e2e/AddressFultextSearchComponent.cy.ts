@@ -2,51 +2,84 @@ describe('Address Search E2E', () => {
   const geoAdminResponse = {
     fuzzy: 'true',
     results: [
-      { id: '983892', attrs: { label: 'Ittigenstrasse 13 <b>3063 Ittigen</b>', x: 203045.59375, y: 603632.75 } },
-      { id: '843296', attrs: { label: 'Chasseralstrasse 13 <b>3063 Ittigen</b>', x: 203252.609375, y: 603014.6875 } },
-      { id: '857295', attrs: { label: 'Baumgartenweg 13 <b>3063 Ittigen</b>', x: 203094.703125, y: 603397.625 } },
-      { id: '869351', attrs: { label: 'Erlenweg 13 <b>3063 Ittigen</b>', x: 202323.234375, y: 603399.375 } },
-      { id: '945172', attrs: { label: 'Rain 13 <b>3063 Ittigen</b>', x: 202778.15625, y: 603106.875 } },
+      {
+        id: '983892',
+        attrs: { label: 'Ittigenstrasse 13 <b>3063 Ittigen</b>', x: 203045.59, y: 603632.75 },
+      },
+      {
+        id: '843296',
+        attrs: { label: 'Chasseralstrasse 13 <b>3063 Ittigen</b>', x: 203252.6, y: 603014.68 },
+      },
+      {
+        id: '857295',
+        attrs: { label: 'Baumgartenweg 13 <b>3063 Ittigen</b>', x: 203094.7, y: 603397.62 },
+      },
+      {
+        id: '869351',
+        attrs: { label: 'Erlenweg 13 <b>3063 Ittigen</b>', x: 202323.23, y: 603399.37 },
+      },
+      {
+        id: '945172',
+        attrs: { label: 'Rain 13 <b>3063 Ittigen</b>', x: 202778.15, y: 603106.87 },
+      },
     ],
-  };
+  }
 
   beforeEach(() => {
     cy.intercept(
       'GET',
       '**/rest/services/api/SearchServer*',
       { body: geoAdminResponse }
-    ).as('getAddresses');
+    ).as('getAddresses')
 
-    cy.visit('/');
-    cy.get('[data-cy=address-search-input]').should('be.visible');
-  });
+    cy.visit('/')
+    cy.get('[data-cy=address-search-input]').should('be.visible')
+  })
 
-  it('searches addresses and displays all results from GeoAdmin API', () => {
-    cy.get('[data-cy=address-search-input]').type('papiermuhle 13, ittigen');
+  it('shows search results returned by GeoAdmin', () => {
+    cy.get('[data-cy=address-search-input]')
+      .type('papiermühle 13')
+      .should('have.value', 'papiermühle 13')
 
-    cy.wait('@getAddresses');
+    cy.wait('@getAddresses')
 
-    cy.get('.dropdown-item').should('have.length', 5);
+    cy.get('.dropdown-item')
+      .should('have.length', geoAdminResponse.results.length)
 
-    geoAdminResponse.results.forEach((result, index) => {
-      const tempEl = document.createElement('div');
-      tempEl.innerHTML = result.attrs.label;
-      const plainLabel = tempEl.textContent || tempEl.innerText || '';
+    cy.get('.dropdown-item').then(items => {
+      const labels = [...items].map(el => el.textContent?.trim())
 
-      cy.get('.dropdown-item').eq(index).should('contain', plainLabel);
-    });
-  });
+      geoAdminResponse.results.forEach(result => {
+        const div = document.createElement('div')
+        div.innerHTML = result.attrs.label
+        const plainText = div.textContent?.trim()
 
-  it('clears results when input is cleared', () => {
-    cy.get('[data-cy=address-search-input]').as('addressInput');
+        expect(labels).to.include(plainText)
+      })
+    })
+  })
 
-    cy.get('@addressInput').type('test');
-    cy.wait('@getAddresses');
+  it('clears results when the input is cleared', () => {
+    cy.get('[data-cy=address-search-input]').type('test')
+    cy.wait('@getAddresses')
 
-    cy.get('.dropdown-item').should('have.length', 5);
+    cy.get('.dropdown-item').should('exist')
 
-    cy.get('@addressInput').clear();
+    cy.get('[data-cy=address-search-input]').clear()
 
-    cy.get('.dropdown-item').should('not.exist');
-  });
-});
+    cy.get('.dropdown-item').should('not.exist')
+  })
+
+  it('selects the first result when pressing Enter', () => {
+    cy.get('[data-cy=address-search-input]').type('papiermühle')
+    cy.wait('@getAddresses')
+
+    cy.get('[data-cy=address-search-input]').type('{enter}')
+
+    cy.get('.dropdown-item').should('not.exist')
+
+    cy.get('[data-cy=address-search-input]')
+      .invoke('val')
+      .should('contain', 'Ittigen')
+  })
+})

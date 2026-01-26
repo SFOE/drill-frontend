@@ -63,7 +63,6 @@
       <div class="info-block__text" v-html="t('hint2')"></div>
       <div class="info-block__text" v-html="t('hint3')"></div>
       <div class="info-block__text" v-html="t('hint4')"></div>
-
     </div>
   </section>
 </template>

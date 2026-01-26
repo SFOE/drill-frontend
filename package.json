@@ -12,7 +12,7 @@
     "test:unit": "vitest",
     "preview": "vite preview --host 0.0.0.0",
     "preview:ci": "npm run build-only && vite preview --host 0.0.0.0",
-    "test:e2e": "WAIT_ON_TIMEOUT=120000 start-server-and-test preview:ci http://localhost:4173 'cypress run --e2e'",
+    "test:e2e": "set WAIT_ON_TIMEOUT=120000&& start-server-and-test preview:ci http://localhost:4173 \"cypress run --e2e\"",    
     "test:e2e:dev": "start-server-and-test 'vite dev --port 4173' http://localhost:4173 'cypress open --e2e'",
     "build-only": "vite build --mode production",
     "type-check": "vue-tsc --build",
@@ -29,7 +29,7 @@
     "vue-router": "^4.6.4",
     "vue3-openlayers": "^12.2.0"
   },
-   "overrides": {
+  "overrides": {
     "jspdf": "^4.0.0"
   },
   "devDependencies": {
@@ -43,6 +43,7 @@
     "@vue/eslint-config-typescript": "^14.6.0",
     "@vue/test-utils": "^2.4.6",
     "@vue/tsconfig": "^0.8.1",
+    "cross-env": "^10.1.0",
     "cypress": "^15.8.1",
     "eslint": "^9.39.2",
     "eslint-plugin-cypress": "^5.2.0",
