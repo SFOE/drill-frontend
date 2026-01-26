@@ -100,8 +100,6 @@ export const useMapStore = defineStore('map', () => {
       )
       const data = response.data
 
-      console.log(data.ground_category.harmonized_value)
-
       // If not in Switzerland, we need to prevent zooming as no background layer will appear
       if (data.ground_category.harmonized_value === 6) {
         setWmsConfig(null)
