@@ -44,6 +44,19 @@
             class="link-icon"
           />
         </a>
+        <a
+          href="https://www.chauffezrenouvelable.ch/"
+          target="_blank"
+          rel="noopener"
+          class="hint-button"
+        >
+          {{ t('suitability_heating_cta') }}
+          <img
+            src="@/assets/images/oblique/link_external.svg"
+            alt="external link"
+            class="link-icon"
+          />
+        </a>
       </div>
 
       <div class="info-block__text" v-html="t('hint1')"></div>
@@ -51,19 +64,6 @@
       <div class="info-block__text" v-html="t('hint3')"></div>
       <div class="info-block__text" v-html="t('hint4')"></div>
 
-      <a
-        href="https://www.chauffezrenouvelable.ch/"
-        target="_blank"
-        rel="noopener"
-        class="hint-button"
-      >
-        {{ t('suitability_heating_cta') }}
-        <img
-          src="@/assets/images/oblique/link_external.svg"
-          alt="external link"
-          class="link-icon"
-        />
-      </a>
     </div>
   </section>
 </template>
