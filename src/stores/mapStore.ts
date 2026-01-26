@@ -100,21 +100,29 @@ export const useMapStore = defineStore('map', () => {
       )
       const data = response.data
 
-      if (data?.status !== 'success') {
-        console.warn('Backend did not return success for coordinates')
+      console.log(data.ground_category.harmonized_value)
+
+      // If not in Switzerland, we need to prevent zooming as no background layer will appear
+      if (data.ground_category.harmonized_value === 6) {
         setWmsConfig(null)
-        setGroundCategory(null)
+        setGroundCategory(data.ground_category)
         setGroundCategoryError(true)
         setSelectedCanton(null)
-        return
+        setCoordinates({ east_coord: east_coord, north_coord: north_coord })
+      // In all other cases, keep same behaviour
+      } else {
+        setWmsConfig(data.canton_config as CantonWmsConfig)
+        setGroundCategory(data.ground_category)
+        setGroundCategoryError(false)
+        setSelectedCanton(data.canton)
+        setCoordinates({ east_coord: east_coord, north_coord: north_coord })
       }
-      setWmsConfig(data.canton_config as CantonWmsConfig)
-      setGroundCategory(data.ground_category)
-      setGroundCategoryError(false)
-      setSelectedCanton(data.canton)
-      setCoordinates({ east_coord: east_coord, north_coord: north_coord })
+
+
     } catch (error) {
-      console.error('Error fetching ground category:', error)
+
+      // Uncaught backend error
+      console.warn('Error fetching ground category:', error)
       const fallbackCategory: GroundCategory = {
         layer_results: [],
         mapping_sum: 0,

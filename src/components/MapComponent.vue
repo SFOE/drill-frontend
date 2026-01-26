@@ -1,6 +1,6 @@
 <template>
   <div class="map-component-wrapper">
-    <p>{{ t('map_info') }}</p>
+    <p class="map-info">{{ t('map_info') }}</p>
     <div class="map-component">
       <ol-map
         :loadTilesWhileAnimating="true"
@@ -289,6 +289,11 @@ watch(
 <style scoped>
 .ol-map {
   height: 400px;
+}
+
+.map-info {
+  font-size: 0.9rem;
+  color: #757575;
 }
 
 .map-component {
