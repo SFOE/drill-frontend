@@ -77,8 +77,8 @@ jobs:
           aws-region: eu-central-1  
           
       # Upload zip to S3 (PR)
-      - name: Upload zip to S3 (release event)
-        if: github.event_name == 'pull_request'
+      - name: Upload zip to S3 (PR)
+        if: github.event_name == 'pull_request' && matrix.env.name == 'dev'
         env:
           S3_BUCKET: ${{ vars[matrix.env.bucket] }}
           TAG_NAME: ${{ github.event.pull_request.number }}
@@ -86,8 +86,8 @@ jobs:
           aws s3 cp drill-frontend.zip s3://$S3_BUCKET/drill-frontend-$TAG_NAME.zip
 
       # Upload zip to S3 (Main branch)
-      - name: Upload zip to S3 (release event)
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      - name: Upload zip to S3 (Main branch)
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main' && matrix.env.name == 'dev'
         env:
           S3_BUCKET: ${{ vars[matrix.env.bucket] }}
           TAG_NAME: latest
