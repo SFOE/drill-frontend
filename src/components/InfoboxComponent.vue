@@ -123,12 +123,14 @@ const { isMobile } = useDevice()
 const data = computed(() => mapStore.groundCategory)
 const suitabilityInfo = computed(() => {
   if (!data.value) return { color: '', icon: '', title: '', body: '' }
-  const harmonized_value = data.value.harmonized_value ?? 4
+  const harmonized_value = data.value.harmonized_value ?? 99
   const mapping: Record<number, { color: string; icon: string }> = {
     1: { color: 'green', icon: IconGreen },
     2: { color: 'orange', icon: IconOrange },
     3: { color: 'red', icon: IconRed },
     4: { color: 'blue', icon: IconBlue },
+    5: { color: 'blue', icon: IconBlue },
+    6: { color: 'blue', icon: IconPurple },
     99: { color: 'purple', icon: IconPurple },
   }
   const key = `suitability${harmonized_value}`
@@ -234,7 +236,7 @@ watch(data, () => {
 
 .source-values {
   font-size: 0.75rem;
-  color: #999;
+  color: #757575;
   margin-top: 0.5rem;
 }
 
