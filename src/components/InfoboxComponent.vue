@@ -311,7 +311,10 @@ watch(data, () => {
 
   .links-container {
     width: 100%;
-    text-align: left;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* ⬅️ centers links horizontally */
+    text-align: center;
   }
 }
 </style>

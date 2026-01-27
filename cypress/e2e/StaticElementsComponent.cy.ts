@@ -23,6 +23,7 @@ describe('StaticElementsComponent', () => {
 
   it('renders all info links correctly', () => {
     const links = [
+      { title: 'Erneuerbar Heizen (Förderprogramm Bund)', url: 'https://www.erneuerbarheizen.ch/Impulsberatung/' },
       { title: 'Alle Bohrfirmen mit Gütesiegel', url: 'https://www.fws.ch/waermepumpen-spezialisten/' },
       { title: "Das Wärmepumpen-System-Modul, ein Qualitätslabel für Anlagen bis 15 kW", url: 'https://www.wp-systemmodul.ch/de/' },
       { title: 'Geothermie', url: 'https://geothermie-schweiz.ch/' },
