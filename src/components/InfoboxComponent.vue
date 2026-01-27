@@ -318,8 +318,8 @@ watch(data, () => {
   }
 
   .links-container {
-    align-items: flex-start;
     width: 100%;
+    text-align: left;
   }
 }
 </style>
