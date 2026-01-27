@@ -137,7 +137,7 @@ const matrixSet = '2056'
 const projectionName = 'EPSG:2056'
 const projectionExtent = [2485071.58, 1075346.31, 2828515.82, 1299941.79]
 const viewExtent = [2480000, 1050000, 2838000, 1390000]
-const defaultZoom = 3
+const defaultZoom = 4
 
 // WMTS TileGrid setup
 const resolutions = [

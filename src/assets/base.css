@@ -31,8 +31,8 @@ a:focus {
 .external-icon {
   width: 10px;
   height: 10px;
-  margin-left: 4px; /* spacing from text */
-  vertical-align: middle; /* aligns nicely with text */
+  margin-left: 4px;
+  vertical-align: middle;
 }
 
 /* --- Footer link styling --- */
