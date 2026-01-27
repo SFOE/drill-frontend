@@ -66,7 +66,7 @@ const { t } = useI18n()
   gap: 0.5rem;
   font-size: 1.25rem;
   margin: 2rem 0 1.5rem 0;
-  font-weight: 500;
+  font-weight: 600;
   text-align: center;
 }
 
