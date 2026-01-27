@@ -226,14 +226,6 @@ watch(data, () => {
   color: #005bb5;
 }
 
-.link-with-icon::after {
-  content: url('@/assets/images/oblique/link_external.svg');
-  display: inline-block;
-  width: 1em;
-  height: 1em;
-  margin-left: 0.25em;
-}
-
 .source-values {
   font-size: 0.75rem;
   color: #757575;

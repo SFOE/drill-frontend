@@ -17,49 +17,20 @@
       </h3>
 
       <div class="info-block-body" v-html="t('hint1')"></div>
-      <div class="info-block-body" v-html="t('hint2')"></div>
-      <div class="info-block-body" v-html="t('hint3')"></div>
       <div class="info-block-body" v-html="t('hint4')"></div>
 
       <div class="info-block-links">
+        <a :href="t('suitability_heating_url')" target="_blank" rel="noopener" class="hint-button">
+          {{ t('suitability_heating_cta') }}
+        </a>
         <a class="info-block-link" :href="t('WeiterInfos1Url')" target="_blank" rel="noopener">
           <span>{{ t('WeiterInfos1Title') }}</span>
-          <img
-            src="@/assets/images/oblique/link_external.svg"
-            alt="external link"
-            class="link-icon"
-          />
         </a>
-
         <a class="info-block-link" :href="t('WeiterInfos2Url')" target="_blank" rel="noopener">
           <span>{{ t('WeiterInfos2Title') }}</span>
-          <img
-            src="@/assets/images/oblique/link_external.svg"
-            alt="external link"
-            class="link-icon"
-          />
         </a>
-
         <a class="info-block-link" :href="t('WeiterInfos3Url')" target="_blank" rel="noopener">
           <span>{{ t('WeiterInfos3Title') }}</span>
-          <img
-            src="@/assets/images/oblique/link_external.svg"
-            alt="external link"
-            class="link-icon"
-          />
-        </a>
-        <a
-          href="https://www.chauffezrenouvelable.ch/"
-          target="_blank"
-          rel="noopener"
-          class="hint-button"
-        >
-          {{ t('suitability_heating_cta') }}
-          <img
-            src="@/assets/images/oblique/link_external.svg"
-            alt="external link"
-            class="link-icon"
-          />
         </a>
       </div>
     </div>
