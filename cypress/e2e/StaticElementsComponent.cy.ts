@@ -18,7 +18,7 @@ describe('StaticElementsComponent', () => {
   it('renders the canton info section', () => {
     cy.get('section.info-block h3.info-block-heading')
       .first()
-      .should('contain.text', 'Zweck der applikation')
+      .should('contain.text', 'Zweck der Applikation')
   })
 
   it('renders all info links correctly', () => {
