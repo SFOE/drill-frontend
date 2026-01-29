@@ -34,20 +34,20 @@
                   {{ t('cantonal_energy_service_cta') }}
                 </a>
                 <a
-                  :href="t('suitability_heating_url')"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="link-with-icon"
-                >
-                  {{ t('suitability_heating_cta') }}
-                </a>
-                <a
                   :href="mapStore.wmsConfig.thematic_geoportal_url"
                   target="_blank"
                   rel="noopener noreferrer"
                   class="link-with-icon"
                 >
                   {{ t('thematic_geoportal_cta') }}
+                </a>
+                <a
+                  :href="t('suitability_heating_url')"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="link-with-icon"
+                >
+                  {{ t('suitability_heating_cta') }}
                 </a>
                 <p v-if="data.source_values" class="source-values">
                   {{ t('source_values') }}: "{{ data.source_values }}"
@@ -71,20 +71,20 @@
                 {{ t('cantonal_energy_service_cta') }}
               </a>
               <a
-                :href="t('suitability_heating_url')"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="link-with-icon"
-              >
-                {{ t('suitability_heating_cta') }}
-              </a>
-              <a
                 :href="mapStore.wmsConfig.thematic_geoportal_url"
                 target="_blank"
                 rel="noopener noreferrer"
                 class="link-with-icon"
               >
                 {{ t('thematic_geoportal_cta') }}
+              </a>
+              <a
+                :href="t('suitability_heating_url')"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="link-with-icon"
+              >
+                {{ t('suitability_heating_cta') }}
               </a>
               <p v-if="data.source_values" class="source-values">
                 {{ t('source_values') }}: "{{ data.source_values }}"
