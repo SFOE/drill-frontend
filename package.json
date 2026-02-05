@@ -29,8 +29,8 @@
     "vue-router": "^5.0.2",
     "vue3-openlayers": "^12.2.0"
   },
-   "overrides": {
-    "jspdf": "^4.0.0"
+  "overrides": {
+    "jspdf": "^4.1.0"
   },
   "devDependencies": {
     "@pinia/testing": "^1.0.3",
