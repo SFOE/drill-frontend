@@ -172,3 +172,29 @@ export function mockDrillCategoryError() {
     body: { error: 'Internal Server Error' }
   }).as('drillCategoryError')
 }
+
+/**
+ * Mock Geoadmin search API to return consistent address results
+ * Used for testing address search functionality
+ */
+export function mockGeoadminSearch(query: string, result?: { label: string; north_coord: number; east_coord: number }) {
+  const defaultResult = {
+    id: '12345',
+    attrs: {
+      label: 'L\'Auge-du-Bois 2b 2616 Renan BE',
+      north_coord: 1247500,
+      east_coord: 2683141,
+      detail: '2616 Renan',
+      origin: 'address'
+    }
+  }
+
+  const responseBody = {
+    results: [result || defaultResult]
+  }
+
+  cy.intercept('GET', `**/searchapi/v1/fulltextsearch*`, {
+    statusCode: 200,
+    body: responseBody
+  }).as('geoadminSearch')
+}
