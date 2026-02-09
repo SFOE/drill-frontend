@@ -1,5 +1,5 @@
 /// <reference types="cypress" />
-import { mockDrillCategoryApi, mockBackendResponses } from '../support/mock-backend'
+import { mockDrillCategoryApi } from '../support/mock-backend'
 
 describe('Infobox Component', () => {
   beforeEach(() => {
