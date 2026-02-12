@@ -37,23 +37,9 @@ describe('Infobox Component', () => {
     cy.get('.info-box .text h2').should('exist').and('be.visible')
   })
 
-  // it('displays selected address when clicking map', () => {
-  //   // Mock backend to return suitable response
-  //   mockDrillCategoryApi('suitable')
-
-  //   // Trigger API call by clicking canvas
-  //   cy.get('.ol-viewport canvas').click('center')
-
-  //   // Wait for infobox to appear
-  //   cy.get('.info-box', { timeout: 5000 }).should('exist')
-
-  //   // Check that the selected address is displayed
-  //   cy.get('.info-box .selected-address').should('exist').and('be.visible').and('have.text', 'L\'Auge-du-Bois 2b 2616 Renan BE')
-  // })
 
   it('displays selected address when using search bar', () => {
-    // Mock both APIs for consistent results
-    mockGeoadminSearch('L\'Auge-du-Bois')
+
     mockDrillCategoryApi('suitable')
 
     // Type in search bar and press enter
@@ -201,7 +187,11 @@ describe('Infobox Component', () => {
     // Wait for infobox to appear
     cy.get('.info-box', { timeout: 5000 }).should('exist')
 
-    cy.get('.info-box .expand-cta').click()
+    cy.get('.info-box').then(() => {
+      if (cy.get('.info-box .expand-cta').should('be.visible')) {
+        cy.get('.info-box .expand-cta').click()
+      }
+    })
 
     // Check if links container exists (it appears conditionally)
     cy.get('.links-container').then(($sourceValues) => {
