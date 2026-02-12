@@ -185,13 +185,17 @@ describe('Infobox Component', () => {
     // Trigger API call by clicking canvas
     cy.get('.ol-viewport canvas').click('center')
 
+    cy.wait('@drillCategory')
+
     // Wait for infobox to appear
     cy.get('.info-box', { timeout: 5000 }).should('exist')
 
     // If needed to expand then do it, otherwise don't
-    cy.get('.info-box').then(() => {
-      if (cy.get('.info-box .expand-cta').should('be.visible')) {
-        cy.get('.info-box .expand-cta').click()
+    cy.get('.info-box').then(($infoBox) => {
+      const expandBtn = $infoBox.find('.expand-cta')
+
+      if (expandBtn.length && Cypress.$(expandBtn).is(':visible')) {
+        cy.wrap(expandBtn).click()
       }
     })
 
