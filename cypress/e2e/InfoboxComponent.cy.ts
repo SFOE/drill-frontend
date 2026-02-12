@@ -40,17 +40,17 @@ describe('Infobox Component', () => {
 
   it('displays selected address when using search bar', () => {
 
-    mockDrillCategoryApi('suitable')
+    mockGeoadminSearch()
 
     // Type in search bar and press enter
-    cy.get('.input-wrapper input').type('L\'Auge-du-Bois 2b 2616 Renan BE{enter}')
+    cy.get('.input-wrapper input').type('L\'Auge-du-Bois 1 2616 Renan BE{enter}')
 
     // Wait for infobox to appear
     cy.wait(6000)
     cy.get('.info-box').should('exist')
 
     // Check that the selected address is displayed and is consistent
-    cy.get('.info-box .selected-address').should('exist').and('be.visible').and('have.text', 'L\'Auge-du-Bois 2b 2616 Renan BE')
+    cy.get('.info-box .selected-address').should('exist').and('be.visible').and('have.text', 'L\'Auge-du-Bois 1 2616 Renan BE')
   })
 
   it('infobox has correct color class for suitable (harmonized value = 1)', () => {

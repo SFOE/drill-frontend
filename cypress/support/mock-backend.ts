@@ -177,11 +177,11 @@ export function mockDrillCategoryError() {
  * Mock Geoadmin search API to return consistent address results
  * Used for testing address search functionality
  */
-export function mockGeoadminSearch(query: string, result?: { label: string; north_coord: number; east_coord: number }) {
+export function mockGeoadminSearch(result?: { label: string; north_coord: number; east_coord: number }) {
   const defaultResult = {
     id: '12345',
     attrs: {
-      label: 'L\'Auge-du-Bois 2b 2616 Renan BE',
+      label: 'L\'Auge-du-Bois 1 2616 Renan BE',
       north_coord: 1247500,
       east_coord: 2683141,
       detail: '2616 Renan',
