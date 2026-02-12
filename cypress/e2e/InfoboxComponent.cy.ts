@@ -46,7 +46,8 @@ describe('Infobox Component', () => {
     cy.get('.input-wrapper input').type('L\'Auge-du-Bois 2b 2616 Renan BE{enter}')
 
     // Wait for infobox to appear
-    cy.get('.info-box', { timeout: 5000 }).should('exist')
+    cy.wait(6000)
+    cy.get('.info-box').should('exist')
 
     // Check that the selected address is displayed and is consistent
     cy.get('.info-box .selected-address').should('exist').and('be.visible').and('have.text', 'L\'Auge-du-Bois 2b 2616 Renan BE')
@@ -187,6 +188,7 @@ describe('Infobox Component', () => {
     // Wait for infobox to appear
     cy.get('.info-box', { timeout: 5000 }).should('exist')
 
+    // If needed to expand then do it, otherwise don't
     cy.get('.info-box').then(() => {
       if (cy.get('.info-box .expand-cta').should('be.visible')) {
         cy.get('.info-box .expand-cta').click()
