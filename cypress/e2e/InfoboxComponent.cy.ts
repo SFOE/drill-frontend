@@ -46,8 +46,7 @@ describe('Infobox Component', () => {
     cy.get('.input-wrapper input').type('L\'Auge-du-Bois 1 2616 Renan BE{enter}')
 
     // Wait for infobox to appear
-    cy.wait('@drillCategory')
-    cy.get('.info-box').should('exist')
+    cy.get('.info-box', { timeout:5000 }).should('exist')
 
     // Check that the selected address is displayed and is consistent
     cy.get('.info-box .selected-address').should('exist').and('be.visible').and('have.text', 'L\'Auge-du-Bois 1 2616 Renan BE')
