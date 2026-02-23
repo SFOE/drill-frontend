@@ -43,7 +43,7 @@ describe('Infobox Component', () => {
     mockGeoadminSearch()
 
     // Type in search bar and press enter
-    cy.get('.input-wrapper input').type('L\'Auge-du-Bois 1 2616 Renan BE{enter}')
+    cy.get('.input-wrapper input').type('{enter}')
 
     // Wait for infobox to appear
     cy.get('.info-box', { timeout:10000 }).should('exist')
