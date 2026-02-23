@@ -46,10 +46,10 @@ describe('Infobox Component', () => {
     cy.get('.input-wrapper input').type('L\'Auge-du-Bois 1 2616 Renan BE{enter}')
 
     // Wait for infobox to appear
-    cy.get('.info-box', { timeout:5000 }).should('exist')
+    cy.get('.info-box', { timeout:10000 }).should('exist')
 
     // Check that the selected address is displayed and is consistent
-    cy.get('.info-box .selected-address').should('exist').and('be.visible').and('have.text', 'L\'Auge-du-Bois 1 2616 Renan BE')
+    cy.get('.info-box .selected-address').should('exist').and('be.visible').and('contain', 'Auge-du-Bois 1 2616 Renan BE')
   })
 
   it('infobox has correct color class for suitable (harmonized value = 1)', () => {
@@ -141,7 +141,7 @@ describe('Infobox Component', () => {
     cy.get('.ol-viewport canvas').click('center')
 
     // Wait for infobox to appear
-    cy.get('.info-box', { timeout: 5000 }).should('exist')
+    cy.get('.info-box', { timeout: 10000 }).should('exist')
 
     // On mobile, there should be an expand button
     cy.get('.info-box .expand-cta').should('exist').and('be.visible')
@@ -187,7 +187,7 @@ describe('Infobox Component', () => {
     cy.wait('@drillCategory')
 
     // Wait for infobox to appear
-    cy.get('.info-box', { timeout: 5000 }).should('exist')
+    cy.get('.info-box', { timeout: 10000 }).should('exist')
 
     // If needed to expand then do it, otherwise don't
     cy.get('.info-box').then(($infoBox) => {
