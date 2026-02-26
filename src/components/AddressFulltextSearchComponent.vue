@@ -40,7 +40,6 @@ import { useI18n } from 'vue-i18n'
 import { useMapStore } from '@/stores/mapStore'
 import axios from 'axios'
 import type { SearchResult } from '@/stores/mapStore'
-import { useProjections } from '@/composables/useProjections'
 
 const { t } = useI18n()
 const mapStore = useMapStore()
@@ -65,7 +64,7 @@ const searchAddresses = async () => {
     const response = await axios.get(
       `https://api3.geo.admin.ch/rest/services/api/SearchServer?searchText=${encodeURIComponent(
         text,
-      )}&type=locations&limit=5&origins=address`,
+      )}&type=locations&limit=5&origins=address&sr=2056`,
     )
     mapStore.searchResults = response.data.results as SearchResult[]
   } catch (error) {
@@ -74,16 +73,9 @@ const searchAddresses = async () => {
 }
 
 const handleSelection = (selected: SearchResult) => {
-  const { to2056 } = useProjections()
 
-  // Original coordinates in EPSG:21781
-  const coords21781 = {
-    east_coord: Number(selected.attrs.y),
-    north_coord: Number(selected.attrs.x),
-  }
-
-  // Convert properly to EPSG:2056
-  const { east_coord, north_coord } = to2056(coords21781)
+  const east_coord = Number(selected.attrs.y)
+  const north_coord = Number(selected.attrs.x)
 
   if (east_coord && north_coord) {
     mapStore.setCoordinates({ east_coord: east_coord, north_coord: north_coord })
