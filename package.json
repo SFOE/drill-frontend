@@ -48,7 +48,7 @@
     "eslint-plugin-vue": "~10.8.0",
     "jiti": "^2.6.1",
     "jsdom": "^28.1.0",
-    "json-server": "^1.0.0-beta.5",
+    "json-server": "^1.0.0-beta.9",
     "npm-run-all2": "^8.0.4",
     "prettier": "3.8.1",
     "start-server-and-test": "^2.1.3",
