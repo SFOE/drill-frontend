@@ -1,8 +1,6 @@
 import axios from 'axios'
 import type { Coordinates } from '@/types/wms'
-import { useProjections } from '@/composables/useProjections'
 
-const { to21781 } = useProjections()
 const BASE_URL = 'https://api3.geo.admin.ch/rest/services/ech/MapServer/identify'
 
 // Define types for better TS support
@@ -27,18 +25,14 @@ export const useGeoAdmin = () => {
     mapSize: [number, number],
   ): Promise<string | null> => {
     try {
-      // Transform coordinates to EPSG:21781
-      const { east_coord: east_coord21781, north_coord: north_coord21781 } = to21781({
-        east_coord,
-        north_coord,
-      })
 
       const params = new URLSearchParams({
         geometryType: 'esriGeometryPoint',
-        geometry: `${east_coord21781},${north_coord21781}`,
+        geometry: `${east_coord},${north_coord}`,
         imageDisplay: `${mapSize[0]},${mapSize[1]},96`,
         mapExtent: `${extent[0]},${extent[1]},${extent[2]},${extent[3]}`,
         tolerance: '15',
+        sr: '2056',
         layers: 'all:ch.bfs.gebaeude_wohnungs_register',
         returnGeometry: 'false',
       })
