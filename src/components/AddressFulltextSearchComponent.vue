@@ -73,7 +73,6 @@ const searchAddresses = async () => {
 }
 
 const handleSelection = (selected: SearchResult) => {
-
   const east_coord = Number(selected.attrs.y)
   const north_coord = Number(selected.attrs.x)
 
