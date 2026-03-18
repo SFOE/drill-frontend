@@ -1,6 +1,6 @@
 export interface Coordinates {
-  x: number
-  y: number
+  east_coord: number
+  north_coord: number
 }
 
 export interface LayerPropertyValue {

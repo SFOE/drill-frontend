@@ -1,6 +1,6 @@
 <template>
   <footer class="site-footer">
-    <div class="footer-inner">
+    <div class="footer-inner app-container">
       <!-- Left section -->
       <div class="footer-left">
         <ul class="footer-links">
@@ -51,9 +51,7 @@ const { t } = useI18n()
 }
 
 .footer-inner {
-  max-width: 1440px;
   margin: 0 auto;
-  padding: 0 32px;
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;

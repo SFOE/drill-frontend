@@ -13,7 +13,9 @@
 
       <div class="text">
         <h2 v-html="suitabilityInfo.title"></h2>
-
+        <p v-if="mapStore.selectedAdress" class="selected-address">
+          {{ mapStore.selectedAdress }}
+        </p>
         <div class="mobile-collapse-wrapper" v-if="isMobile">
           <button class="expand-cta" @click="toggleExpanded">
             {{ isExpanded ? t('hide_details') : t('show_details') }}
@@ -32,20 +34,20 @@
                   {{ t('cantonal_energy_service_cta') }}
                 </a>
                 <a
-                  :href="t('suitability_heating_url')"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="link-with-icon"
-                >
-                  {{ t('suitability_heating_cta') }}
-                </a>
-                <a
                   :href="mapStore.wmsConfig.thematic_geoportal_url"
                   target="_blank"
                   rel="noopener noreferrer"
                   class="link-with-icon"
                 >
                   {{ t('thematic_geoportal_cta') }}
+                </a>
+                <a
+                  :href="t('suitability_heating_url')"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="link-with-icon"
+                >
+                  {{ t('suitability_heating_cta') }}
                 </a>
                 <p v-if="data.source_values" class="source-values">
                   {{ t('source_values') }}: "{{ data.source_values }}"
@@ -69,20 +71,20 @@
                 {{ t('cantonal_energy_service_cta') }}
               </a>
               <a
-                :href="t('suitability_heating_url')"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="link-with-icon"
-              >
-                {{ t('suitability_heating_cta') }}
-              </a>
-              <a
                 :href="mapStore.wmsConfig.thematic_geoportal_url"
                 target="_blank"
                 rel="noopener noreferrer"
                 class="link-with-icon"
               >
                 {{ t('thematic_geoportal_cta') }}
+              </a>
+              <a
+                :href="t('suitability_heating_url')"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="link-with-icon"
+              >
+                {{ t('suitability_heating_cta') }}
               </a>
               <p v-if="data.source_values" class="source-values">
                 {{ t('source_values') }}: "{{ data.source_values }}"
@@ -96,43 +98,40 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, onMounted } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useMapStore } from '@/stores/mapStore'
+import { useDevice } from '@/composables/useDevice'
 
 import IconGreen from '@/assets/images/oblique/checkmark.svg?url'
 import IconOrange from '@/assets/images/oblique/exclamation.svg?url'
 import IconRed from '@/assets/images/oblique/xmark.svg?url'
 import IconBlue from '@/assets/images/oblique/question.svg?url'
+import IconPurple from '@/assets/images/oblique/wrench.svg?url'
 
 const { t } = useI18n()
 const mapStore = useMapStore()
 
 const isExpanded = ref(false)
-const isMobile = ref(false)
 
 const toggleExpanded = () => {
   isExpanded.value = !isExpanded.value
 }
 
-const checkMobile = () => {
-  isMobile.value = window.innerWidth <= 768
-}
-
-onMounted(() => {
-  checkMobile()
-  window.addEventListener('resize', checkMobile)
-})
+const { isMobile } = useDevice()
 
 const data = computed(() => mapStore.groundCategory)
 const suitabilityInfo = computed(() => {
   if (!data.value) return { color: '', icon: '', title: '', body: '' }
-  const harmonized_value = data.value.harmonized_value ?? 4
+  const harmonized_value = data.value.harmonized_value ?? 99
   const mapping: Record<number, { color: string; icon: string }> = {
     1: { color: 'green', icon: IconGreen },
     2: { color: 'orange', icon: IconOrange },
     3: { color: 'red', icon: IconRed },
     4: { color: 'blue', icon: IconBlue },
+    5: { color: 'blue', icon: IconBlue },
+    6: { color: 'blue', icon: IconPurple },
+    99: { color: 'purple', icon: IconPurple },
   }
   const key = `suitability${harmonized_value}`
   return {
@@ -141,6 +140,12 @@ const suitabilityInfo = computed(() => {
     title: t(`${key}short`),
     body: t(key),
     source_values: data.value.source_values,
+  }
+})
+
+watch(data, () => {
+  if (isMobile.value) {
+    isExpanded.value = false
   }
 })
 </script>
@@ -176,6 +181,10 @@ const suitabilityInfo = computed(() => {
   margin: 0 0 0.5rem 0;
   font-size: 1.6rem;
   font-weight: 600;
+}
+
+.selected-address {
+  font-weight: bold;
 }
 
 .details {
@@ -217,17 +226,9 @@ const suitabilityInfo = computed(() => {
   color: #005bb5;
 }
 
-.link-with-icon::after {
-  content: url('@/assets/images/oblique/link_external.svg');
-  display: inline-block;
-  width: 1em;
-  height: 1em;
-  margin-left: 0.25em;
-}
-
 .source-values {
   font-size: 0.75rem;
-  color: #999;
+  color: #757575;
   margin-top: 0.5rem;
 }
 
@@ -242,6 +243,9 @@ const suitabilityInfo = computed(() => {
 }
 .blue {
   border-color: #88bbf2;
+}
+.purple {
+  border-color: #b036e5;
 }
 
 .loading-overlay {
@@ -300,14 +304,17 @@ const suitabilityInfo = computed(() => {
     font-size: 1.2rem;
   }
 
-  .info-box .text p {
-    text-align: left;
+  .info-box .text p.selected-address {
+    text-align: center;
     width: 100%;
   }
 
   .links-container {
-    align-items: flex-start;
     width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* ⬅️ centers links horizontally */
+    text-align: center;
   }
 }
 </style>

@@ -19,8 +19,8 @@ export interface SearchResult {
   id: string
   attrs: {
     label: string
-    x: number
-    y: number
+    north_coord: number
+    east_coord: number
     detail: string
     [key: string]: unknown
   }
@@ -42,10 +42,11 @@ export const useMapStore = defineStore('map', () => {
   const coordinates = ref<Coordinates | null>(null)
   const wmsConfig = ref<CantonWmsConfig | null>(null)
   const groundCategory = ref<GroundCategory | null>(null)
+  const groundCategoryError = ref<boolean>(true)
   const selectedCanton = ref<string | null>(null)
 
-  // Change the type of searchResults from string[] to SearchResult[]
   const searchQuery = ref('')
+  const selectedAdress = ref('')
   const searchResults = ref<SearchResult[]>([])
 
   const loadingGroundCategory = ref(false)
@@ -55,7 +56,6 @@ export const useMapStore = defineStore('map', () => {
   const hasGroundCategory = computed(() => groundCategory.value !== null)
   const hasSelectedCanton = computed(() => selectedCanton.value !== null)
 
-  // --- Setters ---
   const setCoordinates = (coords: Coordinates) => {
     coordinates.value = coords
   }
@@ -73,6 +73,10 @@ export const useMapStore = defineStore('map', () => {
   const setGroundCategory = (category: GroundCategory | null) => {
     groundCategory.value = category
   }
+
+  const setGroundCategoryError = (error: boolean) => {
+    groundCategoryError.value = error
+  }
   const clearGroundCategory = () => {
     groundCategory.value = null
   }
@@ -84,37 +88,56 @@ export const useMapStore = defineStore('map', () => {
     selectedCanton.value = null
   }
 
-  const fetchGroundCategory = async (x: number, y: number) => {
+  const fetchGroundCategory = async (east_coord: number, north_coord: number) => {
     loadingGroundCategory.value = true
     try {
-      const response = await axios.get(`${VITE_BACKEND_URL}v1/drill-category/${y}/${x}`)
+      // Large timeout to accommodate Lambda cold starts, despite having a wake-up call
+      const response = await axios.get(
+        `${VITE_BACKEND_URL}v1/drill-category/${east_coord}/${north_coord}`,
+        {
+          timeout: 15000,
+        },
+      )
       const data = response.data
 
-      if (data?.status !== 'success') {
-        console.warn('Backend did not return success for coordinates')
+      // If not in Switzerland, we need to prevent zooming as no background layer will appear
+      if (data.ground_category.harmonized_value === 6) {
         setWmsConfig(null)
-        setGroundCategory(null)
+        setGroundCategory(data.ground_category)
+        setGroundCategoryError(true)
         setSelectedCanton(null)
-        return
+        setCoordinates({ east_coord: east_coord, north_coord: north_coord })
+        // In all other cases, keep same behaviour
+      } else {
+        setWmsConfig(data.canton_config as CantonWmsConfig)
+        setGroundCategory(data.ground_category)
+        setGroundCategoryError(false)
+        setSelectedCanton(data.canton)
+        setCoordinates({ east_coord: east_coord, north_coord: north_coord })
+      }
+    } catch (error) {
+      // Uncaught backend error
+      console.warn('Error fetching ground category:', error)
+      const fallbackCategory: GroundCategory = {
+        layer_results: [],
+        mapping_sum: 0,
+        harmonized_value: 99,
+        source_values: 'server error',
       }
 
-      setWmsConfig(data.canton_config as CantonWmsConfig)
-      setGroundCategory(data.ground_category)
-      setSelectedCanton(data.canton)
-      setCoordinates({ x, y })
-    } catch (error) {
-      console.error('Error fetching ground category:', error)
       setWmsConfig(null)
-      setGroundCategory(null)
+      setGroundCategory(fallbackCategory)
+      setGroundCategoryError(true)
       setSelectedCanton(null)
+      setCoordinates({ east_coord: east_coord, north_coord: north_coord })
     } finally {
       loadingGroundCategory.value = false
     }
   }
 
-  // --- New Method to Clear Search State ---
   const clearSearchState = () => {
     searchQuery.value = ''
+    selectedAdress.value = ''
     searchResults.value = []
     clearCoordinates()
     clearGroundCategory()
@@ -138,12 +161,16 @@ export const useMapStore = defineStore('map', () => {
     clearGroundCategory,
     hasGroundCategory,
 
+    groundCategoryError,
+    setGroundCategoryError,
+
     selectedCanton,
     setSelectedCanton,
     clearSelectedCanton,
     hasSelectedCanton,
 
     searchQuery,
+    selectedAdress,
     searchResults,
 
     loadingGroundCategory,

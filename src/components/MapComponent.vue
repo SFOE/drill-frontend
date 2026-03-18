@@ -1,11 +1,11 @@
 <template>
   <div class="map-component-wrapper">
-    <p>{{ t('map_info') }}</p>
+    <p class="map-info">{{ t('map_info') }}</p>
     <div class="map-component">
       <ol-map
         :loadTilesWhileAnimating="true"
         :loadTilesWhileInteracting="true"
-        style="height: 400px"
+        class="ol-map"
         @click="getClickedCoordinates"
       >
         <!-- Projection Registration -->
@@ -86,7 +86,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { ref, watch, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
 import WMTSTileGrid from 'ol/tilegrid/WMTS.js'
 import TileWMS from 'ol/source/TileWMS'
@@ -99,6 +99,17 @@ import Fill from 'ol/style/Fill'
 import Stroke from 'ol/style/Stroke'
 import MapBrowserEvent from 'ol/MapBrowserEvent'
 import { useMapStore } from '@/stores/mapStore'
+import { useDevice } from '@/composables/useDevice'
+import { EPSG2056 } from '@/composables/useProjections'
+import { useGeoAdmin } from '@/composables/useGeoadminReverseGeocoding'
+
+const { fetchAddress } = useGeoAdmin()
+
+const { isMobile } = useDevice()
+
+watch(isMobile, (val) => {
+  console.log('Is mobile?', val)
+})
 
 const mapStore = useMapStore()
 const { t } = useI18n()
@@ -121,13 +132,12 @@ const view = ref<InstanceType<typeof View> | null>(null)
 const center = ref([2700000, 1200000])
 
 // Projection setup
+const projectionDef = EPSG2056
 const matrixSet = '2056'
 const projectionName = 'EPSG:2056'
-const projectionDef =
-  '+proj=somerc +lat_0=46.95240555555556 +lon_0=7.439583333333333 +k_0=1 +x_0=2600000 +y_0=1200000 +ellps=bessel +towgs84=674.374,15.056,405.346,0,0,0,0 +units=m +no_defs'
 const projectionExtent = [2485071.58, 1075346.31, 2828515.82, 1299941.79]
 const viewExtent = [2480000, 1050000, 2838000, 1390000]
-const defaultZoom = 3
+const defaultZoom = 4
 
 // WMTS TileGrid setup
 const resolutions = [
@@ -195,6 +205,7 @@ watch(
   },
   { immediate: true },
 )
+const groundCategoryError = ref(false)
 
 watch(
   () => mapStore.coordinates,
@@ -205,7 +216,7 @@ watch(
       return
     }
 
-    const newCenter = [coords.y, coords.x]
+    const newCenter = [coords.east_coord, coords.north_coord]
 
     if (!marker.value) {
       marker.value = new Feature({ geometry: new Point(newCenter) })
@@ -213,35 +224,78 @@ watch(
     } else {
       marker.value.setGeometry(new Point(newCenter))
     }
-    view.value.setCenter(newCenter)
-    view.value.setZoom(15)
+
+    groundCategoryError.value = !!mapStore.groundCategoryError
+
+    if (!groundCategoryError.value) {
+      view.value.setCenter(newCenter)
+      view.value.setZoom(15)
+    }
 
     features.value = [marker.value]
   },
   { immediate: true },
 )
 
-const getClickedCoordinates = (event: MapBrowserEvent) => {
+const getClickedCoordinates = async (event: MapBrowserEvent) => {
   const coordinate = event.coordinate
 
-  if (coordinate) {
-    mapStore.clearSearchState()
-
-    const x = coordinate[1]
-    const y = coordinate[0]
-
-    if (typeof x === 'number' && typeof y === 'number') {
-      mapStore.fetchGroundCategory(x, y)
-    } else {
-      console.error('Invalid coordinates:', coordinate)
-    }
-  } else {
+  if (!coordinate) {
     console.error('Coordinate is undefined.')
+    return
+  }
+
+  mapStore.clearSearchState()
+
+  const east_coord = coordinate[0]
+  const north_coord = coordinate[1]
+
+  if (typeof east_coord === 'number' && typeof north_coord === 'number') {
+    // Fetch ground category
+    mapStore.fetchGroundCategory(east_coord, north_coord)
+
+    // Try to reverse geocode clicked point with geoadmin API
+
+    if (view.value != null) {
+      const extent = view.value.calculateExtent() as [number, number, number, number]
+
+      const mapElement = document.querySelector<HTMLDivElement>('.ol-map')
+      const mapSize: [number, number] = mapElement
+        ? [mapElement.clientWidth, mapElement.clientHeight]
+        : [400, 400]
+
+      const address = await fetchAddress({ east_coord, north_coord }, extent, mapSize)
+
+      if (address) {
+        mapStore.selectedAdress = address
+      } else {
+        mapStore.selectedAdress = ''
+      }
+    }
   }
 }
+
+watch(
+  () => mapStore.groundCategory?.harmonized_value,
+  async (newValue, oldValue) => {
+    if (isMobile.value && newValue !== oldValue) {
+      await nextTick()
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+  },
+)
 </script>
 
 <style scoped>
+.ol-map {
+  height: 400px;
+}
+
+.map-info {
+  font-size: 0.9rem;
+  color: #757575;
+}
+
 .map-component {
   flex: 1;
   background-color: #ddd;
@@ -305,5 +359,11 @@ const getClickedCoordinates = (event: MapBrowserEvent) => {
 .slide-fade-leave-to {
   opacity: 0;
   transform: translateY(-10px);
+}
+
+@media (max-width: 768px) {
+  .ol-map {
+    height: 250px;
+  }
 }
 </style>

@@ -6,6 +6,7 @@
         ref="searchInput"
         type="text"
         class="form-control"
+        data-cy="address-search-input"
         v-model="mapStore.searchQuery"
         :placeholder="t('search_placeholder')"
         @input="onInput"
@@ -39,6 +40,7 @@ import { useI18n } from 'vue-i18n'
 import { useMapStore } from '@/stores/mapStore'
 import axios from 'axios'
 import type { SearchResult } from '@/stores/mapStore'
+
 const { t } = useI18n()
 const mapStore = useMapStore()
 
@@ -49,7 +51,7 @@ const searchInput = ref<HTMLInputElement | null>(null)
 const stripHtml = (html: string) => {
   const div = document.createElement('div')
   div.innerHTML = html
-  return div.textContent || div.innerText || ''
+  return (div.textContent || div.innerText || '').replace(/\s?#\s?/g, ' ').trim()
 }
 
 const searchAddresses = async () => {
@@ -62,7 +64,7 @@ const searchAddresses = async () => {
     const response = await axios.get(
       `https://api3.geo.admin.ch/rest/services/api/SearchServer?searchText=${encodeURIComponent(
         text,
-      )}&type=locations&limit=5&origins=address`,
+      )}&type=locations&limit=5&origins=address&sr=2056`,
     )
     mapStore.searchResults = response.data.results as SearchResult[]
   } catch (error) {
@@ -71,16 +73,18 @@ const searchAddresses = async () => {
 }
 
 const handleSelection = (selected: SearchResult) => {
-  // Basic conversion to EPSG: 2056
-  const x = selected.attrs.x + 1000000
-  const y = selected.attrs.y + 2000000
 
-  if (x && y) {
-    mapStore.setCoordinates({ x, y })
-    mapStore.fetchGroundCategory(x, y)
+  const east_coord = Number(selected.attrs.y)
+  const north_coord = Number(selected.attrs.x)
+
+  if (east_coord && north_coord) {
+    mapStore.setCoordinates({ east_coord: east_coord, north_coord: north_coord })
+    mapStore.fetchGroundCategory(east_coord, north_coord)
   }
 
-  mapStore.searchQuery = stripHtml(selected.attrs.label)
+  const addressText = stripHtml(selected.attrs.label)
+  mapStore.searchQuery = addressText
+  mapStore.selectedAdress = addressText
   mapStore.searchResults = []
   searchInput.value?.blur()
 }

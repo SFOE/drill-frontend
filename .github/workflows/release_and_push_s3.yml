@@ -1,15 +1,13 @@
 name: Build and Upload Release Asset to Github and AWS S3
 
 on:
+  pull_request:
+    types: [opened, synchronize]
+  push:
+    branches:
+      - main
   release:
     types: [created]
-
-  workflow_dispatch: 
-    inputs:
-      tag_name:
-        description: 'Tag name to use for manual workflow test'
-        required: true
-        default: 'test'
 
 permissions:
   contents: write 
@@ -19,6 +17,19 @@ jobs:
   build:
     runs-on: ubuntu-latest
     environment: prometheon-access
+
+    strategy:
+      matrix:
+        env:
+          - name: dev
+            role: SFOE_DRILL_FRONTEND_PIPELINE_ROLE_DEV
+            bucket: SFOE_DRILL_FRONTEND_S3_BUCKET_DEV
+            backend_url: SFOE_PROMETHEON_CLOUDFRONT_VITE_BACKEND_URL_DEV
+            
+          - name: prod
+            role: SFOE_DRILL_FRONTEND_PIPELINE_ROLE_PROD
+            bucket: SFOE_DRILL_FRONTEND_S3_BUCKET_PROD
+            backend_url: SFOE_PROMETHEON_CLOUDFRONT_VITE_BACKEND_URL_PROD            
 
     steps:
       # Checkout source code
@@ -39,7 +50,7 @@ jobs:
       - name: Build drill-frontend
         run: |
 
-          export VITE_BACKEND_URL="${{ vars.SFOE_PROMETHEON_CLOUDFRONT_VITE_BACKEND_URL_DEV }}"
+          export VITE_BACKEND_URL="${{ vars[matrix.env.backend_url] }}"
           echo "Building frontend with VITE_BACKEND_URL=$VITE_BACKEND_URL"
 
           npm run build
@@ -58,28 +69,28 @@ jobs:
       - name: Create zip archive
         run: zip -r drill-frontend.zip dist
 
-      # Upload zip to the release assets
-      - name: Upload release asset
-        if: github.event_name == 'release'
-        uses: softprops/action-gh-release@v1
-        with:
-          files: drill-frontend.zip
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       # Configure AWS credentials
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: ${{ vars.SFOE_DRILL_FRONTEND_PIPELINE_ROLE }}
+          role-to-assume: ${{ vars[matrix.env.role] }}
           aws-region: eu-central-1  
-
-      # Upload zip to S3 (manual workflow dispatch)
-      - name: Upload zip to S3 (manual workflow dispatch)
-        if: github.event_name == 'workflow_dispatch'
+          
+      # Upload zip to S3 (PR)
+      - name: Upload zip to S3 (PR)
+        if: github.event_name == 'pull_request' && matrix.env.name == 'dev'
         env:
-          S3_BUCKET: ${{ vars.SFOE_DRILL_FRONTEND_S3_BUCKET }}
-          TAG_NAME: ${{ github.event.inputs.tag_name }}
+          S3_BUCKET: ${{ vars[matrix.env.bucket] }}
+          TAG_NAME: ${{ github.event.pull_request.number }}
+        run: |
+          aws s3 cp drill-frontend.zip s3://$S3_BUCKET/drill-frontend-$TAG_NAME.zip
+
+      # Upload zip to S3 (Main branch)
+      - name: Upload zip to S3 (Main branch)
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main' && matrix.env.name == 'dev'
+        env:
+          S3_BUCKET: ${{ vars[matrix.env.bucket] }}
+          TAG_NAME: latest
         run: |
           aws s3 cp drill-frontend.zip s3://$S3_BUCKET/drill-frontend-$TAG_NAME.zip
 
@@ -87,7 +98,16 @@ jobs:
       - name: Upload zip to S3 (release event)
         if: github.event_name == 'release'
         env:
-          S3_BUCKET: ${{ vars.SFOE_DRILL_FRONTEND_S3_BUCKET }}
+          S3_BUCKET: ${{ vars[matrix.env.bucket] }}
           TAG_NAME: ${{ github.event.release.tag_name }}
         run: |
           aws s3 cp drill-frontend.zip s3://$S3_BUCKET/drill-frontend-$TAG_NAME.zip
+
+      # Upload zip to the Github release assets
+      - name: Upload release asset
+        if: github.event_name == 'release'
+        uses: softprops/action-gh-release@v1
+        with:
+          files: drill-frontend.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
