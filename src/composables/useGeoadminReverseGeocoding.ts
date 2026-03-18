@@ -25,7 +25,6 @@ export const useGeoAdmin = () => {
     mapSize: [number, number],
   ): Promise<string | null> => {
     try {
-
       const params = new URLSearchParams({
         geometryType: 'esriGeometryPoint',
         geometry: `${east_coord},${north_coord}`,
