@@ -1,4 +1,4 @@
-name: Build and Push to S3, Deploy on Release
+name: Build and Push to Github and S3, Deploy on Release
 
 on:
   pull_request:
