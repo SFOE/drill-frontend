@@ -5,8 +5,8 @@ url: https://github.com/SFOE/drill-frontend
 landingURL: https://drillcheck.prometheon.bfe.admin.ch
 isBasedOn: https://vue3openlayers.netlify.app/, https://vuejs.org/,
   https://docs.geo.admin.ch/
-softwareVersion: v0.0.5
-releaseDate: 2026-01-30
+softwareVersion: v0.1.10
+releaseDate: 2026-03-18
 platforms:
   - web
 categories:
