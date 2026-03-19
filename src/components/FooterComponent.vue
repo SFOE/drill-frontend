@@ -5,7 +5,7 @@
       <div class="footer-left">
         <ul class="footer-links">
           <li>
-            {{ t('headerTitle') }}
+            {{ t('header_title') }}
           </li>
         </ul>
       </div>
@@ -14,7 +14,7 @@
       <div class="footer-center">
         <ul class="footer-links">
           <li>
-            <a :href="t('legalUrl')" target="_blank" rel="noopener">{{ t('legalTitle') }}</a>
+            <a :href="t('legal_url')" target="_blank" rel="noopener">{{ t('legal_title') }}</a>
           </li>
           <li>
             <a href="mailto:contact@bfe.admin.ch">{{ t('contact') }}</a>

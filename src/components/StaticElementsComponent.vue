@@ -8,32 +8,52 @@
       </h3>
       <div class="info-block-body" v-html="t('app_goal')"></div>
       <h3 class="info-block-heading">
-        {{ t('TitelLinkKanton') }}
+        {{ t('title_link_canton') }}
       </h3>
-      <div class="info-block-body" v-html="t('textMapCanton')"></div>
+      <div class="info-block-body" v-html="t('map_canton_text')"></div>
 
       <h3 class="info-block-heading">
-        {{ t('TitelLinkInfos') }}
+        {{ t('title_link_infos') }}
       </h3>
 
-      <div class="info-block-body" v-html="t('hint1')"></div>
-      <div class="info-block-body" v-html="t('hint4')"></div>
+      <div class="info-block-body" v-html="t('hint_1')"></div>
+      <div class="info-block-body" v-html="t('hint_4')"></div>
 
       <div class="info-block-links">
         <a :href="t('suitability_heating_url')" target="_blank" rel="noopener" class="hint-button">
-          {{ t('suitability_heating_cta') }}
+          {{ t('suitability_heating_call_to_action') }}
         </a>
-        <a class="info-block-link" :href="t('WeiterInfos1Url')" target="_blank" rel="noopener">
-          <span>{{ t('WeiterInfos1Title') }}</span>
+        <a
+          class="info-block-link"
+          :href="t('additional_info_1_url')"
+          target="_blank"
+          rel="noopener"
+        >
+          <span>{{ t('additional_info_1_title') }}</span>
         </a>
-        <a class="info-block-link" :href="t('WeiterInfos2Url')" target="_blank" rel="noopener">
-          <span>{{ t('WeiterInfos2Title') }}</span>
+        <a
+          class="info-block-link"
+          :href="t('additional_info_2_url')"
+          target="_blank"
+          rel="noopener"
+        >
+          <span>{{ t('additional_info_2_title') }}</span>
         </a>
-        <a class="info-block-link" :href="t('WeiterInfos3Url')" target="_blank" rel="noopener">
-          <span>{{ t('WeiterInfos3Title') }}</span>
+        <a
+          class="info-block-link"
+          :href="t('additional_info_3_url')"
+          target="_blank"
+          rel="noopener"
+        >
+          <span>{{ t('additional_info_3_title') }}</span>
         </a>
-        <a class="info-block-link" :href="t('WeiterInfos4Url')" target="_blank" rel="noopener">
-          <span>{{ t('WeiterInfos4Title') }}</span>
+        <a
+          class="info-block-link"
+          :href="t('additional_info_4_url')"
+          target="_blank"
+          rel="noopener"
+        >
+          <span>{{ t('additional_info_4_title') }}</span>
         </a>
       </div>
     </div>

@@ -48,6 +48,6 @@ app.mount('#app')
 watch(
   () => i18n.global.locale.value,
   () => {
-    document.title = i18n.global.t('pagetitle')
+    document.title = i18n.global.t('page_title')
   },
 )
