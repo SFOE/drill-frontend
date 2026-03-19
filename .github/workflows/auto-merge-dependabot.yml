@@ -1,60 +1,19 @@
-name: Auto-merge Dependabot PRs
+name: Dependabot Auto-Merge
 
-on:
-  pull_request:
-  workflow_run:
-    workflows: ['CI - Lint', 'CI - e2e tests']
-    types: [completed]
+on: pull_request
 
 permissions:
-  pull-requests: write
   contents: write
+  pull-requests: write
 
 jobs:
-  auto-merge:
-    name: Auto-merge Dependabot PRs
+  dependabot:
     runs-on: ubuntu-latest
-    if: github.actor == 'dependabot[bot]'
-
+    # Check if the PR was created by Dependabot
+    if: github.event.pull_request.user.login == 'dependabot[bot]'
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '24'
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci --ignore-scripts
-
-      - name: Run lint
-        run: npm run lint
-
-      - name: Install Cypress binary
-        run: npx cypress install
-
-      - name: Run E2E tests
-        run: npm run test:e2e
+      - name: Enable auto-merge for Dependabot PRs
+        run: gh pr merge --auto --squash "$PR_URL"
         env:
-          TERM: xterm
-
-      - name: Check for merge conflicts
-        id: check-mergeable
-        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          mergeable=$(gh pr view "${{ github.event.pull_request.number }}" --json mergeable -q '.mergeable')
-          echo "mergeable=$mergeable" >> $GITHUB_OUTPUT
-          if [ "$mergeable" = "CONFLICTING" ]; then
-            echo "❌ PR has merge conflicts"
-            exit 1
-          fi
-
-      - name: Merge PR
-        if: success()
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          gh pr merge --auto --squash "${{ github.event.pull_request.number }}"
