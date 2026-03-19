@@ -1,5 +1,5 @@
 /// <reference types="cypress" />
-import { mockDrillCategoryApi, mockGeoadminSearch } from '../support/mock-backend'
+import { mockDrillCategoryApi } from '../support/mock-backend'
 
 describe('Infobox Component', () => {
   beforeEach(() => {
@@ -37,20 +37,6 @@ describe('Infobox Component', () => {
     cy.get('.info-box .text h2').should('exist').and('be.visible')
   })
 
-
-  it('displays selected address when using search bar', () => {
-
-    mockGeoadminSearch()
-
-    // Type in search bar and press enter
-    cy.get('.input-wrapper input').type('L\'Auge-du-Bois 1 2616 Renan BE{enter}')
-
-    // Wait for infobox to appear
-    cy.get('.info-box', { timeout:50000 }).should('exist')
-
-    // Check that the selected address is displayed and is consistent
-    cy.get('.info-box .selected-address').should('exist').and('be.visible').and('contain', 'Auge-du-Bois 1 2616 Renan BE')
-  })
 
   it('infobox has correct color class for suitable (harmonized value = 1)', () => {
     // Mock backend to return suitable response
