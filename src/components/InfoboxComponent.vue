@@ -133,11 +133,11 @@ const suitabilityInfo = computed(() => {
     6: { color: 'blue', icon: IconPurple },
     99: { color: 'purple', icon: IconPurple },
   }
-  const key = `suitability${harmonized_value}`
+  const key = `suitability_level_${harmonized_value}`
   return {
     color: mapping[harmonized_value]?.color ?? 'blue',
     icon: mapping[harmonized_value]?.icon ?? IconBlue,
-    title: t(`${key}short`),
+    title: t(`${key}_short`),
     body: t(key),
     source_values: data.value.source_values,
   }
