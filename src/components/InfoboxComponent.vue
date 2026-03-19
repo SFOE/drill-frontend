@@ -31,7 +31,7 @@
                   rel="noopener noreferrer"
                   class="link-with-icon"
                 >
-                  {{ t('cantonal_energy_service_cta') }}
+                  {{ t('cantonal_energy_service_call_to_action') }}
                 </a>
                 <a
                   :href="mapStore.wmsConfig.thematic_geoportal_url"
@@ -39,7 +39,7 @@
                   rel="noopener noreferrer"
                   class="link-with-icon"
                 >
-                  {{ t('thematic_geoportal_cta') }}
+                  {{ t('thematic_geoportal_call_to_action') }}
                 </a>
                 <a
                   :href="t('suitability_heating_url')"
@@ -47,7 +47,7 @@
                   rel="noopener noreferrer"
                   class="link-with-icon"
                 >
-                  {{ t('suitability_heating_cta') }}
+                  {{ t('suitability_heating_call_to_action') }}
                 </a>
                 <p v-if="data.source_values" class="source-values">
                   {{ t('source_values') }}: "{{ data.source_values }}"
@@ -68,7 +68,7 @@
                 rel="noopener noreferrer"
                 class="link-with-icon"
               >
-                {{ t('cantonal_energy_service_cta') }}
+                {{ t('cantonal_energy_service_call_to_action') }}
               </a>
               <a
                 :href="mapStore.wmsConfig.thematic_geoportal_url"
@@ -76,7 +76,7 @@
                 rel="noopener noreferrer"
                 class="link-with-icon"
               >
-                {{ t('thematic_geoportal_cta') }}
+                {{ t('thematic_geoportal_call_to_action') }}
               </a>
               <a
                 :href="t('suitability_heating_url')"
@@ -84,7 +84,7 @@
                 rel="noopener noreferrer"
                 class="link-with-icon"
               >
-                {{ t('suitability_heating_cta') }}
+                {{ t('suitability_heating_call_to_action') }}
               </a>
               <p v-if="data.source_values" class="source-values">
                 {{ t('source_values') }}: "{{ data.source_values }}"
