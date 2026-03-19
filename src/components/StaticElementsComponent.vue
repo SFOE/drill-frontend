@@ -32,6 +32,9 @@
         <a class="info-block-link" :href="t('WeiterInfos3Url')" target="_blank" rel="noopener">
           <span>{{ t('WeiterInfos3Title') }}</span>
         </a>
+        <a class="info-block-link" :href="t('WeiterInfos4Url')" target="_blank" rel="noopener">
+          <span>{{ t('WeiterInfos4Title') }}</span>
+        </a>
       </div>
     </div>
   </section>

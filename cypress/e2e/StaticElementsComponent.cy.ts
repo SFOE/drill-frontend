@@ -23,10 +23,11 @@ describe('StaticElementsComponent', () => {
 
   it('renders all info links correctly', () => {
     const links = [
-      { title: 'Erneuerbar Heizen', url: 'https://www.erneuerbarheizen.ch/Impulsberatung/' },
+      { title: 'Erneuerbar Heizen', url: 'https://www.energieschweiz.ch/modernisieren/heizungsersatz/' },
       { title: 'Bohrfirmen mit Gütesiegel', url: 'https://www.fws.ch/waermepumpen-spezialisten/' },
       { title: "Wärmepumpen-System-Modul (Qualitätslabel)", url: 'https://www.wp-systemmodul.ch/de/' },
       { title: 'Geothermie', url: 'https://geothermie-schweiz.ch/' },
+      { title: 'Geothermie: Energie aus dem Untergrund nutzen', url: 'https://www.energieschweiz.ch/erneuerbare-energien/geothermie/?pk_vid=e4938be939bd511f17739086528cb5de' },
     ]
 
     links.forEach((link, i) => {
