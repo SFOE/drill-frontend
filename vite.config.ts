@@ -17,14 +17,22 @@ export default defineConfig({
   },
   base: '/',
   build: {
-    rollupOptions: {
+    rolldownOptions: {
       output: {
-        manualChunks: {
-          ol: ['ol'],
-          'vue3-openlayers': ['vue3-openlayers'],
-        }
-      }
-    }
+        codeSplitting: {
+          groups: [
+            {
+              name: 'ol',
+              test: /node_modules\/ol/,
+            },
+            {
+              name: 'vue3-openlayers',
+              test: /node_modules\/vue3-openlayers/,
+            },
+          ],
+        },
+      },
+    },
   },
   server: {
     proxy: {
