@@ -65,7 +65,7 @@
       @click="toggleLegend"
     >
       <img src="@/assets/images/oblique/info_circle.svg" alt="Menu" />
-      {{ t('legend_cta') }}
+      {{ t('legend_call_to_action') }}
     </button>
 
     <!-- Legend -->

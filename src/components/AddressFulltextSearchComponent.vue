@@ -1,5 +1,5 @@
 <template>
-  <h1 class="action-title">{{ t('mainTitle') }}</h1>
+  <h1 class="action-title">{{ t('main_title') }}</h1>
   <section ref="searchContainer" class="form-group search-container">
     <div class="input-wrapper">
       <input

@@ -11,7 +11,7 @@ on:
 
 permissions:
   id-token: write
-  contents: read
+  contents: write
   pull-requests: write
 
 jobs:
@@ -113,9 +113,9 @@ jobs:
         run: |
           aws s3 cp drill-frontend.zip s3://$S3_BUCKET/drill-frontend-$TAG_NAME.zip
 
-      # Upload zip to the Github release assets
+      # Upload zip to the Github release assets (only once)
       - name: Upload release asset
-        if: github.event_name == 'release'
+        if: github.event_name == 'release' && matrix.env.name == 'prod'
         uses: softprops/action-gh-release@v1
         with:
           files: drill-frontend.zip

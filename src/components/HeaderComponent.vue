@@ -11,7 +11,7 @@
         <div class="logo-title-group">
           <img class="logo responsive-logo" alt="Swiss Logo" src="@/assets/logo.png" />
           <div class="divider"></div>
-          <h1 class="title">{{ $t('headerTitle') }}</h1>
+          <h1 class="title">{{ $t('header_title') }}</h1>
         </div>
       </div>
     </div>
