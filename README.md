@@ -30,8 +30,10 @@ git clone git@github.com:SFOE/drill-frontend.git
 ```
 
 ```sh
-npm install
+npm ci
 ```
+
+⚠️Never use ```npm install``` ⚠️
 
 ### Compile and Hot-Reload for Development
 
@@ -43,7 +45,7 @@ npm run dev
 
 ```sh
 npx npm-check-updates -u
-npm install
+npm install --ignore-scripts
 ```
 
 ### Type-Check, Compile and Minify for Production
