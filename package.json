@@ -27,7 +27,7 @@
     "vue": "^3.5.31",
     "vue-i18n": "^11.3.0",
     "vue-router": "^5.0.4",
-    "vue3-openlayers": "^12.2.0"
+    "vue3-openlayers": "^12.2.2"
   },
   "overrides": {
     "jspdf": "^4.1.0",
