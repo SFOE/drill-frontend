@@ -39,7 +39,7 @@
   "devDependencies": {
     "@pinia/testing": "^1.0.3",
     "@tsconfig/node22": "^22.0.5",
-    "@types/jsdom": "^28.0.0",
+    "@types/jsdom": "^28.0.1",
     "@types/node": "^25.5.0",
     "@vitejs/plugin-vue": "^6.0.5",
     "@vitest/eslint-plugin": "^1.6.9",
