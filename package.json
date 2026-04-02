@@ -7,6 +7,7 @@
     "node": "^20.19.0 || >=22.12.0"
   },
   "scripts": {
+    "preinstall": "node scripts/guard-install.js",
     "dev": "vite",
     "build": "run-p type-check \"build-only {@}\" --",
     "test:unit": "vitest",
@@ -30,7 +31,10 @@
   },
   "overrides": {
     "jspdf": "^4.1.0",
-    "axios": "1.13.6"
+    "axios": "1.13.6",
+    "minimatch@3": {
+      "brace-expansion": "1.1.13"
+    }
   },
   "devDependencies": {
     "@pinia/testing": "^1.0.3",

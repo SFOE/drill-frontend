@@ -9,4 +9,8 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
-    minimum-release-age: "72h"
+    cooldown:
+      default-days: 7
+      semver-major-days: 30
+      semver-minor-days: 14
+      semver-patch-days: 3
