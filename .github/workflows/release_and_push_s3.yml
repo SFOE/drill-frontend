@@ -22,6 +22,7 @@ jobs:
       github.event_name == 'pull_request' ||
       github.event_name == 'release'
     runs-on: ubuntu-latest
+    environment: prometheon-access
 
     # ----------------------------------------------------------
     # Matrix strategy to differentiate environments
