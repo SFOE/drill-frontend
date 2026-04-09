@@ -1,8 +1,8 @@
-name: Build and Push drill-frontend to S3
+name: Build, Scan and Push drill-frontend to S3
 
 on:
   pull_request:
-    types: [opened, synchronize, closed] # TEST
+    types: [closed]
     branches:
       - main
   release:
@@ -17,9 +17,8 @@ jobs:
   # Build frontend zip for each environment (matrix for backend URLs)
   # ----------------------------------------------------------
   build:
-    # (github.event_name == 'pull_request' && github.event.pull_request.merged == true) || TESTING
     if: |
-      github.event_name == 'pull_request' ||
+      (github.event_name == 'pull_request' && github.event.pull_request.merged == true) ||
       github.event_name == 'release'
     runs-on: ubuntu-latest
     environment: prometheon-access
@@ -84,7 +83,7 @@ jobs:
   # ----------------------------------------------------------
   scan-push-dev-latest:
     needs: build
-    if: github.event_name == 'pull_request' # TESTING && github.event.pull_request.merged == true
+    if: github.event_name == 'pull_request' && github.event.pull_request.merged == true
     uses: SFOE-prometheon/github-terraform-workflows/.github/workflows/s3-artifact-scan-push.yml@feat/reusable-s3-wf
     with:
       s3-artifact-name: drill-frontend
