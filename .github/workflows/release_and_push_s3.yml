@@ -1,9 +1,8 @@
-name: Build and Push to Github and S3, Deploy on Release
+name: Build and Push drill-frontend to S3
 
 on:
   pull_request:
-    types: [opened, synchronize]
-  push:
+    types: [opened, synchronize, closed] # TEST
     branches:
       - main
   release:
@@ -11,18 +10,17 @@ on:
 
 permissions:
   id-token: write
-  contents: write
-  pull-requests: write
+  contents: read
 
 jobs:
   # ----------------------------------------------------------
-  # Build and push frontend zip to S3 for PRs, main branch, and releases
+  # Build frontend zip for each environment (matrix for backend URLs)
   # ----------------------------------------------------------
-  build-and-push:
+  build:
+    if: |
+      (github.event_name == 'pull_request' && github.event.pull_request.merged == true) ||
+      github.event_name == 'release'
     runs-on: ubuntu-latest
-    outputs:
-      release-log: ${{ steps.build-and-push-release.outcome }}
-    environment: prometheon-access
 
     # ----------------------------------------------------------
     # Matrix strategy to differentiate environments
@@ -31,14 +29,9 @@ jobs:
       matrix:
         env:
           - name: dev
-            role: SFOE_DRILL_FRONTEND_PIPELINE_ROLE_DEV
-            bucket: SFOE_DRILL_FRONTEND_S3_BUCKET_DEV
             backend_url: SFOE_PROMETHEON_CLOUDFRONT_VITE_BACKEND_URL_DEV
-            
           - name: prod
-            role: SFOE_DRILL_FRONTEND_PIPELINE_ROLE_PROD
-            bucket: SFOE_DRILL_FRONTEND_S3_BUCKET_PROD
-            backend_url: SFOE_PROMETHEON_CLOUDFRONT_VITE_BACKEND_URL_PROD            
+            backend_url: SFOE_PROMETHEON_CLOUDFRONT_VITE_BACKEND_URL_PROD
 
     steps:
       # Checkout source code
@@ -58,7 +51,6 @@ jobs:
       # Build the app
       - name: Build drill-frontend
         run: |
-
           export VITE_BACKEND_URL="${{ vars[matrix.env.backend_url] }}"
           echo "Building frontend with VITE_BACKEND_URL=$VITE_BACKEND_URL"
 
@@ -76,66 +68,113 @@ jobs:
 
       # Archive build output into a zip file
       - name: Create zip archive
-        run: zip -r drill-frontend.zip dist
+        run: zip -r drill-frontend-${{ matrix.env.name }}.zip dist
 
-      # Configure AWS credentials
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
+      # Upload artifact for downstream scan-push jobs
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
         with:
-          role-to-assume: ${{ vars[matrix.env.role] }}
-          aws-region: eu-central-1  
-          
-      # Upload zip to S3 (PR)
-      - name: Upload zip to S3 (PR)
-        if: github.event_name == 'pull_request' && matrix.env.name == 'dev'
-        env:
-          S3_BUCKET: ${{ vars[matrix.env.bucket] }}
-          TAG_NAME: ${{ github.event.pull_request.number }}
-        run: |
-          aws s3 cp drill-frontend.zip s3://$S3_BUCKET/drill-frontend-$TAG_NAME.zip
+          name: drill-frontend-${{ matrix.env.name }}
+          path: drill-frontend-${{ matrix.env.name }}.zip
 
-      # Upload zip to S3 (Main branch)
-      - name: Upload zip to S3 (Main branch)
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main' && matrix.env.name == 'dev'
-        env:
-          S3_BUCKET: ${{ vars[matrix.env.bucket] }}
-          TAG_NAME: latest
-        run: |
-          aws s3 cp drill-frontend.zip s3://$S3_BUCKET/drill-frontend-$TAG_NAME.zip
+  # ----------------------------------------------------------
+  # Scan and push latest to dev on PR merge
+  # ----------------------------------------------------------
+  scan-push-dev-latest:
+    needs: build
+    if: github.event_name == 'pull_request' && github.event.pull_request.merged == true
+    uses: SFOE-prometheon/github-terraform-workflows/.github/workflows/s3-artifact-scan-push.yml@main
+    with:
+      s3-artifact-name: drill-frontend
+      artifact-name: drill-frontend-dev
+      s3-bucket: ${{ vars.SFOE_DRILL_FRONTEND_S3_BUCKET_DEV }}
+      tag-name: latest
+      aws-region: eu-central-1
+    secrets:
+      aws-role: ${{ secrets.SFOE_DRILL_FRONTEND_PIPELINE_ROLE_DEV }}
 
-      # Upload zip to S3 (release event)
-      - name: Upload zip to S3 (release event)
-        id: build-and-push-release
-        if: github.event_name == 'release'
-        env:
-          S3_BUCKET: ${{ vars[matrix.env.bucket] }}
-          TAG_NAME: ${{ github.event.release.tag_name }}
-        run: |
-          aws s3 cp drill-frontend.zip s3://$S3_BUCKET/drill-frontend-$TAG_NAME.zip
+  # ----------------------------------------------------------
+  # Scan and push release tag to dev and prod
+  # ----------------------------------------------------------
+  scan-push-dev:
+    needs: build
+    if: github.event_name == 'release'
+    uses: SFOE-prometheon/github-terraform-workflows/.github/workflows/s3-artifact-scan-push.yml@main
+    with:
+      s3-artifact-name: drill-frontend
+      artifact-name: drill-frontend-dev
+      s3-bucket: ${{ vars.SFOE_DRILL_FRONTEND_S3_BUCKET_DEV }}
+      tag-name: ${{ github.event.release.tag_name }}
+      aws-region: eu-central-1
+    secrets:
+      aws-role: ${{ secrets.SFOE_DRILL_FRONTEND_PIPELINE_ROLE_DEV }}
 
-      # Upload zip to the Github release assets (only once)
+  scan-push-prod:
+    needs: build
+    if: github.event_name == 'release'
+    uses: SFOE-prometheon/github-terraform-workflows/.github/workflows/s3-artifact-scan-push.yml@main
+    with:
+      s3-artifact-name: drill-frontend
+      artifact-name: drill-frontend-prod
+      s3-bucket: ${{ vars.SFOE_DRILL_FRONTEND_S3_BUCKET_PROD }}
+      tag-name: ${{ github.event.release.tag_name }}
+      aws-region: eu-central-1
+    secrets:
+      aws-role: ${{ secrets.SFOE_DRILL_FRONTEND_PIPELINE_ROLE_PROD }}
+
+  # ----------------------------------------------------------
+  # Upload zip to the Github release assets
+  # ----------------------------------------------------------
+  upload-release-asset:
+    needs: scan-push-prod
+    if: github.event_name == 'release'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: drill-frontend-prod
+
+      - name: Rename artifact for release
+        run: mv drill-frontend-prod.zip drill-frontend.zip
+
       - name: Upload release asset
-        if: github.event_name == 'release' && matrix.env.name == 'prod'
         uses: softprops/action-gh-release@v1
         with:
           files: drill-frontend.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-
+  # ----------------------------------------------------------
+  # Push summary
+  # ----------------------------------------------------------
+  post-push:
+    needs: [scan-push-dev-latest, scan-push-dev, scan-push-prod]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print push summary
+        run: |
+          echo "## Push Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Environment | Version | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|-------------|-----|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Dev (Latest) | ${{ needs.scan-push-dev-latest.outputs.s3-key || 'N/A' }} | ${{ needs.scan-push-dev-latest.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Dev (Release) | ${{ needs.scan-push-dev.outputs.s3-key || 'N/A' }} | ${{ needs.scan-push-dev.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Prod (Release) | ${{ needs.scan-push-prod.outputs.s3-key || 'N/A' }} | ${{ needs.scan-push-prod.result }} |" >> $GITHUB_STEP_SUMMARY
 
   # ----------------------------------------------------------
   # Automated deployment upon release
   # ----------------------------------------------------------
-  deploy-image:            
+  deploy-image:
     name: deploy-image
-    needs: build-and-push
+    needs: [scan-push-dev, scan-push-prod]
     runs-on: ubuntu-latest
-    if: (needs.build-and-push.outputs.release-log == 'success') && (github.event_name == 'release')
+    if: github.event_name == 'release'
     environment: prometheon-access
     env:
-          VERSION_TAG: ${{ github.event.release.tag_name }}
-    
+      VERSION_TAG: ${{ github.event.release.tag_name }}
+
     # ----------------------------------------------------------
     # Matrix strategy to differentiate environments
     # ----------------------------------------------------------
@@ -143,7 +182,7 @@ jobs:
       matrix:
         env:
           - name: dev
-          - name: prod          
+          - name: prod
 
     steps:
       # ----------------------------------------------------------
@@ -153,9 +192,9 @@ jobs:
         id: app-auth
         uses: actions/create-github-app-token@v2
         with:
-            app-id: ${{ secrets.GH_APP_ID }}
-            private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
-            owner: SFOE-Prometheon
+          app-id: ${{ secrets.GH_APP_ID }}
+          private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+          owner: SFOE-Prometheon
 
       # ----------------------------------------------------------
       # Checkout Terraform Repo using GitHub App Token
@@ -163,49 +202,48 @@ jobs:
       - name: Clone Terraform Repo
         uses: actions/checkout@v4
         with:
-            repository: SFOE-prometheon/prometheon-drillcheck-${{ matrix.env.name }}
-            ref: main
-            token: ${{ steps.app-auth.outputs.token }}
-            path: tf-repo
+          repository: SFOE-prometheon/prometheon-drillcheck-${{ matrix.env.name }}
+          ref: main
+          token: ${{ steps.app-auth.outputs.token }}
+          path: tf-repo
 
       # ----------------------------------------------------------
       # Update Version
       # ----------------------------------------------------------
-      - name: Update version in Terraform repo        
+      - name: Update version in Terraform repo
         run: |
-            cd tf-repo
-            sed -i "s/\"frontend_app_version\": \".*\"/\"frontend_app_version\": \"${{ env.VERSION_TAG }}\"/" deploy.auto.tfvars.json
+          cd tf-repo
+          sed -i "s/\"frontend_app_version\": \".*\"/\"frontend_app_version\": \"${{ env.VERSION_TAG }}\"/" deploy.auto.tfvars.json
 
       # ----------------------------------------------------------
       # Commit & Push/PR based on environment
       # ----------------------------------------------------------
       - name: Create branch and commit changes
         run: |
-            cd tf-repo
-            git config user.name "GitHub Actions"
-            git config user.email "noreply@github.com"
-            git checkout -b deploy/frontend-${{ env.VERSION_TAG }}
-            git add deploy.auto.tfvars.json
-            git commit -m "Deploy frontend version ${{ env.VERSION_TAG }}"
-            
+          cd tf-repo
+          git config user.name "GitHub Actions"
+          git config user.email "noreply@github.com"
+          git checkout -b deploy/frontend-${{ env.VERSION_TAG }}
+          git add deploy.auto.tfvars.json
+          git commit -m "Deploy frontend version ${{ env.VERSION_TAG }}"
+
       - name: Push to main (Dev environment)
         if: matrix.env.name == 'dev'
         run: |
-            cd tf-repo
-            git push origin deploy/frontend-${{ env.VERSION_TAG }}:main
+          cd tf-repo
+          git push origin deploy/frontend-${{ env.VERSION_TAG }}:main
         env:
-            GITHUB_TOKEN: ${{ steps.app-auth.outputs.token }}
+          GITHUB_TOKEN: ${{ steps.app-auth.outputs.token }}
 
       - name: Create PR (Prod environment)
         if: matrix.env.name == 'prod'
         run: |
-            cd tf-repo
-            git push origin deploy/frontend-${{ env.VERSION_TAG }}
-            gh pr create \
-              --base main \
-              --head deploy/frontend-${{ env.VERSION_TAG }} \
-              --title "Deploy frontend version ${{ env.VERSION_TAG }} to prod" \
-              --body "Automated deployment PR for frontend version ${{ env.VERSION_TAG }}"
+          cd tf-repo
+          git push origin deploy/frontend-${{ env.VERSION_TAG }}
+          gh pr create \
+            --base main \
+            --head deploy/frontend-${{ env.VERSION_TAG }} \
+            --title "Deploy frontend version ${{ env.VERSION_TAG }} to prod" \
+            --body "Automated deployment PR for frontend version ${{ env.VERSION_TAG }}"
         env:
-            GITHUB_TOKEN: ${{ steps.app-auth.outputs.token }}
-
+          GITHUB_TOKEN: ${{ steps.app-auth.outputs.token }}
