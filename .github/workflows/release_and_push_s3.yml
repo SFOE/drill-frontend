@@ -2,7 +2,7 @@ name: Build, Scan and Push drill-frontend to S3
 
 on:
   pull_request:
-    types: [opened, synchronize, closed]
+    types: [closed]
     branches:
       - main
   release:
@@ -33,7 +33,7 @@ jobs:
           - name: dev
             backend_url: SFOE_PROMETHEON_CLOUDFRONT_VITE_BACKEND_URL_DEV
           - name: prod
-            backend_url: vars.SFOE_PROMETHEON_CLOUDFRONT_VITE_BACKEND_URL_PROD
+            backend_url: SFOE_PROMETHEON_CLOUDFRONT_VITE_BACKEND_URL_PROD
 
     steps:
       # Checkout source code
