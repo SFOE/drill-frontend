@@ -84,7 +84,7 @@ jobs:
   scan-push-dev-latest:
     needs: build
     if: github.event_name == 'pull_request' && github.event.pull_request.merged == true
-    uses: SFOE-prometheon/github-terraform-workflows/.github/workflows/s3-artifact-scan-push.yml@v5
+    uses: SFOE-prometheon/github-terraform-workflows/.github/workflows/s3-artifact-scan-push.yml@v7
     with:
       s3-artifact-name: drill-frontend
       artifact-name: drill-frontend-dev
@@ -101,7 +101,7 @@ jobs:
   scan-push-dev:
     needs: build
     if: github.event_name == 'release'
-    uses: SFOE-prometheon/github-terraform-workflows/.github/workflows/s3-artifact-scan-push.yml@v5
+    uses: SFOE-prometheon/github-terraform-workflows/.github/workflows/s3-artifact-scan-push.yml@v7
     with:
       s3-artifact-name: drill-frontend
       artifact-name: drill-frontend-dev
@@ -115,7 +115,7 @@ jobs:
   scan-push-prod:
     needs: build
     if: github.event_name == 'release'
-    uses: SFOE-prometheon/github-terraform-workflows/.github/workflows/s3-artifact-scan-push.yml@v5
+    uses: SFOE-prometheon/github-terraform-workflows/.github/workflows/s3-artifact-scan-push.yml@v7
     with:
       s3-artifact-name: drill-frontend
       artifact-name: drill-frontend-prod
