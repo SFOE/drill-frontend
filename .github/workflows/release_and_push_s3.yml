@@ -29,9 +29,9 @@ jobs:
       matrix:
         env:
           - name: dev
-            backend_url: vars.SFOE_PROMETHEON_CLOUDFRONT_VITE_BACKEND_URL_DEV
+            backend_url: ${{ vars.SFOE_PROMETHEON_CLOUDFRONT_VITE_BACKEND_URL_DEV }}
           - name: prod
-            backend_url: vars.SFOE_PROMETHEON_CLOUDFRONT_VITE_BACKEND_URL_PROD
+            backend_url: ${{ vars.SFOE_PROMETHEON_CLOUDFRONT_VITE_BACKEND_URL_PROD }}
 
     steps:
       # Checkout source code
