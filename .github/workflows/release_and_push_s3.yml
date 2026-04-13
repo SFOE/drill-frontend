@@ -2,7 +2,7 @@ name: Build, Scan and Push drill-frontend to S3
 
 on:
   pull_request:
-    types: [closed]
+    types: [opened, synchronize, closed]
     branches:
       - main
   release:
@@ -18,8 +18,10 @@ jobs:
   # ----------------------------------------------------------
   build:
     if: |
-      (github.event_name == 'pull_request' && github.event.pull_request.merged == true) ||
-      github.event_name == 'release'
+      github.event_name == 'pull_request'
+    # if: |
+    #  (github.event_name == 'pull_request' && github.event.pull_request.merged == true) ||
+    #  github.event_name == 'release'
     runs-on: ubuntu-latest
 
     # ----------------------------------------------------------
@@ -29,9 +31,9 @@ jobs:
       matrix:
         env:
           - name: dev
-            backend_url: ${{ vars.SFOE_PROMETHEON_CLOUDFRONT_VITE_BACKEND_URL_DEV }}
+            backend_url: SFOE_PROMETHEON_CLOUDFRONT_VITE_BACKEND_URL_DEV
           - name: prod
-            backend_url: ${{ vars.SFOE_PROMETHEON_CLOUDFRONT_VITE_BACKEND_URL_PROD }}
+            backend_url: vars.SFOE_PROMETHEON_CLOUDFRONT_VITE_BACKEND_URL_PROD
 
     steps:
       # Checkout source code
