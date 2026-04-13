@@ -10,7 +10,7 @@ on:
 
 permissions:
   id-token: write
-  contents: read
+  contents: write
 
 jobs:
   # ----------------------------------------------------------
@@ -21,7 +21,6 @@ jobs:
       (github.event_name == 'pull_request' && github.event.pull_request.merged == true) ||
       github.event_name == 'release'
     runs-on: ubuntu-latest
-    environment: prometheon-access
 
     # ----------------------------------------------------------
     # Matrix strategy to differentiate environments
@@ -30,9 +29,9 @@ jobs:
       matrix:
         env:
           - name: dev
-            backend_url: SFOE_PROMETHEON_CLOUDFRONT_VITE_BACKEND_URL_DEV
+            backend_url: vars.SFOE_PROMETHEON_CLOUDFRONT_VITE_BACKEND_URL_DEV
           - name: prod
-            backend_url: SFOE_PROMETHEON_CLOUDFRONT_VITE_BACKEND_URL_PROD
+            backend_url: vars.SFOE_PROMETHEON_CLOUDFRONT_VITE_BACKEND_URL_PROD
 
     steps:
       # Checkout source code
@@ -175,7 +174,6 @@ jobs:
     needs: [scan-push-dev, scan-push-prod]
     runs-on: ubuntu-latest
     if: github.event_name == 'release'
-    environment: prometheon-access
     env:
       VERSION_TAG: ${{ github.event.release.tag_name }}
 
