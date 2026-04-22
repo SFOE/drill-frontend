@@ -55,7 +55,7 @@
     "jsdom": "^29.0.2",
     "json-server": "^1.0.0-beta.15",
     "npm-run-all2": "^8.0.4",
-    "prettier": "3.8.2",
+    "prettier": "3.8.3",
     "start-server-and-test": "^3.0.2",
     "typescript": "~6.0.3",
     "vite": "^8.0.8",
