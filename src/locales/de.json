@@ -16,6 +16,8 @@
   "suitability_level_5_short": "Für diesen Kanton sind keine Informationen verfügbar",
   "suitability_level_6": "Die Anwendung funktioniert nur für Schweizer Kantone.",
   "suitability_level_6_short": "Die ausgewählten Koordinaten befinden sich nicht in der Schweiz",
+  "suitability_level_98": "Der Geodienst des ausgewählten Kantons ({canton}) ist vorübergehend nicht verfügbar. Bitte versuchen Sie es später erneut. Dies ist kein Fehler der Anwendung. Sie können sich weiterhin an die zuständige kantonale Stelle wenden.",
+  "suitability_level_98_short": "Kantonaler Geodienst vorübergehend nicht verfügbar ({canton})",
   "suitability_level_99": "Versuchen Sie es erneut oder kontaktieren Sie uns über unsere Kontaktdaten unten auf der Seite",
   "suitability_level_99_short": "Anwendungsfehler",
   "suitability_level_4_short": "Angabe zur Eignung an diesem Standort nicht verfügbar",

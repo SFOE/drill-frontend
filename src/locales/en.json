@@ -17,6 +17,8 @@
   "suitability_level_5_short": "No information available for this canton",
   "suitability_level_6": "The application only works for Swiss cantons.",
   "suitability_level_6_short": "The selected coordinates are not in Switzerland",
+  "suitability_level_98": "The geoservice of the selected canton ({canton}) is temporarily unavailable. Please try again later. This does not indicate an error in the application. You can still get in touch with the competent cantonal office.",
+  "suitability_level_98_short": "Cantonal geoservice temporarily unavailable ({canton})",
   "suitability_level_99": "Please try again or contact us using the contact details at the bottom of the page",
   "suitability_level_99_short": "Application error",
   "suitability_heating_call_to_action": "Renewable heating",
