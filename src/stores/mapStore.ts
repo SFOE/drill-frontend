@@ -107,6 +107,13 @@ export const useMapStore = defineStore('map', () => {
         setGroundCategoryError(true)
         setSelectedCanton(null)
         setCoordinates({ east_coord: east_coord, north_coord: north_coord })
+        // External geoservice unavailable — preserve canton identifier for user-facing message
+      } else if (data.ground_category.harmonized_value === 98) {
+        setWmsConfig(data.canton_config as CantonWmsConfig)
+        setGroundCategory(data.ground_category)
+        setGroundCategoryError(true)
+        setSelectedCanton(data.canton)
+        setCoordinates({ east_coord: east_coord, north_coord: north_coord })
         // In all other cases, keep same behaviour
       } else {
         setWmsConfig(data.canton_config as CantonWmsConfig)

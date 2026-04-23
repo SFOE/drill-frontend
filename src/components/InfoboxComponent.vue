@@ -22,7 +22,25 @@
           </button>
           <div v-show="isExpanded" class="details">
             <p v-html="suitabilityInfo.body"></p>
-            <div v-if="mapStore.wmsConfig" class="geoportal-link-container">
+            <div
+              v-if="data?.harmonized_value === 98 && mapStore.wmsConfig"
+              class="geoportal-link-container"
+            >
+              <div class="links-container">
+                <a
+                  :href="mapStore.wmsConfig.cantonal_energy_service_url"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="link-with-icon"
+                >
+                  {{ t('cantonal_energy_service_call_to_action') }}
+                </a>
+              </div>
+            </div>
+            <div
+              v-if="mapStore.wmsConfig && data?.harmonized_value !== 98"
+              class="geoportal-link-container"
+            >
               <p class="infobox-information-title">{{ t('infobox_information_title') }}:</p>
               <div class="links-container">
                 <a
@@ -59,7 +77,25 @@
 
         <div class="desktop-details" v-else>
           <p v-html="suitabilityInfo.body"></p>
-          <div v-if="mapStore.wmsConfig" class="geoportal-link-container">
+          <div
+            v-if="data?.harmonized_value === 98 && mapStore.wmsConfig"
+            class="geoportal-link-container"
+          >
+            <div class="links-container">
+              <a
+                :href="mapStore.wmsConfig.cantonal_energy_service_url"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="link-with-icon"
+              >
+                {{ t('cantonal_energy_service_call_to_action') }}
+              </a>
+            </div>
+          </div>
+          <div
+            v-if="mapStore.wmsConfig && data?.harmonized_value !== 98"
+            class="geoportal-link-container"
+          >
             <p class="infobox-information-title">{{ t('infobox_information_title') }}:</p>
             <div class="links-container">
               <a
@@ -131,14 +167,16 @@ const suitabilityInfo = computed(() => {
     4: { color: 'blue', icon: IconBlue },
     5: { color: 'blue', icon: IconBlue },
     6: { color: 'blue', icon: IconPurple },
+    98: { color: 'purple', icon: IconOrange },
     99: { color: 'purple', icon: IconPurple },
   }
   const key = `suitability_level_${harmonized_value}`
+  const canton = mapStore.selectedCanton ?? ''
   return {
     color: mapping[harmonized_value]?.color ?? 'blue',
     icon: mapping[harmonized_value]?.icon ?? IconBlue,
-    title: t(`${key}_short`),
-    body: t(key),
+    title: t(`${key}_short`, { canton }),
+    body: t(key, { canton }),
     source_values: data.value.source_values,
   }
 })
