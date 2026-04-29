@@ -2,7 +2,6 @@ publiccodeYmlVersion: 0.5.0
 name: drill-frontend
 applicationSuite: drillcheck
 url: https://github.com/SFOE/drill-frontend
-landingURL: https://drillcheck.prometheon.bfe.admin.ch
 isBasedOn: https://vue3openlayers.netlify.app/, https://vuejs.org/,
   https://docs.geo.admin.ch/
 softwareVersion: v0.1.10
