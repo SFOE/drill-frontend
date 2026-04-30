@@ -4,7 +4,7 @@ applicationSuite: drillcheck
 url: https://github.com/SFOE/drill-frontend
 isBasedOn: https://vue3openlayers.netlify.app/, https://vuejs.org/,
   https://docs.geo.admin.ch/
-softwareVersion: v0.1.10
+softwareVersion: v0.1.26
 releaseDate: 2026-03-18
 platforms:
   - web
@@ -14,6 +14,7 @@ developmentStatus: stable
 softwareType: standalone/web
 organisation:
   uri: https://www.bfe.admin.ch
+  name: Bundesamt für Energie (BFE)
 description:
   en:
     localisedName: drill-frontend
