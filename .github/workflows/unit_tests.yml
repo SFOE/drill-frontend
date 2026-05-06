@@ -1,0 +1,33 @@
+name: CI - Unit tests & type check
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  unit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Type check
+        run: npm run type-check
+
+      - name: Unit tests
+        run: npx vitest --run
+
+      - name: Lint
+        run: npx eslint . --cache
