@@ -76,6 +76,7 @@ jobs:
         with:
           name: drill-frontend-${{ matrix.env.name }}
           path: drill-frontend-${{ matrix.env.name }}.zip
+          retention-days: 1
 
   # ----------------------------------------------------------
   # Scan and push latest to dev on PR merge
