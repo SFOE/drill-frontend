@@ -68,6 +68,11 @@ const locales = {
 .language-switcher select:focus {
   outline: 2px solid #fff;
   outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+.language-switcher select:focus:not(:focus-visible) {
+  outline: none;
 }
 
 .language-switcher option {
