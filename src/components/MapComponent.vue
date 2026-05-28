@@ -86,7 +86,8 @@
 </template>
 
 <script setup lang="ts">
-// @ts-nocheck — vue3-openlayers individual imports have stricter template types
+// @ts-nocheck
+// vue3-openlayers individual imports have stricter template types
 // that conflict with our ol version's types. Runtime behavior is correct.
 import { ref, watch, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
