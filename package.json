@@ -34,7 +34,8 @@
     "axios": "1.16.0",
     "minimatch@3": {
       "brace-expansion": "1.1.13"
-    }
+    },
+    "qs": "6.15.2"
   },
   "devDependencies": {
     "@pinia/testing": "^1.0.3",
