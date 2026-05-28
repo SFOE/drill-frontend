@@ -26,8 +26,8 @@ jobs:
       - name: Type check
         run: npm run type-check
 
-      - name: Unit tests
-        run: npx vitest --run
+      - name: Unit tests with coverage
+        run: npx vitest --run --coverage
 
       - name: Lint
         run: npx eslint . --cache

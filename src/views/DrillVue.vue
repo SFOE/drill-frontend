@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { useRoute } from 'vue-router'
-import { watch } from 'vue'
+import { watch, defineAsyncComponent } from 'vue'
 import { useLanguageStore } from '@/stores/languageStore'
 
-import MapComponent from '@/components/MapComponent.vue'
+const MapComponent = defineAsyncComponent(() => import('@/components/MapComponent.vue'))
 import AddressFulltextSearchComponent from '@/components/AddressFulltextSearchComponent.vue'
 import InfoboxComponent from '@/components/InfoboxComponent.vue'
 import StaticElementsComponent from '@/components/StaticElementsComponent.vue'
@@ -29,11 +29,11 @@ watch(
 
 <template>
   <HeaderComponent />
-  <div class="app-container">
+  <main class="app-container">
     <AddressFulltextSearchComponent />
     <InfoboxComponent />
     <MapComponent />
     <StaticElementsComponent />
-  </div>
+  </main>
   <FooterComponent />
 </template>

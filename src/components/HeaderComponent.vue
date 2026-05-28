@@ -9,7 +9,7 @@
     <div class="bottom-header-box">
       <div class="app-container bottom-header-inner">
         <div class="logo-title-group">
-          <img class="logo responsive-logo" alt="Swiss Logo" src="@/assets/logo.png" />
+          <img class="logo responsive-logo" alt="Swiss Logo" src="@/assets/logo.png" width="200" height="68" fetchpriority="high" />
           <div class="divider"></div>
           <h1 class="title">{{ $t('header_title') }}</h1>
         </div>

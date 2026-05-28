@@ -9,8 +9,8 @@
 
       <div class="text">
         <h2 v-html="suitabilityInfo.title"></h2>
-        <p v-if="mapStore.selectedAdress" class="selected-address">
-          {{ mapStore.selectedAdress }}
+        <p v-if="searchStore.selectedAddress" class="selected-address">
+          {{ searchStore.selectedAddress }}
         </p>
         <div class="mobile-collapse-wrapper" v-if="isMobile">
           <button class="expand-cta" @click="toggleExpanded">
@@ -43,6 +43,7 @@
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useMapStore } from '@/stores/mapStore'
+import { useSearchStore } from '@/stores/searchStore'
 import { useDevice } from '@/composables/useDevice'
 import InfoboxLinksComponent from '@/components/InfoboxLinksComponent.vue'
 import LoadingSpinner from '@/components/LoadingSpinner.vue'
@@ -55,6 +56,7 @@ import IconPurple from '@/assets/images/oblique/wrench.svg?url'
 
 const { t } = useI18n()
 const mapStore = useMapStore()
+const searchStore = useSearchStore()
 
 const isExpanded = ref(false)
 

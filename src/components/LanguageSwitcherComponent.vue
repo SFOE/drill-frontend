@@ -1,6 +1,7 @@
 <template>
   <div class="language-switcher">
-    <select v-model="languageStore.currentLocale">
+    <label for="language-select" class="visually-hidden">Language</label>
+    <select id="language-select" v-model="languageStore.currentLocale">
       <option v-for="(label, locale) in locales" :key="locale" :value="locale">
         {{ label }}
       </option>
@@ -28,17 +29,31 @@ const locales = {
   font-size: 14px;
 }
 
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 .language-switcher select {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
 
-  padding: 6px 36px 6px 12px;
+  padding: 10px 36px 10px 12px;
+  min-width: 48px;
+  min-height: 48px;
   background-color: transparent;
-  color: #000; /* black text */
+  color: #000;
   font-weight: 600;
   border: none;
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
   font-size: 14px;
   cursor: pointer;
 
@@ -51,7 +66,8 @@ const locales = {
 }
 
 .language-switcher select:focus {
-  outline: none;
+  outline: 2px solid #fff;
+  outline-offset: 2px;
 }
 
 .language-switcher option {

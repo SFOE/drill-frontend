@@ -1,7 +1,5 @@
-import axios from 'axios'
+import { geoAdminHttp } from '@/services/http'
 import type { Coordinates } from '@/types/wms'
-
-const BASE_URL = 'https://api3.geo.admin.ch/rest/services/ech/MapServer/identify'
 
 // Define types for better TS support
 interface GeoAdminResult {
@@ -25,18 +23,21 @@ export const useGeoAdmin = () => {
     mapSize: [number, number],
   ): Promise<string | null> => {
     try {
-      const params = new URLSearchParams({
-        geometryType: 'esriGeometryPoint',
-        geometry: `${east_coord},${north_coord}`,
-        imageDisplay: `${mapSize[0]},${mapSize[1]},96`,
-        mapExtent: `${extent[0]},${extent[1]},${extent[2]},${extent[3]}`,
-        tolerance: '15',
-        sr: '2056',
-        layers: 'all:ch.bfs.gebaeude_wohnungs_register',
-        returnGeometry: 'false',
-      })
-
-      const response = await axios.get<GeoAdminResponse>(`${BASE_URL}?${params.toString()}`)
+      const response = await geoAdminHttp.get<GeoAdminResponse>(
+        '/rest/services/ech/MapServer/identify',
+        {
+          params: {
+            geometryType: 'esriGeometryPoint',
+            geometry: `${east_coord},${north_coord}`,
+            imageDisplay: `${mapSize[0]},${mapSize[1]},96`,
+            mapExtent: `${extent[0]},${extent[1]},${extent[2]},${extent[3]}`,
+            tolerance: '15',
+            sr: '2056',
+            layers: 'all:ch.bfs.gebaeude_wohnungs_register',
+            returnGeometry: 'false',
+          },
+        },
+      )
       const data = response.data
 
       if (!data?.results || data.results.length === 0) {
@@ -61,7 +62,6 @@ export const useGeoAdmin = () => {
 
       if (addresses.length === 0) return null
 
-      // Prepend translated "address found" key
       return `${addresses.join(' - ')}`
     } catch {
       return null

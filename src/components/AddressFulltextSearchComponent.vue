@@ -7,8 +7,13 @@
         type="text"
         class="form-control"
         data-cy="address-search-input"
-        v-model="mapStore.searchQuery"
+        v-model="searchStore.searchQuery"
         :placeholder="t('search_placeholder')"
+        role="combobox"
+        aria-autocomplete="list"
+        :aria-expanded="searchStore.searchResults.length > 0"
+        aria-controls="address-listbox"
+        :aria-activedescendant="hoverIndex !== null && searchStore.searchResults.length > 0 ? `address-option-${hoverIndex}` : undefined"
         @input="onInput"
         @keydown.enter.prevent="onEnter"
         @focus="onFocus"
@@ -18,10 +23,18 @@
       </button>
     </div>
 
-    <ul v-if="mapStore.searchResults.length" class="dropdown-menu show">
+    <ul
+      v-if="searchStore.searchResults.length"
+      id="address-listbox"
+      role="listbox"
+      class="dropdown-menu show"
+    >
       <li
-        v-for="(result, index) in mapStore.searchResults"
+        v-for="(result, index) in searchStore.searchResults"
+        :id="`address-option-${index}`"
         :key="result.id"
+        role="option"
+        :aria-selected="hoverIndex === index"
         class="dropdown-item"
         @click="handleSelection(result)"
         @mouseover="hoverIndex = index"
@@ -37,33 +50,56 @@
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useMapStore } from '@/stores/mapStore'
+import { useSearchStore } from '@/stores/searchStore'
 import { stripHtml } from '@/utils/stripHtml'
 import { debounce } from '@/utils/debounce'
+import { geoAdminHttp } from '@/services/http'
 import axios from 'axios'
-import type { SearchResult } from '@/stores/mapStore'
+import type { SearchResult } from '@/stores/searchStore'
 
 const { t } = useI18n()
 const mapStore = useMapStore()
+const searchStore = useSearchStore()
 
 const hoverIndex = ref<number | null>(null)
 const searchContainer = ref<HTMLElement | null>(null)
 const searchInput = ref<HTMLInputElement | null>(null)
 
+// AbortController to cancel stale address search requests
+let searchAbortController: AbortController | null = null
+
 const searchAddresses = async () => {
-  const text = mapStore.searchQuery.trim()
+  const text = searchStore.searchQuery.trim()
   if (!text) {
-    mapStore.searchResults = []
+    searchStore.searchResults = []
     return
   }
+
+  // Cancel any in-flight search before starting a new one
+  if (searchAbortController) {
+    searchAbortController.abort()
+  }
+  searchAbortController = new AbortController()
+
   try {
-    const response = await axios.get(
-      `https://api3.geo.admin.ch/rest/services/api/SearchServer?searchText=${encodeURIComponent(
-        text,
-      )}&type=locations&limit=5&origins=address&sr=2056`,
+    const response = await geoAdminHttp.get(
+      `/rest/services/api/SearchServer`,
+      {
+        params: {
+          searchText: text,
+          type: 'locations',
+          limit: 5,
+          origins: 'address',
+          sr: '2056',
+        },
+        signal: searchAbortController.signal,
+      },
     )
-    mapStore.searchResults = response.data.results as SearchResult[]
+    searchStore.searchResults = response.data.results as SearchResult[]
   } catch (error) {
-    console.error('Error fetching addresses:', error)
+    if (!axios.isCancel(error)) {
+      console.error('Error fetching addresses:', error)
+    }
   }
 }
 
@@ -79,15 +115,15 @@ const handleSelection = (selected: SearchResult) => {
   }
 
   const addressText = stripHtml(selected.attrs.label)
-  mapStore.searchQuery = addressText
-  mapStore.selectedAdress = addressText
-  mapStore.searchResults = []
+  searchStore.searchQuery = addressText
+  searchStore.selectedAddress = addressText
+  searchStore.searchResults = []
   searchInput.value?.blur()
 }
 
 const onInput = () => {
-  if (!mapStore.searchQuery.trim()) {
-    mapStore.searchResults = []
+  if (!searchStore.searchQuery.trim()) {
+    searchStore.searchResults = []
     mapStore.clearGroundCategory()
     mapStore.clearCoordinates()
     mapStore.clearSelectedCanton()
@@ -99,12 +135,12 @@ const onInput = () => {
 
 const onEnter = () => {
   const firstResult =
-    hoverIndex.value !== null ? mapStore.searchResults[hoverIndex.value] : mapStore.searchResults[0]
+    hoverIndex.value !== null ? searchStore.searchResults[hoverIndex.value] : searchStore.searchResults[0]
   if (firstResult) handleSelection(firstResult)
 }
 
 const onFocus = () => {
-  if (mapStore.searchQuery) searchAddresses()
+  if (searchStore.searchQuery) searchAddresses()
 }
 
 const clearSearch = () => {
@@ -116,29 +152,29 @@ const clearSearch = () => {
 
 const handleClickOutside = (event: MouseEvent) => {
   if (searchContainer.value && !searchContainer.value.contains(event.target as Node)) {
-    mapStore.searchResults = []
+    searchStore.searchResults = []
     hoverIndex.value = null
   }
 }
 
 const handleKeyDown = (event: KeyboardEvent) => {
-  if (!mapStore.searchResults.length) return
+  if (!searchStore.searchResults.length) return
 
   if (event.key === 'Escape') {
-    mapStore.searchResults = []
+    searchStore.searchResults = []
     hoverIndex.value = null
   }
   if (event.key === 'ArrowDown') {
     hoverIndex.value =
       hoverIndex.value === null
         ? 0
-        : Math.min(hoverIndex.value + 1, mapStore.searchResults.length - 1)
+        : Math.min(hoverIndex.value + 1, searchStore.searchResults.length - 1)
     event.preventDefault()
   }
   if (event.key === 'ArrowUp') {
     hoverIndex.value =
       hoverIndex.value === null
-        ? mapStore.searchResults.length - 1
+        ? searchStore.searchResults.length - 1
         : Math.max(hoverIndex.value - 1, 0)
     event.preventDefault()
   }
@@ -194,11 +230,13 @@ input.form-control:focus {
 .clear-btn {
   position: absolute;
   top: 50%;
-  right: 12px;
+  right: 4px;
   transform: translateY(-50%);
   background: transparent;
   border: none;
-  padding: 0;
+  padding: 12px;
+  min-width: 48px;
+  min-height: 48px;
   cursor: pointer;
   display: flex;
   align-items: center;

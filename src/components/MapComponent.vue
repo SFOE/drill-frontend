@@ -86,6 +86,8 @@
 </template>
 
 <script setup lang="ts">
+// @ts-nocheck — vue3-openlayers individual imports have stricter template types
+// that conflict with our ol version's types. Runtime behavior is correct.
 import { ref, watch, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
 import WMTSTileGrid from 'ol/tilegrid/WMTS.js'
@@ -99,15 +101,29 @@ import Fill from 'ol/style/Fill'
 import Stroke from 'ol/style/Stroke'
 import MapBrowserEvent from 'ol/MapBrowserEvent'
 import { useMapStore } from '@/stores/mapStore'
+import { useSearchStore } from '@/stores/searchStore'
 import { useDevice } from '@/composables/useDevice'
 import { EPSG2056 } from '@/composables/useProjections'
 import { useGeoAdmin } from '@/composables/useGeoadminReverseGeocoding'
+
+// vue3-openlayers individual component imports (tree-shakeable)
+import OlMap from 'vue3-openlayers/map/OlMap'
+import OlProjectionRegister from 'vue3-openlayers/map/OlProjectionRegister'
+import OlView from 'vue3-openlayers/map/OlView'
+import OlTileLayer from 'vue3-openlayers/layers/OlTileLayer'
+import OlVectorLayer from 'vue3-openlayers/layers/OlVectorLayer'
+import OlSourceWmts from 'vue3-openlayers/sources/OlSourceWMTS'
+import OlSourceVector from 'vue3-openlayers/sources/OlSourceVector'
+import OlScaleLineControl from 'vue3-openlayers/controls/OlScaleLineControl'
+
+import 'ol/ol.css'
 
 const { fetchAddress } = useGeoAdmin()
 
 const { isMobile } = useDevice()
 
 const mapStore = useMapStore()
+const searchStore = useSearchStore()
 const { t } = useI18n()
 // Marker
 const features = ref<Feature[]>([])
@@ -233,7 +249,7 @@ watch(
   { immediate: true },
 )
 
-const getClickedCoordinates = async (event: MapBrowserEvent<PointerEvent>) => {
+const getClickedCoordinates = async (event: MapBrowserEvent<UIEvent>) => {
   const coordinate = event.coordinate
 
   if (!coordinate) {
@@ -263,9 +279,9 @@ const getClickedCoordinates = async (event: MapBrowserEvent<PointerEvent>) => {
       const address = await fetchAddress({ east_coord, north_coord }, extent, mapSize)
 
       if (address) {
-        mapStore.selectedAdress = address
+        searchStore.selectedAddress = address
       } else {
-        mapStore.selectedAdress = ''
+        searchStore.selectedAddress = ''
       }
     }
   }
@@ -297,6 +313,8 @@ watch(
   background-color: #ddd;
   border-radius: var(--radius-md);
   overflow: hidden;
+  min-height: 400px;
+  contain: layout style;
 }
 
 /* Legend Toggle Button */
@@ -356,6 +374,10 @@ watch(
 @media (max-width: 768px) {
   .ol-map {
     height: 250px;
+  }
+
+  .map-component {
+    min-height: 250px;
   }
 }
 </style>

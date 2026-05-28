@@ -1,6 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { setActivePinia, createPinia } from 'pinia'
-import { createI18n } from 'vue-i18n'
 import { useLanguageStore } from '@/stores/languageStore'
 
 // Mock localStorage
@@ -22,19 +21,7 @@ const localStorageMock = (() => {
 
 Object.defineProperty(globalThis, 'localStorage', { value: localStorageMock })
 
-// We need vue-i18n to be active for the store to work
-function setupI18n() {
-  const i18n = createI18n({
-    legacy: false,
-    locale: 'de',
-    fallbackLocale: 'de',
-    messages: { de: {}, en: {}, fr: {}, it: {} },
-  })
-  // Provide the i18n instance globally so useI18n() works in the store
-  return i18n
-}
-
-// vue-i18n requires a component context for useI18n, so we mock it
+// Mock vue-i18n
 vi.mock('vue-i18n', () => {
   const locale = { value: 'de' }
   return {
@@ -42,6 +29,12 @@ vi.mock('vue-i18n', () => {
     useI18n: vi.fn(() => ({ locale })),
   }
 })
+
+// Mock @/i18n — setLocale resolves immediately in tests
+vi.mock('@/i18n', () => ({
+  default: {},
+  setLocale: vi.fn(() => Promise.resolve()),
+}))
 
 describe('languageStore', () => {
   beforeEach(() => {
@@ -59,8 +52,8 @@ describe('languageStore', () => {
     const store = useLanguageStore()
     store.currentLocale = 'fr'
 
-    // Wait for the watcher to fire
-    await new Promise((r) => setTimeout(r, 0))
+    // Wait for the async watcher to fire
+    await new Promise((r) => setTimeout(r, 10))
 
     expect(localStorageMock.setItem).toHaveBeenCalledWith('app-locale', 'fr')
   })
