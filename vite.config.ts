@@ -2,21 +2,23 @@ import { fileURLToPath, URL } from 'node:url'
 
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
-import vueDevTools from 'vite-plugin-vue-devtools'
 
 // https://vite.dev/config/
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   plugins: [
     vue(),
-    vueDevTools(),
-  ],
+    mode === 'development'
+      ? (async () => (await import('vite-plugin-vue-devtools')).default())()
+      : undefined,
+  ].filter(Boolean),
   resolve: {
     alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url))
+      '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
   base: '/',
   build: {
+    sourcemap: false,
     rolldownOptions: {
       output: {
         codeSplitting: {
@@ -39,8 +41,8 @@ export default defineConfig({
       '/api': {
         target: 'http://localhost:3000',
         changeOrigin: true,
-        rewrite: path => path.replace(/^\/api/, '')
-      }
-    }
-  }
-})
+        rewrite: (path) => path.replace(/^\/api/, ''),
+      },
+    },
+  },
+}))

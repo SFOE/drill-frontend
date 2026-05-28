@@ -107,10 +107,6 @@ const { fetchAddress } = useGeoAdmin()
 
 const { isMobile } = useDevice()
 
-watch(isMobile, (val) => {
-  console.log('Is mobile?', val)
-})
-
 const mapStore = useMapStore()
 const { t } = useI18n()
 // Marker
@@ -237,7 +233,7 @@ watch(
   { immediate: true },
 )
 
-const getClickedCoordinates = async (event: MapBrowserEvent) => {
+const getClickedCoordinates = async (event: MapBrowserEvent<PointerEvent>) => {
   const coordinate = event.coordinate
 
   if (!coordinate) {

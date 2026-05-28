@@ -6,6 +6,7 @@ import { createI18n } from 'vue-i18n'
 import router from '@/router'
 
 import App from '@/App.vue'
+import { wakeUpLambda } from '@/stores/mapStore'
 
 import en from '@/locales/en.json'
 import fr from '@/locales/fr.json'
@@ -44,6 +45,9 @@ app.use(i18n)
 app.use(router)
 
 app.mount('#app')
+
+// Warm up the Lambda backend after app is mounted
+wakeUpLambda()
 
 watch(
   () => i18n.global.locale.value,

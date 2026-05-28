@@ -12,7 +12,6 @@
         @input="onInput"
         @keydown.enter.prevent="onEnter"
         @focus="onFocus"
-        @blur="onBlur"
       />
       <button type="button" class="clear-btn" @click="clearSearch" aria-label="Clear search">
         <img src="@/assets/images/oblique/xmark.svg" alt="Clear" />
@@ -38,6 +37,8 @@
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useMapStore } from '@/stores/mapStore'
+import { stripHtml } from '@/utils/stripHtml'
+import { debounce } from '@/utils/debounce'
 import axios from 'axios'
 import type { SearchResult } from '@/stores/mapStore'
 
@@ -47,12 +48,6 @@ const mapStore = useMapStore()
 const hoverIndex = ref<number | null>(null)
 const searchContainer = ref<HTMLElement | null>(null)
 const searchInput = ref<HTMLInputElement | null>(null)
-
-const stripHtml = (html: string) => {
-  const div = document.createElement('div')
-  div.innerHTML = html
-  return (div.textContent || div.innerText || '').replace(/\s?#\s?/g, ' ').trim()
-}
 
 const searchAddresses = async () => {
   const text = mapStore.searchQuery.trim()
@@ -71,6 +66,8 @@ const searchAddresses = async () => {
     console.error('Error fetching addresses:', error)
   }
 }
+
+const debouncedSearch = debounce(searchAddresses, 300)
 
 const handleSelection = (selected: SearchResult) => {
   const east_coord = Number(selected.attrs.y)
@@ -97,7 +94,7 @@ const onInput = () => {
     mapStore.clearWmsConfig()
     return
   }
-  searchAddresses()
+  debouncedSearch()
 }
 
 const onEnter = () => {
@@ -109,8 +106,6 @@ const onEnter = () => {
 const onFocus = () => {
   if (mapStore.searchQuery) searchAddresses()
 }
-
-const onBlur = () => {}
 
 const clearSearch = () => {
   mapStore.clearSearchState()

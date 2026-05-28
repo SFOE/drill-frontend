@@ -22,111 +22,21 @@
           </button>
           <div v-show="isExpanded" class="details">
             <p v-html="suitabilityInfo.body"></p>
-            <div
-              v-if="data?.harmonized_value === 98 && mapStore.wmsConfig"
-              class="geoportal-link-container"
-            >
-              <div class="links-container">
-                <a
-                  :href="mapStore.wmsConfig.cantonal_energy_service_url"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="link-with-icon"
-                >
-                  {{ t('cantonal_energy_service_call_to_action') }}
-                </a>
-              </div>
-            </div>
-            <div
-              v-if="mapStore.wmsConfig && data?.harmonized_value !== 98"
-              class="geoportal-link-container"
-            >
-              <p class="infobox-information-title">{{ t('infobox_information_title') }}:</p>
-              <div class="links-container">
-                <a
-                  :href="mapStore.wmsConfig.cantonal_energy_service_url"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="link-with-icon"
-                >
-                  {{ t('cantonal_energy_service_call_to_action') }}
-                </a>
-                <a
-                  :href="mapStore.wmsConfig.thematic_geoportal_url"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="link-with-icon"
-                >
-                  {{ t('thematic_geoportal_call_to_action') }}
-                </a>
-                <a
-                  :href="t('suitability_heating_url')"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="link-with-icon"
-                >
-                  {{ t('suitability_heating_call_to_action') }}
-                </a>
-                <p v-if="data.source_values" class="source-values">
-                  {{ t('source_values') }}: "{{ data.source_values }}"
-                </p>
-              </div>
-            </div>
+            <InfoboxLinksComponent
+              :harmonized-value="data.harmonized_value"
+              :wms-config="mapStore.wmsConfig"
+              :source-values="data.source_values"
+            />
           </div>
         </div>
 
         <div class="desktop-details" v-else>
           <p v-html="suitabilityInfo.body"></p>
-          <div
-            v-if="data?.harmonized_value === 98 && mapStore.wmsConfig"
-            class="geoportal-link-container"
-          >
-            <div class="links-container">
-              <a
-                :href="mapStore.wmsConfig.cantonal_energy_service_url"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="link-with-icon"
-              >
-                {{ t('cantonal_energy_service_call_to_action') }}
-              </a>
-            </div>
-          </div>
-          <div
-            v-if="mapStore.wmsConfig && data?.harmonized_value !== 98"
-            class="geoportal-link-container"
-          >
-            <p class="infobox-information-title">{{ t('infobox_information_title') }}:</p>
-            <div class="links-container">
-              <a
-                :href="mapStore.wmsConfig.cantonal_energy_service_url"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="link-with-icon"
-              >
-                {{ t('cantonal_energy_service_call_to_action') }}
-              </a>
-              <a
-                :href="mapStore.wmsConfig.thematic_geoportal_url"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="link-with-icon"
-              >
-                {{ t('thematic_geoportal_call_to_action') }}
-              </a>
-              <a
-                :href="t('suitability_heating_url')"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="link-with-icon"
-              >
-                {{ t('suitability_heating_call_to_action') }}
-              </a>
-              <p v-if="data.source_values" class="source-values">
-                {{ t('source_values') }}: "{{ data.source_values }}"
-              </p>
-            </div>
-          </div>
+          <InfoboxLinksComponent
+            :harmonized-value="data.harmonized_value"
+            :wms-config="mapStore.wmsConfig"
+            :source-values="data.source_values"
+          />
         </div>
       </div>
     </div>
@@ -138,6 +48,7 @@ import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useMapStore } from '@/stores/mapStore'
 import { useDevice } from '@/composables/useDevice'
+import InfoboxLinksComponent from '@/components/InfoboxLinksComponent.vue'
 
 import IconGreen from '@/assets/images/oblique/checkmark.svg?url'
 import IconOrange from '@/assets/images/oblique/exclamation.svg?url'
@@ -246,30 +157,6 @@ watch(data, () => {
   color: #fff;
 }
 
-.links-container {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.link-with-icon {
-  display: inline-flex;
-  align-items: center;
-  text-decoration: none;
-  color: #0073e6;
-  font-size: 1rem;
-}
-
-.link-with-icon:hover {
-  color: #005bb5;
-}
-
-.source-values {
-  font-size: 0.75rem;
-  color: #757575;
-  margin-top: 0.5rem;
-}
-
 .green {
   border-color: #3ff069;
 }
@@ -345,14 +232,6 @@ watch(data, () => {
   .info-box .text p.selected-address {
     text-align: center;
     width: 100%;
-  }
-
-  .links-container {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center; /* ⬅️ centers links horizontally */
-    text-align: center;
   }
 }
 </style>
