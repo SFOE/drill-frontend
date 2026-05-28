@@ -1,10 +1,6 @@
 <template>
   <section>
-    <div v-if="mapStore.loadingGroundCategory" class="loading-overlay">
-      <div class="spinner-box">
-        <div class="spinner"></div>
-      </div>
-    </div>
+    <LoadingSpinner v-if="mapStore.loadingGroundCategory" />
 
     <div v-else-if="data" :class="['info-box', suitabilityInfo.color]">
       <div class="icon">
@@ -49,6 +45,7 @@ import { useI18n } from 'vue-i18n'
 import { useMapStore } from '@/stores/mapStore'
 import { useDevice } from '@/composables/useDevice'
 import InfoboxLinksComponent from '@/components/InfoboxLinksComponent.vue'
+import LoadingSpinner from '@/components/LoadingSpinner.vue'
 
 import IconGreen from '@/assets/images/oblique/checkmark.svg?url'
 import IconOrange from '@/assets/images/oblique/exclamation.svg?url'
@@ -105,12 +102,11 @@ watch(data, () => {
   align-items: flex-start;
   width: 100%;
   padding: 1rem;
-  border-radius: 8px;
-  color: #333;
+  border-radius: var(--radius-md);
+  color: var(--color-text);
   margin: 1rem 0;
   border: 2px solid transparent;
-  background-color: #fff;
-  box-sizing: border-box;
+  background-color: var(--color-bg);
 }
 
 .info-box .icon {
@@ -145,73 +141,32 @@ watch(data, () => {
   margin-top: 0.5rem;
   padding: 0.25rem 0.5rem;
   font-size: 0.9rem;
-  border: 1px solid #2f4356;
-  border-radius: 4px;
-  background: #fff;
-  color: #2f4356;
+  border: 1px solid var(--color-primary);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg);
+  color: var(--color-primary);
   cursor: pointer;
 }
 
 .expand-cta:hover {
-  background: #2f4356;
+  background: var(--color-primary);
   color: #fff;
 }
 
 .green {
-  border-color: #3ff069;
+  border-color: var(--color-green);
 }
 .orange {
-  border-color: #fd9846;
+  border-color: var(--color-orange);
 }
 .red {
-  border-color: #ff0000;
+  border-color: var(--color-red);
 }
 .blue {
-  border-color: #88bbf2;
+  border-color: var(--color-blue);
 }
 .purple {
-  border-color: #b036e5;
-}
-
-.loading-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 9999;
-}
-
-.spinner-box {
-  position: absolute;
-  top: 30%;
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: rgba(255, 255, 255, 0.9);
-  border-radius: 16px;
-  padding: 40px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.spinner {
-  border: 4px solid rgba(47, 67, 86, 0.3);
-  border-top: 4px solid #2f4356;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
+  border-color: var(--color-purple);
 }
 
 @media (max-width: 768px) {

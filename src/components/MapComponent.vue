@@ -289,13 +289,13 @@ watch(
 
 .map-info {
   font-size: 0.9rem;
-  color: #757575;
+  color: var(--color-muted);
 }
 
 .map-component {
   flex: 1;
   background-color: #ddd;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   overflow: hidden;
 }
 
@@ -304,9 +304,9 @@ watch(
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  background-color: #ffffff;
-  border: 1px solid #ccc;
-  border-radius: 8px;
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
   padding: 0.5rem 1rem;
   cursor: pointer;
   font-weight: bold;
@@ -328,13 +328,9 @@ watch(
   display: flex;
   flex-direction: column;
   gap: 8px;
-  background-color: white;
+  background-color: var(--color-bg);
   padding: 0.75rem;
-  border-radius: 8px;
-}
-
-.legend-title {
-  font-weight: bold;
+  border-radius: var(--radius-md);
 }
 
 .legend-container img {

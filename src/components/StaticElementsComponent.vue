@@ -19,41 +19,21 @@
       <div class="info-block-body" v-html="t('hint_1')"></div>
       <div class="info-block-body" v-html="t('hint_4')"></div>
 
-      <div class="info-block-links">
-        <a :href="t('suitability_heating_url')" target="_blank" rel="noopener" class="hint-button">
+      <div class="link-list info-block-links">
+        <a :href="t('suitability_heating_url')" target="_blank" rel="noopener">
           {{ t('suitability_heating_call_to_action') }}
         </a>
-        <a
-          class="info-block-link"
-          :href="t('additional_info_1_url')"
-          target="_blank"
-          rel="noopener"
-        >
-          <span>{{ t('additional_info_1_title') }}</span>
+        <a :href="t('additional_info_1_url')" target="_blank" rel="noopener">
+          {{ t('additional_info_1_title') }}
         </a>
-        <a
-          class="info-block-link"
-          :href="t('additional_info_2_url')"
-          target="_blank"
-          rel="noopener"
-        >
-          <span>{{ t('additional_info_2_title') }}</span>
+        <a :href="t('additional_info_2_url')" target="_blank" rel="noopener">
+          {{ t('additional_info_2_title') }}
         </a>
-        <a
-          class="info-block-link"
-          :href="t('additional_info_3_url')"
-          target="_blank"
-          rel="noopener"
-        >
-          <span>{{ t('additional_info_3_title') }}</span>
+        <a :href="t('additional_info_3_url')" target="_blank" rel="noopener">
+          {{ t('additional_info_3_title') }}
         </a>
-        <a
-          class="info-block-link"
-          :href="t('additional_info_4_url')"
-          target="_blank"
-          rel="noopener"
-        >
-          <span>{{ t('additional_info_4_title') }}</span>
+        <a :href="t('additional_info_4_url')" target="_blank" rel="noopener">
+          {{ t('additional_info_4_title') }}
         </a>
       </div>
     </div>
@@ -68,7 +48,7 @@ const { t } = useI18n()
 <style scoped>
 .info-block {
   margin: 2rem 0;
-  background-color: #ffffff;
+  background-color: var(--color-bg);
 }
 
 .info-block-title {
@@ -80,6 +60,8 @@ const { t } = useI18n()
 
 .info-block-body {
   font-size: 1rem;
+  margin: 0.5rem 0 1.5rem 0;
+  text-align: justify;
 }
 
 .info-block-heading {
@@ -93,45 +75,8 @@ const { t } = useI18n()
   text-align: center;
 }
 
-.info-block-body {
-  margin: 0.5rem 0 1.5rem 0;
-  text-align: justify;
-}
-
 .info-block-links {
-  list-style: none;
-  padding: 0;
   margin: 1rem 0 0 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.info-block-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
-  color: #005ea5;
-  text-decoration: none;
-  transition: color 0.2s ease;
-}
-
-.info-block-link:hover,
-.info-block-link:focus {
-  color: #003a6d;
-}
-
-.hint-button {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
-  color: #005ea5;
-  text-decoration: none;
-}
-
-.hint-button:hover,
-.hint-button:focus {
-  color: #003a6d;
 }
 
 @media (max-width: 600px) {

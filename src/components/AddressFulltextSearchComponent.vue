@@ -177,19 +177,18 @@ input.form-control {
   width: 100%;
   padding: 0.75rem 2.5rem 0.75rem 1rem;
   font-size: 1.2rem;
-  border: 1px solid #ccc;
-  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
   min-height: 50px;
   line-height: 1.4;
-  box-sizing: border-box;
   transition: all 0.2s ease-in-out;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-sm);
 }
 
 input.form-control:focus {
   border-color: #a4c3e6;
   outline: none;
-  box-shadow: 0 3px 12px rgba(0, 123, 255, 0.25);
+  box-shadow: var(--shadow-focus);
 }
 
 .clear-btn {
@@ -222,10 +221,10 @@ input.form-control:focus {
   right: 0;
   z-index: 1050;
   display: block;
-  background-color: #fff;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  box-shadow: 0 5px 14px rgba(0, 0, 0, 0.1);
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
   max-height: 350px;
   overflow-y: auto;
   padding: 0.25rem 0;

@@ -1,24 +1,56 @@
+:root {
+  /* Colors */
+  --color-primary: #2f4356;
+  --color-link: #005ea5;
+  --color-link-hover: #003a6d;
+  --color-text: #333;
+  --color-muted: #757575;
+  --color-border: #ccc;
+  --color-separator: #dcdcdc;
+  --color-bg: #ffffff;
+
+  /* Suitability colors */
+  --color-green: #3ff069;
+  --color-orange: #fd9846;
+  --color-red: #ff0000;
+  --color-blue: #88bbf2;
+  --color-purple: #b036e5;
+
+  /* Radii */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+
+  /* Shadows */
+  --shadow-sm: 0 3px 6px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 5px 14px rgba(0, 0, 0, 0.1);
+  --shadow-focus: 0 3px 12px rgba(0, 123, 255, 0.25);
+}
+
 body {
   font-family: 'Frutiger LT Com', Roboto, 'Helvetica Neue', sans-serif;
   margin: 0;
   padding: 0;
+  color: var(--color-text);
 }
 
-* {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
 /* --- Global link styling --- */
 a {
   text-decoration: none;
-  color: #005ea5;
+  color: var(--color-link);
   transition: color 0.2s ease;
 }
 
 a:hover,
 a:focus {
   text-decoration: underline;
-  color: #003a6d;
+  color: var(--color-link-hover);
 }
 
 .link-icon {
@@ -33,6 +65,18 @@ a:focus {
   height: 10px;
   margin-left: 4px;
   vertical-align: middle;
+}
+
+/* --- Utility classes --- */
+.link-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.full-bleed {
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
 }
 
 /* --- Footer link styling --- */

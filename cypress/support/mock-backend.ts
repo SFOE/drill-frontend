@@ -144,6 +144,28 @@ export const mockBackendResponses = {
       full_url: '',
       detail: 'An error occurred'
     }
+  },
+
+  // Geoservice unavailable (harmonized_value: 98, purple)
+  geoserviceUnavailable: {
+    coord_x: 2683141,
+    coord_y: 1247500,
+    canton: 'BE',
+    canton_config: {
+      legend_url: 'https://wms.geo.admin.ch/?service=WMS&version=1.3.0&request=GetLegendGraphic&layers=ch.bfe.suitability-heat-pump&styles=&format=image/png',
+      cantonal_energy_service_url: 'https://www.bfe.admin.ch/',
+      thematic_geoportal_url: 'https://map.geo.admin.ch/'
+    },
+    ground_category: {
+      layer_results: [],
+      harmonized_value: 98,
+      source_values: 'geoservice unavailable'
+    },
+    result_detail: {
+      message: 'External geoservice unavailable',
+      full_url: '',
+      detail: 'Canton WMS service is down'
+    }
   }
 }
 

@@ -1,5 +1,5 @@
 <template>
-  <footer class="site-footer">
+  <footer class="site-footer full-bleed">
     <div class="footer-inner app-container">
       <!-- Left section -->
       <div class="footer-left">
@@ -41,9 +41,7 @@ const { t } = useI18n()
 
 <style scoped>
 .site-footer {
-  width: 100vw;
-  margin-left: calc(50% - 50vw);
-  background-color: #2f4356;
+  background-color: var(--color-primary);
   color: #fff;
   font-size: 0.875rem;
   line-height: 1.5;
