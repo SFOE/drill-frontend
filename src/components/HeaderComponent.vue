@@ -9,7 +9,7 @@
     <div class="bottom-header-box">
       <div class="app-container bottom-header-inner">
         <div class="logo-title-group">
-          <img class="logo responsive-logo" alt="Swiss Logo" src="@/assets/logo.png" />
+          <img class="logo responsive-logo" alt="Swiss Logo" src="@/assets/logo.png" width="200" height="68" fetchpriority="high" />
           <div class="divider"></div>
           <h1 class="title">{{ $t('header_title') }}</h1>
         </div>
@@ -29,13 +29,13 @@ import LanguageSwitcherComponent from './LanguageSwitcherComponent.vue'
   width: 100%;
   display: flex;
   flex-direction: column;
-  background-color: #fff;
+  background-color: var(--color-bg);
 }
 
 .top-header-box {
   width: 100%;
   height: 50px;
-  background-color: #2f4356;
+  background-color: var(--color-primary);
   display: flex;
   align-items: center;
 }
@@ -49,7 +49,7 @@ import LanguageSwitcherComponent from './LanguageSwitcherComponent.vue'
 
 .bottom-header-box {
   width: 100%;
-  background-color: #fff;
+  background-color: var(--color-bg);
 }
 
 .bottom-header-inner {
@@ -83,13 +83,13 @@ import LanguageSwitcherComponent from './LanguageSwitcherComponent.vue'
 
 .divider {
   width: 1px;
-  background-color: #dcdcdc;
+  background-color: var(--color-separator);
 }
 
 .header-line {
   width: 100%;
   height: 1px;
-  background-color: #dcdcdc;
+  background-color: var(--color-separator);
 }
 
 @media (max-width: 768px) {

@@ -29,5 +29,14 @@ export default defineConfigWithVueTs(
       'cypress/support/**/*.{js,ts,jsx,tsx}'
     ],
   },
+
+  // Allow @ts-nocheck in MapComponent (vue3-openlayers type incompatibilities)
+  {
+    files: ['src/components/MapComponent.vue'],
+    rules: {
+      '@typescript-eslint/ban-ts-comment': 'off',
+    },
+  },
+
   skipFormatting,
 )

@@ -1,17 +1,31 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { setActivePinia, createPinia } from 'pinia'
 import fc from 'fast-check'
-import axios from 'axios'
 import { useMapStore } from '@/stores/mapStore'
 
 // Mock axios
 vi.mock('axios', () => ({
   default: {
     get: vi.fn(),
+    isCancel: vi.fn(() => false),
+    create: vi.fn(() => ({
+      get: vi.fn(),
+    })),
   },
 }))
 
-const mockedAxiosGet = vi.mocked(axios.get)
+// Mock the http service to use our mocked get
+vi.mock('@/services/http', () => ({
+  backendHttp: {
+    get: vi.fn(),
+  },
+  geoAdminHttp: {
+    get: vi.fn(),
+  },
+}))
+
+import { backendHttp } from '@/services/http'
+const mockedBackendGet = vi.mocked(backendHttp.get)
 
 // All 26 Swiss cantons
 const SWISS_CANTONS = [
@@ -93,7 +107,7 @@ describe('Bug Condition Exploration: External Geoservice Failure', () => {
             bbox_delta: 0.01,
             layers: [],
           }
-          mockedAxiosGet.mockResolvedValueOnce({
+          mockedBackendGet.mockResolvedValueOnce({
             data: {
               ground_category: {
                 layer_results: [],
@@ -186,7 +200,7 @@ describe('Preservation: Successful responses (harmonized_value 1-5)', () => {
           const cantonConfig = makeCantonConfig(canton)
           const gc = makeGroundCategory(harmonizedValue)
 
-          mockedAxiosGet.mockResolvedValueOnce({
+          mockedBackendGet.mockResolvedValueOnce({
             data: {
               ground_category: gc,
               canton: canton,
@@ -245,7 +259,7 @@ describe('Preservation: Not in Switzerland (harmonized_value = 6)', () => {
         const mapStore = useMapStore()
         const gc = makeGroundCategory(6)
 
-        mockedAxiosGet.mockResolvedValueOnce({
+        mockedBackendGet.mockResolvedValueOnce({
           data: {
             ground_category: gc,
             canton: null,
@@ -335,7 +349,7 @@ describe('Preservation: Genuine network errors (frontend-to-backend failures)', 
 
           const mapStore = useMapStore()
 
-          mockedAxiosGet.mockRejectedValueOnce(networkError)
+          mockedBackendGet.mockRejectedValueOnce(networkError)
 
           await mapStore.fetchGroundCategory(east, north)
 

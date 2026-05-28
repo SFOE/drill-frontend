@@ -116,6 +116,16 @@ describe('Infobox Component', () => {
     })
   })
 
+  it('infobox has correct color class for geoservice unavailable (harmonized value = 98)', () => {
+    mockDrillCategoryApi('geoserviceUnavailable')
+
+    cy.get('.ol-viewport canvas').click('center')
+
+    cy.get('.info-box').then(($infobox) => {
+      expect($infobox.attr('class')).to.contain('purple')
+    })
+  })
+
   it('shows expand button on mobile when infobox is rendered', () => {
     // Mock backend to return suitable response
     mockDrillCategoryApi('suitable')
@@ -185,7 +195,7 @@ describe('Infobox Component', () => {
     })
 
     // Check if links container exists (it appears conditionally)
-    cy.get('.links-container').then(($sourceValues) => {
+    cy.get('.link-list').then(($sourceValues) => {
       if ($sourceValues.length > 0) {
         cy.wrap($sourceValues).should('be.visible')
       }

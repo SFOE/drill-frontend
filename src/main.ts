@@ -1,53 +1,26 @@
 import '@/assets/main.css'
 
-import { createApp, watch } from 'vue'
+import { createApp } from 'vue'
 import { createPinia } from 'pinia'
-import { createI18n } from 'vue-i18n'
 import router from '@/router'
 
 import App from '@/App.vue'
-
-import en from '@/locales/en.json'
-import fr from '@/locales/fr.json'
-import de from '@/locales/de.json'
-import it from '@/locales/it.json'
-
-import {
-  Map as OLMapPlugin,
-  Layers as OLLayersPlugin,
-  Sources as OLSourcesPlugin,
-  MapControls as OLControlsPlugin,
-} from 'vue3-openlayers'
-
-const i18n = createI18n({
-  legacy: false,
-  locale: 'de',
-  fallbackLocale: 'de',
-  messages: {
-    en,
-    fr,
-    de,
-    it,
-  },
-})
+import i18n, { setLocale } from '@/i18n'
+import { wakeUpLambda } from '@/stores/mapStore'
 
 const app = createApp(App)
 
 app.use(createPinia())
-
-app.use(OLMapPlugin)
-app.use(OLLayersPlugin)
-app.use(OLSourcesPlugin)
-app.use(OLControlsPlugin)
-
 app.use(i18n)
 app.use(router)
 
 app.mount('#app')
 
-watch(
-  () => i18n.global.locale.value,
-  () => {
-    document.title = i18n.global.t('page_title')
-  },
-)
+// Warm up the Lambda backend after app is mounted
+wakeUpLambda()
+
+// Pre-load saved locale if not the default
+const savedLocale = localStorage.getItem('app-locale')
+if (savedLocale && savedLocale !== 'de') {
+  setLocale(savedLocale)
+}
