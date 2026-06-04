@@ -24,7 +24,7 @@
     "ol": "^10.9.0",
     "ol-contextmenu": "^6.0.0",
     "pinia": "^3.0.4",
-    "vue": "^3.5.34",
+    "vue": "^3.5.35",
     "vue-i18n": "^11.4.4",
     "vue-router": "^5.0.7",
     "vue3-openlayers": "^12.2.2"
@@ -41,16 +41,16 @@
     "@pinia/testing": "^1.0.3",
     "@tsconfig/node22": "^22.0.5",
     "@types/jsdom": "^28.0.3",
-    "@types/node": "^25.7.0",
+    "@types/node": "^25.9.1",
     "@vitejs/plugin-vue": "^6.0.7",
-    "@vitest/eslint-plugin": "^1.6.17",
+    "@vitest/eslint-plugin": "^1.6.18",
     "@vitest/coverage-v8": "^4.1.7",
     "@vue/eslint-config-prettier": "^10.2.0",
     "@vue/eslint-config-typescript": "^14.7.0",
     "@vue/test-utils": "^2.4.10",
     "@vue/tsconfig": "^0.9.1",
     "cypress": "^15.14.2",
-    "eslint": "^10.3.0",
+    "eslint": "^10.4.0",
     "eslint-plugin-cypress": "^6.4.1",
     "eslint-plugin-vue": "~10.9.1",
     "fast-check": "^4.8.0",
@@ -64,6 +64,6 @@
     "vite": "^8.0.14",
     "vite-plugin-vue-devtools": "^8.1.2",
     "vitest": "^4.1.7",
-    "vue-tsc": "^3.2.9"
+    "vue-tsc": "^3.3.1"
   }
 }
