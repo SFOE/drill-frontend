@@ -6,7 +6,7 @@ on:
     branches: [main]
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   unit:
@@ -28,6 +28,27 @@ jobs:
 
       - name: Unit tests with coverage
         run: npx vitest --run --coverage
+
+      - name: Generate coverage badge
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: |
+          node -e "
+            const fs = require('fs');
+            const summary = JSON.parse(fs.readFileSync('coverage/coverage-summary.json', 'utf8'));
+            const pct = Math.round(summary.total.lines.pct);
+            const color = pct >= 80 ? 'brightgreen' : pct >= 60 ? 'green' : pct >= 40 ? 'yellow' : 'red';
+            const badge = { schemaVersion: 1, label: 'coverage', message: pct + '%', color };
+            fs.mkdirSync('badges', { recursive: true });
+            fs.writeFileSync('badges/coverage.json', JSON.stringify(badge));
+          "
+
+      - name: Commit coverage badge
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add badges/coverage.json
+          git diff --staged --quiet || git commit -m "chore: update coverage badge [skip ci]" && git push
 
       - name: Lint
         run: npx eslint . --cache

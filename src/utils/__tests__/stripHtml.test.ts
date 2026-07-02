@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest'
+import fc from 'fast-check'
 import { stripHtml } from '@/utils/stripHtml'
 
 describe('stripHtml', () => {
@@ -37,5 +38,49 @@ describe('stripHtml', () => {
     const result = stripHtml(malicious)
     expect(result).not.toContain('<script>')
     expect(result).toContain('Safe text')
+  })
+
+  // Property-based tests
+  describe('property-based hardening', () => {
+    it('never returns recognized HTML tags in output', () => {
+      fc.assert(
+        fc.property(fc.string(), (input) => {
+          const result = stripHtml(input)
+          // Valid HTML tags have at least one letter after <
+          expect(result).not.toMatch(/<\/?[a-zA-Z][^>]*>/)
+        }),
+        { numRuns: 200 },
+      )
+    })
+
+    it('output length never exceeds input length', () => {
+      fc.assert(
+        fc.property(fc.string(), (input) => {
+          expect(stripHtml(input).length).toBeLessThanOrEqual(input.length)
+        }),
+        { numRuns: 200 },
+      )
+    })
+
+    it('is idempotent — applying stripHtml twice gives the same result', () => {
+      fc.assert(
+        fc.property(fc.string(), (input) => {
+          const once = stripHtml(input)
+          const twice = stripHtml(once)
+          expect(twice).toBe(once)
+        }),
+        { numRuns: 200 },
+      )
+    })
+
+    it('always returns a string (never throws)', () => {
+      fc.assert(
+        fc.property(fc.string(), (input) => {
+          const result = stripHtml(input)
+          expect(typeof result).toBe('string')
+        }),
+        { numRuns: 200 },
+      )
+    })
   })
 })
