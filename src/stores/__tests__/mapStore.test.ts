@@ -379,3 +379,151 @@ describe('Preservation: Genuine network errors (frontend-to-backend failures)', 
     )
   })
 })
+
+// ============================================================================
+// Integration & Unit Tests for mapStore actions
+// ============================================================================
+
+import { useSearchStore } from '@/stores/searchStore'
+
+describe('mapStore - clearSearchState', () => {
+  beforeEach(() => {
+    setActivePinia(createPinia())
+    vi.clearAllMocks()
+  })
+
+  it('resets both mapStore and searchStore state', () => {
+    const mapStore = useMapStore()
+    const searchStore = useSearchStore()
+
+    // Populate both stores
+    mapStore.setCoordinates({ east_coord: 2683141, north_coord: 1247500 })
+    mapStore.setSelectedCanton('BE')
+    mapStore.setWmsConfig({
+      active: true,
+      name: 'BE',
+      wms_url: 'https://example.com',
+      query_url: 'https://example.com',
+      info_format: 'application/json',
+      bbox_delta: 0.01,
+      layers: [],
+    })
+    mapStore.setGroundCategory({
+      layer_results: [],
+      mapping_sum: 10,
+      harmonized_value: 1,
+      source_values: 'test',
+    })
+    searchStore.searchQuery = 'Bern'
+    searchStore.selectedAddress = 'Bahnhofstrasse 1'
+    searchStore.searchResults = [
+      { id: '1', attrs: { label: 'test', north_coord: 0, east_coord: 0, detail: '' } },
+    ]
+
+    mapStore.clearSearchState()
+
+    // mapStore state cleared
+    expect(mapStore.coordinates).toBeNull()
+    expect(mapStore.groundCategory).toBeNull()
+    expect(mapStore.selectedCanton).toBeNull()
+    expect(mapStore.wmsConfig).toBeNull()
+
+    // searchStore state cleared
+    expect(searchStore.searchQuery).toBe('')
+    expect(searchStore.selectedAddress).toBe('')
+    expect(searchStore.searchResults).toEqual([])
+  })
+
+  it('is safe to call on already-empty stores', () => {
+    const mapStore = useMapStore()
+    const searchStore = useSearchStore()
+
+    mapStore.clearSearchState()
+
+    expect(mapStore.coordinates).toBeNull()
+    expect(searchStore.searchQuery).toBe('')
+  })
+})
+
+describe('mapStore - computed getters', () => {
+  beforeEach(() => {
+    setActivePinia(createPinia())
+    vi.clearAllMocks()
+  })
+
+  it('hasCoordinates is true when coordinates are set', () => {
+    const mapStore = useMapStore()
+    expect(mapStore.hasCoordinates).toBe(false)
+    mapStore.setCoordinates({ east_coord: 2600000, north_coord: 1200000 })
+    expect(mapStore.hasCoordinates).toBe(true)
+  })
+
+  it('hasWmsConfig is true when wmsConfig is set', () => {
+    const mapStore = useMapStore()
+    expect(mapStore.hasWmsConfig).toBe(false)
+    mapStore.setWmsConfig({
+      active: true,
+      name: 'ZH',
+      wms_url: 'https://example.com',
+      query_url: 'https://example.com',
+      info_format: 'application/json',
+      bbox_delta: 0.01,
+      layers: [],
+    })
+    expect(mapStore.hasWmsConfig).toBe(true)
+  })
+
+  it('hasGroundCategory is true when groundCategory is set', () => {
+    const mapStore = useMapStore()
+    expect(mapStore.hasGroundCategory).toBe(false)
+    mapStore.setGroundCategory({
+      layer_results: [],
+      mapping_sum: 0,
+      harmonized_value: 1,
+      source_values: '',
+    })
+    expect(mapStore.hasGroundCategory).toBe(true)
+  })
+
+  it('hasSelectedCanton is true when selectedCanton is set', () => {
+    const mapStore = useMapStore()
+    expect(mapStore.hasSelectedCanton).toBe(false)
+    mapStore.setSelectedCanton('GE')
+    expect(mapStore.hasSelectedCanton).toBe(true)
+  })
+})
+
+describe('mapStore - loadingGroundCategory state', () => {
+  beforeEach(() => {
+    setActivePinia(createPinia())
+    vi.clearAllMocks()
+  })
+
+  it('sets loadingGroundCategory to true during fetch and false after', async () => {
+    const mapStore = useMapStore()
+
+    mockedBackendGet.mockResolvedValueOnce({
+      data: {
+        ground_category: { harmonized_value: 1, layer_results: [], source_values: '' },
+        canton: 'BE',
+        canton_config: { active: true, name: 'BE', wms_url: '', query_url: '', info_format: '', bbox_delta: 0, layers: [] },
+      },
+    })
+
+    expect(mapStore.loadingGroundCategory).toBe(false)
+
+    const fetchPromise = mapStore.fetchGroundCategory(2600000, 1200000)
+    expect(mapStore.loadingGroundCategory).toBe(true)
+
+    await fetchPromise
+    expect(mapStore.loadingGroundCategory).toBe(false)
+  })
+
+  it('sets loadingGroundCategory to false even on error', async () => {
+    const mapStore = useMapStore()
+    mockedBackendGet.mockRejectedValueOnce(new Error('fail'))
+
+    await mapStore.fetchGroundCategory(2600000, 1200000)
+    expect(mapStore.loadingGroundCategory).toBe(false)
+  })
+})
