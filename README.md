@@ -66,9 +66,40 @@ npm run build
 npm run test:unit
 ```
 
-Unit tests cover:
-- **Store logic** — `mapStore` (property-based tests with fast-check), `languageStore`
-- **Utilities** — `debounce`, `stripHtml`
+Run with coverage report:
+
+```sh
+npx vitest --run --coverage
+```
+
+#### Unit test structure
+
+Tests live in `__tests__/` folders colocated with their source:
+
+```
+src/
+├── components/__tests__/
+│   ├── AddressFulltextSearchComponent.test.ts  # Rendering, debounce, ARIA, selection
+│   ├── InfoboxComponent.test.ts                # Color mapping, loading state, layout
+│   ├── InfoboxLinksComponent.test.ts           # Link rendering, security attrs
+│   └── LoadingSpinner.test.ts                  # Basic rendering
+├── composables/__tests__/
+│   ├── useDevice.test.ts                       # Mobile detection, resize handling
+│   └── useGeoadminReverseGeocoding.test.ts     # Address formatting, edge cases
+├── stores/__tests__/
+│   ├── languageStore.test.ts                   # Locale persistence
+│   ├── mapStore.test.ts                        # fetchGroundCategory, clearSearchState, getters
+│   └── searchStore.test.ts                     # State management, clearSearchState
+└── utils/__tests__/
+    ├── debounce.test.ts                        # Timer behavior, argument passing
+    └── stripHtml.test.ts                       # Tag removal, XSS safety, property-based
+```
+
+#### Testing patterns used
+
+- **Property-based testing** (`fast-check`) — `mapStore` tests all 26 Swiss cantons × valid LV95 coordinate ranges; `stripHtml` verifies invariants (idempotency, no tags in output) against random input.
+- **Component testing** (`@vue/test-utils` + `@pinia/testing`) — shallow rendering with mocked stores to test rendering logic and user interactions.
+- **Composable testing** — pure function tests with mocked HTTP layer for `useGeoAdmin`; lifecycle-aware tests via wrapper components for `useDevice`.
 
 ### Run End-to-End Tests with [Cypress](https://www.cypress.io/)
 
@@ -84,7 +115,45 @@ Headless mode (CI):
 npm run test:e2e
 ```
 
-E2E tests cover all components: Header, Footer, Map, Infobox (all suitability levels), Address Search, Language Switcher, and Static Elements.
+#### E2E test structure
+
+```
+cypress/e2e/
+├── AddressFultextSearchComponent.cy.ts   # Search input, dropdown display, clearing
+├── FooterComponent.cy.ts                 # Footer layout, links, copyright year
+├── HeaderComponent.cy.ts                 # Logo, header visibility
+├── InfoboxComponent.cy.ts                # All harmonized_value colors, mobile expand/collapse
+├── LanguageSwitcherComponent.cy.ts       # DE ↔ EN switching
+├── MapComponent.cy.ts                    # Map rendering, click interaction
+├── StaticElementsComponent.cy.ts         # Info block, canton info, external links
+└── UserJourney.cy.ts                     # Integrated flows (see below)
+```
+
+#### UserJourney.cy.ts — integrated regression tests
+
+This file covers the scenarios most likely to break during refactoring:
+
+- **Search → select → infobox** — full primary user flow
+- **Clear button** — resets infobox and input after selection
+- **Backend error (500)** — shows purple error infobox
+- **Geoservice unavailable (98)** — preserves canton name in error message
+- **Loading spinner** — visible during fetch, disappears after
+- **Keyboard navigation** — ArrowDown/Up, Escape, Enter
+- **URL query parameter** — `?lang=fr` / `?lang=it` loads correct locale
+- **Click outside** — closes dropdown
+
+#### E2E test utilities
+
+- `cypress/support/mock-backend.ts` — provides `mockDrillCategoryApi()` and `mockDrillCategoryError()` helpers with predefined responses for all `harmonized_value` states (1-6, 98, 99).
+
+### CI
+
+Both test suites run automatically on every PR and push to `main` via GitHub Actions:
+
+| Workflow | File | What it runs |
+|----------|------|--------------|
+| Unit tests & type check | `.github/workflows/unit_tests.yml` | `vue-tsc` → `vitest --coverage` → `eslint` |
+| E2E tests | `.github/workflows/e2e_tests.yml` | Builds app → starts preview → `cypress run` |
 
 ### Lint with [ESLint](https://eslint.org/)
 
