@@ -1,6 +1,7 @@
 ![Lint](https://github.com/sfoe/drill-frontend/actions/workflows/lint.yml/badge.svg)
 ![Tests](https://github.com/sfoe/drill-frontend/actions/workflows/e2e_tests.yml/badge.svg)
 ![Unit Tests](https://github.com/sfoe/drill-frontend/actions/workflows/unit_tests.yml/badge.svg)
+![Coverage](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/sfoe/drill-frontend/main/badges/coverage.json)
 ![Security](https://github.com/sfoe/drill-frontend/actions/workflows/security.yml/badge.svg)
 ![Accessibility](https://img.shields.io/badge/accessibility-100-brightgreen)
 ![Best Practices](https://img.shields.io/badge/best%20practices-92-green)
