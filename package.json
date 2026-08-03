@@ -31,7 +31,7 @@
   },
   "overrides": {
     "jspdf": "^4.1.0",
-    "axios": "1.16.0",
+    "axios": "1.19.0",
     "minimatch@3": {
       "brace-expansion": "1.1.13"
     },
