@@ -23,7 +23,7 @@
   "dependencies": {
     "ol": "^10.9.0",
     "ol-contextmenu": "^6.0.0",
-    "pinia": "^3.0.4",
+    "pinia": "^4.0.2",
     "vue": "^3.5.35",
     "vue-i18n": "^11.4.5",
     "vue-router": "^5.0.7",
@@ -38,7 +38,7 @@
     "qs": "6.15.2"
   },
   "devDependencies": {
-    "@pinia/testing": "^1.0.3",
+    "@pinia/testing": "^2.0.1",
     "@tsconfig/node22": "^22.0.5",
     "@types/jsdom": "^28.0.3",
     "@types/node": "^26.1.0",
