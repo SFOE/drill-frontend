@@ -46,7 +46,7 @@ describe('useDevice', () => {
     Object.defineProperty(window, 'innerWidth', { value: 1024, configurable: true })
     Object.defineProperty(navigator, 'maxTouchPoints', { value: 0, configurable: true })
     // Ensure ontouchstart is not defined
-    delete (window as Record<string, unknown>).ontouchstart
+    delete (window as unknown as Record<string, unknown>).ontouchstart
 
     const wrapper = mount(TestComponent)
     expect(wrapper.vm.isMobile).toBe(false)
@@ -65,7 +65,7 @@ describe('useDevice', () => {
   it('updates isMobile on window resize', async () => {
     Object.defineProperty(window, 'innerWidth', { value: 1024, configurable: true })
     Object.defineProperty(navigator, 'maxTouchPoints', { value: 0, configurable: true })
-    delete (window as Record<string, unknown>).ontouchstart
+    delete (window as unknown as Record<string, unknown>).ontouchstart
 
     const wrapper = mount(TestComponent)
     expect(wrapper.vm.isMobile).toBe(false)
