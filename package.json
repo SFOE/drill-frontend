@@ -31,11 +31,11 @@
   },
   "overrides": {
     "jspdf": "^4.1.0",
-    "axios": "1.19.0",
+    "axios": "1.20.0",
     "minimatch@3": {
       "brace-expansion": "1.1.13"
     },
-    "qs": "6.15.2"
+    "qs": "6.16.0"
   },
   "devDependencies": {
     "@pinia/testing": "^2.0.1",

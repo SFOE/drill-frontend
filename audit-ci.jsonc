@@ -1,0 +1,26 @@
+{
+  // Config for audit-ci (https://github.com/IBM/audit-ci), used by .github/workflows/security.yml
+  // instead of plain `npm audit` so we can allowlist specific, reviewed advisories
+  // instead of either failing the build or disabling the audit gate entirely.
+  "high": true,
+  "critical": true,
+  "allowlist": [
+    {
+      // braces vulnerable to stack-exhaustion DoS through deeply nested patterns.
+      // https://github.com/advisories/GHSA-vfj7-8cjw-p6xm (CVE-2026-93687)
+      // No patched release exists upstream yet (first_patched_version is null in the
+      // GitHub advisory as of 2026-10-07). The only remediation npm suggests is a
+      // breaking major-version downgrade of @vue/eslint-config-typescript to 14.0.1,
+      // which does not actually patch braces, it only avoids this dependency path.
+      // braces is a dev-only dependency pulled in by our ESLint tooling
+      // (@vue/eslint-config-typescript > fast-glob > micromatch > braces) and is
+      // never shipped to production. Path-scoped so any other advisory, or this
+      // advisory reached through a different path, still fails CI.
+      "GHSA-vfj7-8cjw-p6xm|@vue/eslint-config-typescript>fast-glob>micromatch>braces": {
+        "active": true,
+        "notes": "No fix available upstream; dev-only ESLint tooling dependency, not shipped to production. Re-check when braces publishes a patched release.",
+        "expiry": "2027-01-07"
+      }
+    }
+  ]
+}
