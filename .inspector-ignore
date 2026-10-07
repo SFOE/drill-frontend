@@ -1,0 +1,15 @@
+# Amazon Inspector ignore list for drill-frontend
+# Used by aws-actions/vulnerability-scan-github-action-for-amazon-inspector
+# (invoked via SFOE-prometheon/github-terraform-workflows s3-artifact-scan-push.yml)
+# in .github/workflows/release_and_push_s3.yml
+
+# braces vulnerable to stack-exhaustion DoS through deeply nested patterns.
+# https://github.com/advisories/GHSA-vfj7-8cjw-p6xm (CVE-2026-93687)
+# No patched release exists upstream yet (first_patched_version is null in the
+# GitHub advisory as of 2026-10-07). braces is a dev-only dependency pulled in
+# by our ESLint tooling (@vue/eslint-config-typescript > fast-glob > micromatch
+# > braces) and is never shipped to production or included in the build
+# artifact. Same advisory is already allowlisted in audit-ci.jsonc for npm
+# audit; this mirrors that decision for the Amazon Inspector repository scan.
+# Re-check when braces publishes a patched release.
+CVE-2026-93687
