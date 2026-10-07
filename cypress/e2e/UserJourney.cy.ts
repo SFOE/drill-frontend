@@ -196,6 +196,7 @@ describe('Keyboard Navigation', () => {
 
     cy.get('[data-cy=address-search-input]').type('test')
     cy.wait('@getAddresses')
+    cy.get('.dropdown-item').should('have.length', 3)
 
     // Navigate to second item and press enter
     cy.get('body').type('{downArrow}{downArrow}')
