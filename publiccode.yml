@@ -5,7 +5,7 @@ url: https://github.com/SFOE/drill-frontend
 isBasedOn: https://vue3openlayers.netlify.app/, https://vuejs.org/,
   https://docs.geo.admin.ch/
 softwareVersion: v0.2.5
-releaseDate: 2026-10-07
+releaseDate: 2026-10-08
 platforms:
   - web
 categories:
