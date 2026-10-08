@@ -4,7 +4,7 @@ applicationSuite: drillcheck
 url: https://github.com/SFOE/drill-frontend
 isBasedOn: https://vue3openlayers.netlify.app/, https://vuejs.org/,
   https://docs.geo.admin.ch/
-softwareVersion: v0.2.5
+softwareVersion: v0.2.6
 releaseDate: 2026-10-08
 platforms:
   - web
