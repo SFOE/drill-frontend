@@ -79,22 +79,38 @@ Tests live in `__tests__/` folders colocated with their source:
 
 ```
 src/
+├── __tests__/
+│   └── i18n.test.ts                                     # setLocale lazy loading, title/meta side effects
 ├── components/__tests__/
-│   ├── AddressFulltextSearchComponent.test.ts  # Rendering, debounce, ARIA, selection
-│   ├── InfoboxComponent.test.ts                # Color mapping, loading state, layout
-│   ├── InfoboxLinksComponent.test.ts           # Link rendering, security attrs
-│   └── LoadingSpinner.test.ts                  # Basic rendering
+│   ├── AddressFulltextSearchComponent.test.ts           # Rendering, debounce, ARIA, selection
+│   ├── AddressFulltextSearchComponent.branches.test.ts  # Keyboard nav, Enter, request abort/cancel, errors
+│   ├── App.test.ts                                      # Router-view outlet
+│   ├── FooterComponent.test.ts                          # Links, mailto, copyright year
+│   ├── HeaderComponent.test.ts                          # Logo, title, embedded language switcher
+│   ├── InfoboxComponent.test.ts                         # Color mapping, loading state, layout
+│   ├── InfoboxLinksComponent.test.ts                    # Link rendering, security attrs
+│   ├── LanguageSwitcherComponent.test.ts                # Locale options, store binding
+│   ├── LoadingSpinner.test.ts                           # Basic rendering
+│   ├── MapComponent.test.ts                             # Legend toggle, WMS-layer watcher, map-click geocoding
+│   └── StaticElementsComponent.test.ts                  # Info block headings, external links
 ├── composables/__tests__/
-│   ├── useDevice.test.ts                       # Mobile detection, resize handling
-│   └── useGeoadminReverseGeocoding.test.ts     # Address formatting, edge cases
+│   ├── useDevice.test.ts                                # Mobile detection, resize handling
+│   ├── useGeoadminReverseGeocoding.test.ts              # Address formatting, edge cases
+│   └── useProjections.test.ts                           # LV95 / LV03 proj4 definitions
+├── router/__tests__/
+│   └── index.test.ts                                   # Route registration, history mode
 ├── stores/__tests__/
-│   ├── languageStore.test.ts                   # Locale persistence
-│   ├── mapStore.test.ts                        # fetchGroundCategory, clearSearchState, getters
-│   └── searchStore.test.ts                     # State management, clearSearchState
-└── utils/__tests__/
-    ├── debounce.test.ts                        # Timer behavior, argument passing
-    └── stripHtml.test.ts                       # Tag removal, XSS safety, property-based
+│   ├── languageStore.test.ts                            # Locale persistence
+│   ├── mapStore.test.ts                                 # fetchGroundCategory, clearSearchState, getters
+│   └── searchStore.test.ts                              # State management, clearSearchState
+├── utils/__tests__/
+│   ├── debounce.test.ts                                 # Timer behavior, argument passing
+│   └── stripHtml.test.ts                                # Tag removal, XSS safety, property-based
+└── views/__tests__/
+    └── DrillVue.test.ts                                 # ?lang= query handling, layout composition
 ```
+
+Current coverage: **statements 93%, branches 85%, functions 91%, lines 94%**. The coverage badge above is regenerated automatically on every push to `main` by the unit-tests workflow.
 
 #### Testing patterns used
 
@@ -199,7 +215,8 @@ var(--shadow-sm)       /* subtle box shadow */
 
 - Content-Security-Policy meta tag in `index.html`
 - `npm ci` enforced via preinstall guard (no `npm install`)
-- `npm audit` runs in CI at `--audit-level=high`
+- `audit-ci` runs in CI (`security.yml`) against `audit-ci.jsonc`, failing on high/critical advisories while allowlisting specific reviewed ones
+- Amazon Inspector scans the repository on release (`release_and_push_s3.yml`); reviewed, non-shipped findings are allowlisted in `.inspector-ignore`
 - Dependency overrides pin known vulnerable transitive packages
 - `stripHtml` uses DOMParser (XSS-safe) instead of innerHTML
 - Address search input is debounced (300ms) to prevent API abuse
