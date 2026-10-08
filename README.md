@@ -3,9 +3,9 @@
 ![Unit Tests](https://github.com/sfoe/drill-frontend/actions/workflows/unit_tests.yml/badge.svg)
 ![Coverage](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/sfoe/drill-frontend/main/badges/coverage.json)
 ![Security](https://github.com/sfoe/drill-frontend/actions/workflows/security.yml/badge.svg)
-![Accessibility](https://img.shields.io/badge/accessibility-100-brightgreen)
-![Best Practices](https://img.shields.io/badge/best%20practices-92-green)
-![SEO](https://img.shields.io/badge/SEO-92-green)
+![Accessibility](https://img.shields.io/badge/Accessibility-100-brightgreen?logo=lighthouse&logoColor=white)
+![Best Practices](https://img.shields.io/badge/Best%20Practices-92-brightgreen?logo=lighthouse&logoColor=white)
+![SEO](https://img.shields.io/badge/SEO-92-brightgreen?logo=lighthouse&logoColor=white)
 
 
 # drill-frontend
