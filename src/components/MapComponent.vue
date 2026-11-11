@@ -221,7 +221,7 @@ watch(
 )
 const groundCategoryError = ref(false)
 
-const showCoordinates = (coords: Coordinates | null) => {
+function showCoordinates(coords: Coordinates | null): void {
   if (!coords || !view.value) {
     marker.value = null
     features.value = []

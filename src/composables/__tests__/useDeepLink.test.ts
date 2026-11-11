@@ -117,4 +117,20 @@ describe('useDeepLink', () => {
     await flushPromises()
     expect(fetchSpy).toHaveBeenCalledTimes(1)
   })
+
+  it('drops a stale address when E and N change during reverse geocoding', async () => {
+    let resolveFirst: (value: string) => void = () => {}
+    fetchAddressMock.mockImplementationOnce(
+      () => new Promise<string>((resolve) => (resolveFirst = resolve)),
+    )
+    fetchAddressMock.mockResolvedValueOnce('Neue Strasse 2 3000 Bern')
+
+    const { router } = await mountAt('/?E=2600423&N=1199521')
+    await router.push('/?E=2683000&N=1248000')
+    await flushPromises()
+    resolveFirst('Alte Strasse 1 3000 Bern')
+    await flushPromises()
+
+    expect(useSearchStore().selectedAddress).toBe('Neue Strasse 2 3000 Bern')
+  })
 })
