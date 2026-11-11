@@ -253,6 +253,26 @@ describe('URL Query Parameter: ?E=&N= (deep link)', () => {
 
     cy.get('.info-box').should('not.exist')
   })
+
+  it('ignores coordinates that are not plain decimal numbers', () => {
+    mockDrillCategoryApi('suitable')
+
+    // Hexadecimal coerces to an in-extent value via Number(), but is not the
+    // documented format and must be rejected before any request is made.
+    cy.visit('/?E=0x27AD44&N=0x124F61')
+
+    cy.get('.info-box').should('not.exist')
+    cy.get('@drillCategory.all').should('have.length', 0)
+  })
+
+  it('does not send path separators from the query string to the backend', () => {
+    mockDrillCategoryApi('suitable')
+
+    cy.visit('/?E=2600423%2F..%2F..%2Fadmin&N=1199521')
+
+    cy.get('.info-box').should('not.exist')
+    cy.get('@drillCategory.all').should('have.length', 0)
+  })
 })
 
 describe('Click Outside Closes Dropdown', () => {
