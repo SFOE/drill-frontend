@@ -42,6 +42,58 @@ describe('parseDeepLinkCoordinates', () => {
   ])('returns null for invalid input %j', (query) => {
     expect(parseDeepLinkCoordinates(query)).toBeNull()
   })
+
+  // The parsed value is interpolated into the backend URL path
+  // (v1/drill-category/<E>/<N>), so only plain decimal digits may pass.
+  it.each([
+    // Alternative numeric bases that Number() would coerce into the extent
+    [{ E: '0x27AD44', N: '1199521' }],
+    [{ E: '2600423', N: '0x124F61' }],
+    [{ E: '0o11721503', N: '1199521' }],
+    [{ E: '0b1001111010110101000100', N: '1199521' }],
+    // Exponential notation
+    [{ E: '2.600423e6', N: '1199521' }],
+    [{ E: '2600423', N: '1.199521E6' }],
+    // Surrounding or embedded whitespace
+    [{ E: '  2600423  ', N: '1199521' }],
+    [{ E: '\n2600423\t', N: '1199521' }],
+    [{ E: '2600423', N: ' 1199521' }],
+    // Explicit sign
+    [{ E: '+2600423', N: '1199521' }],
+    [{ E: '-2600423', N: '1199521' }],
+    // Path traversal / separator injection attempts
+    [{ E: '2600423/../../admin', N: '1199521' }],
+    [{ E: '2600423/1199521', N: '1199521' }],
+    [{ E: '2600423%2F..%2F', N: '1199521' }],
+    [{ E: '../2600423', N: '1199521' }],
+    // Query and fragment injection attempts
+    [{ E: '2600423?foo=bar', N: '1199521' }],
+    [{ E: '2600423&x=1', N: '1199521' }],
+    [{ E: '2600423#frag', N: '1199521' }],
+    // Script / template payloads
+    [{ E: '<script>alert(1)</script>', N: '1199521' }],
+    [{ E: '2600423<img src=x onerror=alert(1)>', N: '1199521' }],
+    [{ E: "2600423'||'1", N: '1199521' }],
+    // Null byte and CRLF header injection attempts
+    [{ E: '2600423\u0000', N: '1199521' }],
+    [{ E: '2600423\r\nX-Injected: 1', N: '1199521' }],
+    // Malformed decimals
+    [{ E: '2600423.', N: '1199521' }],
+    [{ E: '.2600423', N: '1199521' }],
+    [{ E: '2600423.1234567', N: '1199521' }], // more than six fraction digits
+    [{ E: '26004230', N: '1199521' }], // eight integer digits
+    [{ E: '260042', N: '1199521' }], // six integer digits
+  ])('rejects non-plain-decimal input %j', (query) => {
+    expect(parseDeepLinkCoordinates(query)).toBeNull()
+  })
+
+  it('only ever yields values safe for the backend URL path', () => {
+    const coords = parseDeepLinkCoordinates({ E: '2600423.5', N: '1199521.25' })
+    expect(coords).not.toBeNull()
+    const path = `v1/drill-category/${coords!.east_coord}/${coords!.north_coord}`
+    expect(path).toBe('v1/drill-category/2600423.5/1199521.25')
+    expect(path).toMatch(/^v1\/drill-category\/\d+(\.\d+)?\/\d+(\.\d+)?$/)
+  })
 })
 
 describe('useDeepLink', () => {
