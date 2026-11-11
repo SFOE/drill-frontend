@@ -14,6 +14,8 @@ Vue.js application with a mapping component to provide information on the possib
 
 This application supports languages DE, FR, IT, EN. You can select default using query string `?lang=IT`
 
+A location can be checked directly with LV95 coordinates in the query string, for example `?lang=de&E=2600423&N=1199521`. The app checks the point like a click on the map.
+
 
 ## Project Setup
 

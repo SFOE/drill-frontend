@@ -2,6 +2,7 @@
 import { useRoute } from 'vue-router'
 import { watch, defineAsyncComponent } from 'vue'
 import { useLanguageStore } from '@/stores/languageStore'
+import { useDeepLink } from '@/composables/useDeepLink'
 
 const MapComponent = defineAsyncComponent(() => import('@/components/MapComponent.vue'))
 import AddressFulltextSearchComponent from '@/components/AddressFulltextSearchComponent.vue'
@@ -16,6 +17,8 @@ const languageStore = useLanguageStore()
 if (typeof route.query.lang === 'string') {
   languageStore.currentLocale = route.query.lang
 }
+
+useDeepLink()
 
 watch(
   () => route.query.lang,

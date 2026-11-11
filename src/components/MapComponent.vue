@@ -89,7 +89,7 @@
 // @ts-nocheck
 // vue3-openlayers individual imports have stricter template types
 // that conflict with our ol version's types. Runtime behavior is correct.
-import { ref, watch, nextTick } from 'vue'
+import { ref, watch, nextTick, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import WMTSTileGrid from 'ol/tilegrid/WMTS.js'
 import TileWMS from 'ol/source/TileWMS'
@@ -106,6 +106,7 @@ import { useSearchStore } from '@/stores/searchStore'
 import { useDevice } from '@/composables/useDevice'
 import { EPSG2056 } from '@/composables/useProjections'
 import { useGeoAdmin } from '@/composables/useGeoadminReverseGeocoding'
+import type { Coordinates } from '@/types/wms'
 
 // vue3-openlayers individual component imports (tree-shakeable)
 import OlMap from 'vue3-openlayers/map/OlMap'
@@ -220,35 +221,37 @@ watch(
 )
 const groundCategoryError = ref(false)
 
-watch(
-  () => mapStore.coordinates,
-  (coords) => {
-    if (!coords || !view.value) {
-      marker.value = null
-      features.value = []
-      return
-    }
+function showCoordinates(coords: Coordinates | null): void {
+  if (!coords || !view.value) {
+    marker.value = null
+    features.value = []
+    return
+  }
 
-    const newCenter = [coords.east_coord, coords.north_coord]
+  const newCenter = [coords.east_coord, coords.north_coord]
 
-    if (!marker.value) {
-      marker.value = new Feature({ geometry: new Point(newCenter) })
-      marker.value.setStyle(markerStyle)
-    } else {
-      marker.value.setGeometry(new Point(newCenter))
-    }
+  if (!marker.value) {
+    marker.value = new Feature({ geometry: new Point(newCenter) })
+    marker.value.setStyle(markerStyle)
+  } else {
+    marker.value.setGeometry(new Point(newCenter))
+  }
 
-    groundCategoryError.value = !!mapStore.groundCategoryError
+  groundCategoryError.value = !!mapStore.groundCategoryError
 
-    if (!groundCategoryError.value) {
-      view.value.setCenter(newCenter)
-      view.value.setZoom(15)
-    }
+  if (!groundCategoryError.value) {
+    view.value.setCenter(newCenter)
+    view.value.setZoom(15)
+  }
 
-    features.value = [marker.value]
-  },
-  { immediate: true },
-)
+  features.value = [marker.value]
+}
+
+watch(() => mapStore.coordinates, showCoordinates, { immediate: true })
+
+// The map loads lazily. A deep link can set coordinates before the view exists,
+// so show them once the map is mounted.
+onMounted(() => showCoordinates(mapStore.coordinates))
 
 const getClickedCoordinates = async (event: MapBrowserEvent<UIEvent>) => {
   const coordinate = event.coordinate

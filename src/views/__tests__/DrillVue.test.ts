@@ -5,6 +5,7 @@ import { createI18n } from 'vue-i18n'
 import { createRouter, createMemoryHistory, type Router } from 'vue-router'
 import DrillVue from '@/views/DrillVue.vue'
 import { useLanguageStore } from '@/stores/languageStore'
+import { useMapStore } from '@/stores/mapStore'
 import de from '@/locales/de.json'
 
 vi.mock('@/i18n', async (importOriginal) => {
@@ -14,6 +15,10 @@ vi.mock('@/i18n', async (importOriginal) => {
     setLocale: vi.fn().mockResolvedValue(undefined),
   }
 })
+
+vi.mock('@/composables/useGeoadminReverseGeocoding', () => ({
+  useGeoAdmin: () => ({ fetchAddress: vi.fn().mockResolvedValue(null) }),
+}))
 
 const i18n = createI18n({
   legacy: false,
@@ -99,5 +104,17 @@ describe('DrillVue', () => {
     const languageStore = useLanguageStore()
     // array query -> not applied, store keeps its default
     expect(languageStore.currentLocale).toBe('de')
+  })
+
+  it('checks the location from the E and N query params on load', async () => {
+    const pinia = createPinia()
+    setActivePinia(pinia)
+    const fetchSpy = vi.spyOn(useMapStore(), 'fetchGroundCategory').mockResolvedValue(undefined)
+    const router = makeRouter('/?lang=de&E=2600423&N=1199521')
+    await router.isReady()
+    mount(DrillVue, { global: { plugins: [pinia, i18n, router], stubs: childStubs } })
+    await flushPromises()
+
+    expect(fetchSpy).toHaveBeenCalledWith(2600423, 1199521)
   })
 })

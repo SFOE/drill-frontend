@@ -8,8 +8,9 @@ import type { CantonWmsConfig } from '@/types/wms'
 
 // --- Mocks for composables with side effects / network ---
 // Use vi.hoisted so these are available inside the hoisted vi.mock factories.
-const { fetchAddressMock, isMobileRef } = vi.hoisted(() => ({
+const { fetchAddressMock, setCenterMock, isMobileRef } = vi.hoisted(() => ({
   fetchAddressMock: vi.fn(),
+  setCenterMock: vi.fn(),
   isMobileRef: { value: false },
 }))
 
@@ -42,7 +43,7 @@ vi.mock('vue3-openlayers/map/OlView', () => ({
     setup(_props: unknown, { expose }: { expose: (o: Record<string, unknown>) => void }) {
       expose({
         calculateExtent: () => [2480000, 1050000, 2838000, 1390000],
-        setCenter: () => {},
+        setCenter: setCenterMock,
         setZoom: () => {},
       })
     },
@@ -188,6 +189,18 @@ describe('MapComponent', () => {
     // base WMTS tile layer + 2 WMS layers = 3 OlTileLayer stubs
     const tileLayers = wrapper.findAll('[data-ol="OlTileLayer"]')
     expect(tileLayers.length).toBe(3)
+  })
+
+  it('centers on coordinates that were set before the map mounted (deep link)', () => {
+    const pinia = createPinia()
+    setActivePinia(pinia)
+    const mapStore = useMapStore()
+    mapStore.setCoordinates({ east_coord: 2600423, north_coord: 1199521 })
+    mapStore.setGroundCategoryError(false)
+
+    mount(MapComponent, { global: { plugins: [pinia, i18n] } })
+
+    expect(setCenterMock).toHaveBeenCalledWith([2600423, 1199521])
   })
 
   it('clicking the map clears search state and fetches ground category', async () => {

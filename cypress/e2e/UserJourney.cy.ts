@@ -234,6 +234,27 @@ describe('URL Query Parameter: ?lang=', () => {
   })
 })
 
+describe('URL Query Parameter: ?E=&N= (deep link)', () => {
+  it('checks the location from LV95 coordinates in the URL', () => {
+    mockDrillCategoryApi('suitable')
+
+    cy.visit('/?lang=de&E=2600423&N=1199521')
+
+    cy.wait('@drillCategory')
+      .its('request.url')
+      .should('match', /\/v1\/drill-category\/2600423\/1199521$/)
+    cy.get('.info-box', { timeout: 5000 }).should('exist').and('have.class', 'green')
+  })
+
+  it('ignores coordinates outside Switzerland', () => {
+    mockDrillCategoryApi('suitable')
+
+    cy.visit('/?E=1&N=2')
+
+    cy.get('.info-box').should('not.exist')
+  })
+})
+
 describe('Click Outside Closes Dropdown', () => {
   beforeEach(() => {
     cy.intercept('GET', '**/rest/services/api/SearchServer*', {
