@@ -1,0 +1,44 @@
+name: Validate release tag
+
+# Enforce the version tag naming convention (e.g. v0.2.7) so the downstream
+# release pipeline — the S3 artifact tag and the dev/prod deployments in
+# release_and_push_s3.yml — always receives a well-formed version.
+#
+# Runs on:
+#   - release: published   -> gate the actual release flow
+#   - push of a tag        -> catch a bad tag the moment it is pushed
+# Both fail fast (non-zero exit) when the name does not match, surfacing a red
+# check on the release.
+
+on:
+  release:
+    types: [published, created, edited]
+  push:
+    tags:
+      - '**'
+
+permissions:
+  contents: read
+
+jobs:
+  validate-tag:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check tag matches vMAJOR.MINOR.PATCH
+        env:
+          # For a release event use the release tag; for a tag push, strip refs/tags/.
+          TAG_NAME: ${{ github.event.release.tag_name || github.ref_name }}
+        run: |
+          echo "Validating tag: '${TAG_NAME}'"
+
+          # Strict semver with a required leading 'v'. Allows an optional
+          # pre-release (-rc.1) and build-metadata (+build.5) suffix:
+          #   v0.2.7, v1.0.0, v2.3.1-rc.1, v1.4.0+build.9
+          PATTERN='^v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-[0-9A-Za-z.-]+)?(\+[0-9A-Za-z.-]+)?$'
+
+          if [[ "${TAG_NAME}" =~ ${PATTERN} ]]; then
+            echo "::notice title=Tag OK::'${TAG_NAME}' matches the required vMAJOR.MINOR.PATCH convention."
+          else
+            echo "::error title=Invalid release tag::'${TAG_NAME}' does not match the required pattern. Use vMAJOR.MINOR.PATCH, e.g. v0.2.7 (optionally v0.2.7-rc.1)."
+            exit 1
+          fi
