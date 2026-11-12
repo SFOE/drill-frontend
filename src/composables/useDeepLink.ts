@@ -1,5 +1,5 @@
 import { watch } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useMapStore } from '@/stores/mapStore'
 import { useSearchStore } from '@/stores/searchStore'
 import { useGeoAdmin } from '@/composables/useGeoadminReverseGeocoding'
@@ -49,6 +49,29 @@ function isInExtent({ east_coord, north_coord }: Coordinates): boolean {
   )
 }
 
+/**
+ * Format a coordinate for the query string: integer part as-is, fraction
+ * trimmed to at most six digits (and trailing zeros removed). The result
+ * always satisfies LV95_COORDINATE_PATTERN, so a URL we write round-trips
+ * through parseCoordinate without loss of validity.
+ */
+function formatCoordinate(value: number): string {
+  // toFixed(6) then strip trailing zeros and a dangling dot.
+  return value
+    .toFixed(6)
+    .replace(/0+$/, '')
+    .replace(/\.$/, '')
+}
+
+/** True when two coordinate pairs are equal once formatted for the URL. */
+function sameCoordinates(a: Coordinates | null, b: Coordinates | null): boolean {
+  if (a === null || b === null) return a === b
+  return (
+    formatCoordinate(a.east_coord) === formatCoordinate(b.east_coord) &&
+    formatCoordinate(a.north_coord) === formatCoordinate(b.north_coord)
+  )
+}
+
 function geocodeExtent({ east_coord, north_coord }: Coordinates): [number, number, number, number] {
   return [
     east_coord - GEOCODE_HALF_EXTENT,
@@ -79,16 +102,29 @@ export function parseDeepLinkCoordinates(query: Record<string, unknown>): Coordi
  */
 export function useDeepLink(): void {
   const route = useRoute()
+  const router = useRouter()
   const mapStore = useMapStore()
   const searchStore = useSearchStore()
   const { fetchAddress } = useGeoAdmin()
 
   let latestRequest = 0
 
+  // The coordinates currently reflected in the URL. Used to break the
+  // read <-> write feedback loop: the URL writer skips when the store already
+  // matches the URL, and the URL reader skips re-applying coordinates it wrote.
+  let urlCoordinates: Coordinates | null = parseDeepLinkCoordinates(route.query)
+
   async function applyDeepLink(): Promise<void> {
     const coords = parseDeepLinkCoordinates(route.query)
     if (!coords) return
 
+    // Ignore URL changes that merely echo the store (i.e. that we just wrote).
+    if (sameCoordinates(coords, mapStore.coordinates)) {
+      urlCoordinates = coords
+      return
+    }
+
+    urlCoordinates = coords
     const request = ++latestRequest
     mapStore.clearSearchState()
     mapStore.fetchGroundCategory(coords.east_coord, coords.north_coord)
@@ -100,7 +136,29 @@ export function useDeepLink(): void {
     searchStore.selectedAddress = address ?? ''
   }
 
+  // Mirror the active location into the URL (?E=...&N=...) so it can be shared
+  // or reloaded. `replace` avoids filling the browser history on every click,
+  // and `lang` (plus any other params) is preserved.
+  function writeUrl(coords: Coordinates | null): void {
+    if (sameCoordinates(coords, urlCoordinates)) return
+
+    const query = { ...route.query }
+    if (coords && isInExtent(coords)) {
+      query.E = formatCoordinate(coords.east_coord)
+      query.N = formatCoordinate(coords.north_coord)
+    } else {
+      delete query.E
+      delete query.N
+    }
+    urlCoordinates = coords
+    // Fire-and-forget; a redundant navigation rejection is not actionable.
+    void router.replace({ query })
+  }
+
   applyDeepLink()
   // A string key keeps the watcher quiet when only other params (lang) change
   watch(() => `${route.query.E}|${route.query.N}`, applyDeepLink)
+  // Keep the URL in sync whenever the location changes (map click, address
+  // search, or clearing the search).
+  watch(() => mapStore.coordinates, writeUrl)
 }

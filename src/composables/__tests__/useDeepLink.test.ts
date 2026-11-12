@@ -185,4 +185,64 @@ describe('useDeepLink', () => {
 
     expect(useSearchStore().selectedAddress).toBe('Neue Strasse 2 3000 Bern')
   })
+
+  it('writes E and N to the URL when the location is set', async () => {
+    const { router } = await mountAt('/?lang=de')
+    const mapStore = useMapStore()
+
+    mapStore.setCoordinates({ east_coord: 2600423, north_coord: 1199521 })
+    await flushPromises()
+
+    expect(router.currentRoute.value.query.E).toBe('2600423')
+    expect(router.currentRoute.value.query.N).toBe('1199521')
+    // Other params are preserved.
+    expect(router.currentRoute.value.query.lang).toBe('de')
+  })
+
+  it('removes E and N from the URL when the location is cleared', async () => {
+    const { router } = await mountAt('/?lang=de')
+    const mapStore = useMapStore()
+
+    // Set a location (writes E/N), then clear it.
+    mapStore.setCoordinates({ east_coord: 2600423, north_coord: 1199521 })
+    await flushPromises()
+    expect(router.currentRoute.value.query.E).toBe('2600423')
+
+    mapStore.clearCoordinates()
+    await flushPromises()
+
+    expect(router.currentRoute.value.query.E).toBeUndefined()
+    expect(router.currentRoute.value.query.N).toBeUndefined()
+    expect(router.currentRoute.value.query.lang).toBe('de')
+  })
+
+  it('does not re-fetch for a location it wrote to the URL itself (no loop)', async () => {
+    const { router, fetchSpy } = await mountAt('/?lang=de')
+    const mapStore = useMapStore()
+
+    // Simulate a map click: it sets coordinates AND triggers its own fetch.
+    mapStore.setCoordinates({ east_coord: 2600423, north_coord: 1199521 })
+    mapStore.fetchGroundCategory(2600423, 1199521)
+    await flushPromises()
+
+    // URL now reflects the point…
+    expect(router.currentRoute.value.query.E).toBe('2600423')
+    // …and the deep-link reader must NOT have fired a second fetch in response.
+    expect(fetchSpy).toHaveBeenCalledTimes(1)
+  })
+
+  it('formats fractional coordinates without losing validity', async () => {
+    const { router } = await mountAt('/')
+    const mapStore = useMapStore()
+
+    mapStore.setCoordinates({ east_coord: 2600423.5, north_coord: 1199521.25 })
+    await flushPromises()
+
+    expect(router.currentRoute.value.query.E).toBe('2600423.5')
+    expect(router.currentRoute.value.query.N).toBe('1199521.25')
+    // Round-trips back through the parser.
+    expect(
+      parseDeepLinkCoordinates(router.currentRoute.value.query),
+    ).toEqual({ east_coord: 2600423.5, north_coord: 1199521.25 })
+  })
 })

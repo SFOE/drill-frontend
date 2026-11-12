@@ -52,5 +52,8 @@
   "infobox_information_title": "Per ulteriori informazioni, sono disponibili i seguenti siti web",
   "show_details": "Maggiori informazioni",
   "hide_details": "Nascondi",
-  "map_info": "Clicca sulla mappa per ottenere informazioni"
+  "map_info": "Clicca sulla mappa per ottenere informazioni",
+  "share": "Condividi posizione",
+  "share_aria_label": "Copia un link a questa posizione",
+  "share_copied": "Link copiato"
 }

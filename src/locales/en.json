@@ -52,5 +52,8 @@
   "infobox_information_title": "For further information, the following websites are available",
   "show_details": "Show details",
   "hide_details": "Hide details",
-  "map_info": "Click on the map to get information"
+  "map_info": "Click on the map to get information",
+  "share": "Share location",
+  "share_aria_label": "Copy a link to this location",
+  "share_copied": "Link copied"
 }
