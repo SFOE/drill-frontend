@@ -205,11 +205,18 @@ watch(
       return
     }
 
-    wmsLayers.value = config.layers.map((layer) => ({
-      key: layer.name,
+    // Display layer names come from `wms_layers` when the WMS overlay differs
+    // from the query layers (`layers[].name`); otherwise fall back to those.
+    const displayLayerNames =
+      config.wms_layers && config.wms_layers.length > 0
+        ? config.wms_layers
+        : config.layers.map((layer) => layer.name)
+
+    wmsLayers.value = displayLayerNames.map((layerName) => ({
+      key: layerName,
       source: new TileWMS({
         url: config.wms_url,
-        params: { LAYERS: layer.name, TILED: true, FORMAT: format_png },
+        params: { LAYERS: layerName, TILED: true, FORMAT: format_png },
         crossOrigin: 'anonymous',
         projection: projection,
       }),
