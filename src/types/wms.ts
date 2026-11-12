@@ -28,4 +28,8 @@ export interface CantonWmsConfig {
   bbox_delta: number
   style?: string
   layers: Layer[]
+  // WMS GetMap layer names for the overlay. May differ from `layers[].name`
+  // (the query identifier) — e.g. WFS cantons whose WMS consolidated layers.
+  // When absent, the overlay falls back to `layers[].name`.
+  wms_layers?: string[]
 }

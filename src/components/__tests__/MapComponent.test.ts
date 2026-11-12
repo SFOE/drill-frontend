@@ -191,6 +191,45 @@ describe('MapComponent', () => {
     expect(tileLayers.length).toBe(3)
   })
 
+  it('uses wms_layers for the overlay when provided (differs from query layers)', async () => {
+    const wrapper = mountComponent()
+    const mapStore = useMapStore()
+    mapStore.setWmsConfig(
+      makeConfig({
+        // Two query layers, but a single consolidated display layer (ZH case).
+        layers: [
+          { name: 'waermenutzung-zone-a', property_name: 'p', property_values: [], opacity: 1 },
+          { name: 'waermenutzung-zone-b', property_name: 'p', property_values: [], opacity: 1 },
+        ],
+        wms_layers: ['waermenutzung-zonen'],
+      }),
+    )
+    await nextTick()
+
+    // base WMTS tile layer + 1 display WMS layer = 2 OlTileLayer stubs
+    const tileLayers = wrapper.findAll('[data-ol="OlTileLayer"]')
+    expect(tileLayers.length).toBe(2)
+  })
+
+  it('falls back to layers[].name for the overlay when wms_layers is empty', async () => {
+    const wrapper = mountComponent()
+    const mapStore = useMapStore()
+    mapStore.setWmsConfig(
+      makeConfig({
+        layers: [
+          { name: 'a', property_name: 'p', property_values: [], opacity: 1 },
+          { name: 'b', property_name: 'p', property_values: [], opacity: 1 },
+        ],
+        wms_layers: [],
+      }),
+    )
+    await nextTick()
+
+    // Empty wms_layers must fall back to the 2 query layers -> 3 tile layers.
+    const tileLayers = wrapper.findAll('[data-ol="OlTileLayer"]')
+    expect(tileLayers.length).toBe(3)
+  })
+
   it('centers on coordinates that were set before the map mounted (deep link)', () => {
     const pinia = createPinia()
     setActivePinia(pinia)
