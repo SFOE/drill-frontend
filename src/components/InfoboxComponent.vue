@@ -34,6 +34,10 @@
             :source-values="data.source_values"
           />
         </div>
+
+        <div class="share-row">
+          <ShareButton />
+        </div>
       </div>
     </div>
   </section>
@@ -47,6 +51,7 @@ import { useSearchStore } from '@/stores/searchStore'
 import { useDevice } from '@/composables/useDevice'
 import InfoboxLinksComponent from '@/components/InfoboxLinksComponent.vue'
 import LoadingSpinner from '@/components/LoadingSpinner.vue'
+import ShareButton from '@/components/ShareButton.vue'
 
 import IconGreen from '@/assets/images/oblique/checkmark.svg?url'
 import IconOrange from '@/assets/images/oblique/exclamation.svg?url'
@@ -134,6 +139,10 @@ watch(data, () => {
   font-weight: bold;
 }
 
+.share-row {
+  margin-top: 1rem;
+}
+
 .details {
   margin-top: 0.5rem;
 }
@@ -184,6 +193,11 @@ watch(data, () => {
 
   .info-box .text h2 {
     font-size: 1.2rem;
+  }
+
+  .share-row {
+    display: flex;
+    justify-content: center;
   }
 
   .info-box .text p.selected-address {
